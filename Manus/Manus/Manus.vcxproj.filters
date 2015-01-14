@@ -27,12 +27,18 @@
     <ClInclude Include="Manus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Glove.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Manus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Glove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,0 +1,3 @@
+[submodule "Manus/hidapi/source"]
+	path = Manus/hidapi/source
+	url = https://github.com/signal11/hidapi.git

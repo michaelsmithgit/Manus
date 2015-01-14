@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Glove.h"
+#include "hidapi.h"
 
-Glove::Glove(char* device_path)
+Glove::Glove(const char* device_path)
 	: m_running(false)
 	, m_packets(0)
 {
@@ -24,6 +25,31 @@ bool Glove::GetState(GLOVE_STATE* state)
 	return false;
 }
 
-void Glove::DeviceThread(Glove* glove, char* device_path)
+void Glove::DeviceThread(Glove* glove, const char* device_path)
 {
+	hid_device* device = hid_open_path(device_path);
+	if (!device)
+		return;
+
+	glove->m_running = true;
+
+	// Keep retrieving reports while the SDK is running and the device is connected
+	while (glove->m_running && device)
+	{
+		GLOVE_REPORT report;
+		int read = hid_read(device, (unsigned char*)&report, sizeof(report));
+
+		if (read == -1)
+			break;
+
+		if (read == sizeof(report))
+		{
+			glove->m_report = report;
+			glove->m_packets++;
+		}
+	}
+
+	hid_close(device);
+
+	glove->m_running = false;
 }

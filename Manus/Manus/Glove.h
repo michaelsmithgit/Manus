@@ -23,13 +23,13 @@ private:
 	std::thread m_thread;
 
 public:
-	Glove(char* device_path);
+	Glove(const char* device_path);
 	~Glove();
 
 	bool IsRunning() const { return m_running; }
 	bool GetState(GLOVE_STATE* state);
 
 private:
-	static void DeviceThread(Glove* glove, char* device_path);
+	static void DeviceThread(Glove* glove, const char* device_path);
 };
 

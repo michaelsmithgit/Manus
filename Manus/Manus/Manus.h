@@ -1,9 +1,6 @@
-// The following ifdef block is the standard way of creating macros which make exporting 
-// from a DLL simpler. All files within this DLL are compiled with the MANUS_EXPORTS
-// symbol defined on the command line. This symbol should not be defined on any project
-// that uses this DLL. This way any other project whose source files include this file see 
-// MANUS_API functions as being imported from a DLL, whereas this DLL sees symbols
-// defined with this macro as being exported.
+#ifndef _MANUS_H
+#define _MANUS_H
+
 #ifdef MANUS_EXPORTS
 #define MANUS_API __declspec(dllexport)
 #else
@@ -13,6 +10,8 @@
 #define MANUS_ERROR -1
 #define MANUS_SUCCESS 0
 #define MANUS_INVALID_ARGUMENT 1
+#define MANUS_OUT_OF_RANGE 2
+#define MANUS_DISCONNECTED 3
 
 typedef struct {
 	bool RightHand;
@@ -53,7 +52,7 @@ extern "C" {
 	*  \param glove The glove index.
 	*  \param state Output variable to receive the state.
 	*/
-	MANUS_API int ManusGetState(int glove, GLOVE_STATE* state);
+	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state);
 
 	/*! \brief Enable gamepad emulation.
 	*
@@ -76,3 +75,5 @@ extern "C" {
 	*/
 	MANUS_API int ManusEnableMouse(bool enabled);
 }
+
+#endif

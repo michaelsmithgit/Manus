@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="6612bedf-1fb8-4706-975f-249391ce456a"
+  name="ModelingProject" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <profileInstances>
+    <packageHasProfileInstances
+      Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b">
+      <profileInstance
+        Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791"
+        name="StandardProfileL2" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances
+      Id="29349502-908c-4fda-9054-c48619c59ed0">
+      <profileInstance
+        Id="532ea607-fb19-44b8-8502-3351b05452be"
+        name="StandardProfileL3" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <packageHasNamedElement>
+      <Interface
+        Id="ba13a1ab-2ad3-4c35-af99-a2a2d1c9d278"
+        name="GLOVE_STATE"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedAttributes>
+          <property
+            Id="4e5e85e8-3591-44a6-a112-77268e123329"
+            name="unsigned int PacketNumber"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="524c35ac-428c-480e-aec6-25c9eb3f2cc0"
+            name="GLOVE_DATA"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+        </ownedAttributes>
+      </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="42812a93-35bd-4041-bf5b-c5559618de06"
+        name="GLOVE_DATA"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedAttributes>
+          <property
+            Id="4afd369d-927d-478c-af20-16fcd440d3f4"
+            name="float Angles"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="3f9099e7-04d6-4b06-ae01-b4691b116ed3"
+                name="Lower"
+                value="3" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="30ab3363-ff4d-4c76-ba5b-b45c80d51341"
+                name="Upper"
+                value="3" />
+            </upperValueInternal>
+          </property>
+          <property
+            Id="933ac07e-dbb3-40b5-99f5-4a903201ec53"
+            name="float Quaternions"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="c5a4e130-a9b1-40f8-b9cb-8b3d29fdcaa5"
+                name="Lower"
+                value="4" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="3f9403f4-e30c-4e22-8070-c40cce3cac97"
+                name="Upper"
+                value="4" />
+            </upperValueInternal>
+          </property>
+          <property
+            Id="d9e42a25-30a0-42b4-8107-4fd86648ef35"
+            name="bool RightHand"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="cdf84447-62a1-40c7-a39b-69537d6f9b26"
+            name="short Fingers"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="5fb38bec-d575-476d-a7fc-695ce9fc2bdb"
+                name="Lower"
+                value="5" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="6723b8c9-3ab4-4980-bbd6-7f4ea1c91722"
+                name="Upper"
+                value="5" />
+            </upperValueInternal>
+          </property>
+        </ownedAttributes>
+      </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="4dd15d6b-9a97-4365-9437-0c15d4638a62"
+        name="Manus"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedOperationsInternal>
+          <operation
+            Id="9cff09c5-a9ca-4742-bc15-1955d9ea33f8"
+            name="ManusInit"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="67912708-4586-4622-b593-db54918046fc"
+            name="ManusExit"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="9603d7c4-6021-4cd0-a0ca-5a74be49a159"
+            name="ManusGetState"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="7d042375-0a3e-4d7a-a93d-b1234e64340f"
+                  name="unsigned int glove"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="303ed4ba-d192-46d4-a8e4-df7b4ae204e7"
+                  name="GLOVE_STATE* state"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="ffd80da9-dc93-4de8-b4c4-db9fd3570159"
+            name="ManusGetGloveCount"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="9dcc2a98-de8a-4a3c-9a3a-0f4f12724a7d"
+            name="ManusEnableKeyboard"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="3727dc13-9f15-4e13-801a-4b9a98e31f49"
+                  name="bool enabled"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="35738f2e-2a12-4a22-ba73-d9d3a16e7af0"
+            name="ManusEnableGamepad"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="67f79dd6-cdda-42b1-a199-3282b2f51049"
+                  name="bool enabled"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="9e4b094e-f63a-4ae7-88ca-c86720204231"
+            name="ManusEnableMouse"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="5c7884ba-c55a-48b9-a558-5d50ce89f2a0"
+                  name="bool enabled"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="1df88f33-823d-450d-a288-cfbe52336808"
+        name="Glove"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedAttributesInternal>
+          <property
+            Id="62a93010-1c20-4358-ba0e-4b6d8a689e9e"
+            name="bool m_running"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="28328435-dcfa-429c-b3f5-3bd078323833"
+            name="std::thread m_thread"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="c82435f7-bbf4-45e7-b97c-a95c219d7cd6"
+            name="GLOVE_REPORT m_report"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="31d2f355-0019-4c69-84cd-902e8e40a257"
+            name="Glove"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="ff1d3617-25d3-4162-904d-1ad8b976979b"
+                  name="char* device_path"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="d6e15592-6041-4997-b7cf-76c91522dc5a"
+            name="~Glove"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="37d72595-c8e6-42f8-9ee6-afb55f8e28f9"
+            name="GetState"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="8117a929-f5ae-4226-987f-f06d331cb7b1"
+                  name="GLOVE_STATE* state"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="70136bd4-48b7-4a16-bd35-6412ef513379"
+            name="ThreadProc"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="7d13ed52-6780-4e68-a807-226a18a135b2"
+        name="GLOVE_REPORT"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedAttributes>
+          <property
+            Id="93ff2aca-0d39-4dfb-9676-21cec6031379"
+            name="bool hand"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="a793e876-201f-44da-a5ef-bf0bde8b72b1"
+            name="int quats"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="d36da929-adc0-49c9-a717-ba57a07e83c9"
+                name="Lower"
+                value="4" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="0f1f6d96-0c68-4567-a32c-d77cb50f25c0"
+                name="Upper"
+                value="4" />
+            </upperValueInternal>
+          </property>
+          <property
+            Id="fb45e1ab-e73f-4236-9376-99cf13db0b07"
+            name="int fingers"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="6e9efa01-08dd-4410-885d-59c7b3a95f26"
+                name="Lower"
+                value="5" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="777cb2d1-5a58-43c2-b1db-04d3ebfa549a"
+                name="Upper"
+                value="5" />
+            </upperValueInternal>
+          </property>
+        </ownedAttributes>
+      </Interface>
+    </packageHasNamedElement>
+  </packagedElements>
+  <primitiveType
+    Id="220a3521-e091-4221-bae9-3ef9018e845c"
+    name="Integer"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="8943dc84-709e-4f62-b15a-a3273aa6f165"
+    name="Boolean"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="59259974-6d55-42c6-b7bd-763d77ac8ef9"
+    name="String"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="3ab42e7d-4969-445a-b209-471f5cb8209c"
+    name="UnlimitedNatural"
+    isAbstract="false"
+    isLeaf="false" />
+</modelStoreModel>

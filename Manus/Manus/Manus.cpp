@@ -4,19 +4,37 @@
 #include "stdafx.h"
 #include "Manus.h"
 
-
-// This is an example of an exported variable
-MANUS_API int nManus=0;
-
-// This is an example of an exported function.
-MANUS_API int fnManus(void)
+int ManusInit()
 {
-	return 42;
+	return MANUS_ERROR;
 }
 
-// This is the constructor of a class that has been exported.
-// see Manus.h for the class definition
-CManus::CManus()
+int ManusExit()
 {
-	return;
+	return MANUS_ERROR;
+}
+
+int ManusGetGloveCount()
+{
+	return MANUS_ERROR;
+}
+
+int ManusGetState(int glove, GLOVE_STATE* state)
+{
+	return MANUS_ERROR;
+}
+
+int ManusEnableGamepad(bool enabled)
+{
+	return MANUS_ERROR;
+}
+
+int ManusEnableKeyboard(bool enabled)
+{
+	return MANUS_ERROR;
+}
+
+int ManusEnableMouse(bool enabled)
+{
+	return MANUS_ERROR;
 }

@@ -9,6 +9,8 @@ Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject", "Modeling
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hidapi", "hidapi\hidapi.vcxproj", "{6F6C154D-D2DE-4D57-A930-7CBB96AAC37D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManusTest", "ManusTest\ManusTest.vcxproj", "{7616BC37-FDBB-4153-AEF4-090AF007ECB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,16 @@ Global
 		{6F6C154D-D2DE-4D57-A930-7CBB96AAC37D}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{6F6C154D-D2DE-4D57-A930-7CBB96AAC37D}.Release|Win32.ActiveCfg = Release|Win32
 		{6F6C154D-D2DE-4D57-A930-7CBB96AAC37D}.Release|Win32.Build.0 = Release|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Debug|Win32.Build.0 = Debug|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Release|Any CPU.ActiveCfg = Release|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Release|Win32.ActiveCfg = Release|Win32
+		{7616BC37-FDBB-4153-AEF4-090AF007ECB6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

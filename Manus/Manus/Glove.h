@@ -3,15 +3,16 @@
 #include "Manus.h"
 
 #include <thread>
+#include <inttypes.h>
 
-#define GLOVE_ANGLES 3
+#define GLOVE_QUATS 4
 #define GLOVE_FINGERS 5
 
 typedef struct
 {
 	unsigned char id;
-	short angles[GLOVE_ANGLES];
-	short fingers[GLOVE_FINGERS];
+	int16_t quat[GLOVE_QUATS];
+	uint16_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;
 
 class Glove

@@ -8,8 +8,8 @@
 
 #include <vector>
 
-#define MANUS_VENDOR_ID 0x0
-#define MANUS_PRODUCT_ID 0x0
+#define MANUS_VENDOR_ID 0x2341
+#define MANUS_PRODUCT_ID 0x8037
 
 std::vector<Glove*> g_gloves;
 
@@ -24,8 +24,8 @@ int ManusInit()
 	current_device = hid_devices;
 	for (int i = 0; current_device != nullptr; ++i)
 	{
-		// The Manus has three interfaces, the third one contains the motion data
-		if (current_device->interface_number == 3)
+		// The Arduino Micro has two interfaces, the second one contains the input data
+		if (current_device->interface_number == 2)
 		{
 			g_gloves.push_back(new Glove(current_device->path));
 		}

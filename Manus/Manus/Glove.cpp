@@ -21,8 +21,12 @@ Glove::~Glove()
 
 bool Glove::GetState(GLOVE_STATE* state)
 {
-	// TODO: Convert report to state
-	return false;
+	state->PacketNumber = m_packets;
+	state->data.Quaternion[0] = (float)m_report.quat[0];
+	state->data.Quaternion[1] = (float)m_report.quat[1];
+	state->data.Quaternion[2] = (float)m_report.quat[2];
+	state->data.Quaternion[3] = (float)m_report.quat[3];
+	return true;
 }
 
 void Glove::DeviceThread(Glove* glove, const char* device_path)

@@ -9,7 +9,6 @@
 
 typedef struct
 {
-	bool hand;
 	short angles[GLOVE_ANGLES];
 	short fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;

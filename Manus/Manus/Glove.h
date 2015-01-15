@@ -9,6 +9,7 @@
 
 typedef struct
 {
+	unsigned char id;
 	short angles[GLOVE_ANGLES];
 	short fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;

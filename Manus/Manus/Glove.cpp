@@ -37,12 +37,14 @@ void Glove::DeviceThread(Glove* glove, const char* device_path)
 	while (glove->m_running && device)
 	{
 		GLOVE_REPORT report;
-		int read = hid_read(device, (unsigned char*)&report, sizeof(report));
+		int read = hid_read(device, (unsigned char*)&report, sizeof(report) + 1);
 
 		if (read == -1)
 			break;
 
-		if (read == sizeof(report))
+		// The Manus has three reports, the third one is the raw input report
+		// TODO: Check if the bytes read matches the report size
+		if (report.id == 3)
 		{
 			glove->m_report = report;
 			glove->m_packets++;

@@ -5,13 +5,16 @@
 #include <thread>
 #include <inttypes.h>
 
+#define GLOVE_FLAGS_RIGHTHAND 0x1
+
 #define GLOVE_QUATS 4
 #define GLOVE_FINGERS 5
 
 #pragma pack(push, 1) // exact fit - no padding
 typedef struct
 {
-	unsigned char id;
+	uint8_t id;
+	uint8_t flags;
 	int16_t quat[GLOVE_QUATS];
 	uint16_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;

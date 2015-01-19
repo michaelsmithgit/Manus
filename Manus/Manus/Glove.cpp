@@ -25,6 +25,7 @@ Glove::~Glove()
 bool Glove::GetState(GLOVE_STATE* state)
 {
 	state->PacketNumber = m_packets;
+	state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
 
 	for (int i = 0; i < GLOVE_QUATS; i++)
 		state->data.Quaternion[i] = m_report.quat[i] / QUAT_DIVISOR;

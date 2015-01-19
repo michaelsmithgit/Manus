@@ -29,6 +29,9 @@ bool Glove::GetState(GLOVE_STATE* state)
 	for (int i = 0; i < GLOVE_QUATS; i++)
 		state->data.Quaternion[i] = m_report.quat[i] / QUAT_DIVISOR;
 
+	for (int i = 0; i < GLOVE_FINGERS; i++)
+		state->data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
+
 	return true;
 }
 

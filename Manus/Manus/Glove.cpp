@@ -3,6 +3,7 @@
 #include "hidapi.h"
 
 #define QUAT_DIVISOR 16384.0f
+#define FINGER_DIVISOR 1024.0f
 
 Glove::Glove(const char* device_path)
 	: m_running(false)
@@ -25,10 +26,9 @@ bool Glove::GetState(GLOVE_STATE* state)
 {
 	state->PacketNumber = m_packets;
 
-	state->data.Quaternion[0] = m_report.quat[0] / QUAT_DIVISOR;
-	state->data.Quaternion[1] = m_report.quat[1] / QUAT_DIVISOR;
-	state->data.Quaternion[2] = m_report.quat[2] / QUAT_DIVISOR;
-	state->data.Quaternion[3] = m_report.quat[3] / QUAT_DIVISOR;
+	for (int i = 0; i < GLOVE_QUATS; i++)
+		state->data.Quaternion[i] = m_report.quat[i] / QUAT_DIVISOR;
+
 	return true;
 }
 

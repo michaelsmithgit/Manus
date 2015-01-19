@@ -33,7 +33,7 @@ bool Glove::GetState(GLOVE_STATE* state)
 	for (int i = 0; i < GLOVE_FINGERS; i++)
 		state->data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
 
-	return true;
+	return m_packets > 0;
 }
 
 void Glove::DeviceThread(Glove* glove, const char* device_path)

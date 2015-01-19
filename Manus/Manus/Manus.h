@@ -17,7 +17,7 @@ typedef struct {
 	bool RightHand;
 	float Quaternion[4];
 	float Angles[3];
-	short Fingers[5];
+	float Fingers[5];
 } GLOVE_DATA;
 
 typedef struct {

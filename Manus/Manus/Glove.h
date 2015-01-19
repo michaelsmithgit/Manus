@@ -8,12 +8,14 @@
 #define GLOVE_QUATS 4
 #define GLOVE_FINGERS 5
 
+#pragma pack(push, 1) // exact fit - no padding
 typedef struct
 {
 	unsigned char id;
 	int16_t quat[GLOVE_QUATS];
 	uint16_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;
+#pragma pack(pop) //back to whatever the previous packing mode was
 
 class Glove
 {

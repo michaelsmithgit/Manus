@@ -20,7 +20,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			if (state.PacketNumber != last_packet)
 			{
 				last_packet = state.PacketNumber;
-				printf("%d;%d;%d;%d\n", state.data.Quaternion[0], state.data.Quaternion[1], state.data.Quaternion[2], state.data.Quaternion[3]);
+				printf("%f;%f;%f;%f\n", state.data.Quaternion[0], state.data.Quaternion[1], state.data.Quaternion[2], state.data.Quaternion[3]);
 			}
 		}
 	}

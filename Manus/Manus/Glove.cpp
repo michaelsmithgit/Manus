@@ -10,7 +10,12 @@ Glove::Glove(const char* device_path)
 	, m_packets(0)
 {
 	memset(&m_report, 0, sizeof(m_report));
-	m_thread = std::thread(DeviceThread, this, device_path);
+
+	size_t len = strlen(device_path) + 1;
+	m_device_path = new char[len];
+	memcpy(m_device_path, device_path, len * sizeof(char));
+
+	m_thread = std::thread(DeviceThread, this);
 }
 
 Glove::~Glove()
@@ -20,6 +25,8 @@ Glove::~Glove()
 	m_running = false;
 	if (m_thread.joinable())
 		m_thread.join();
+
+	delete m_device_path;
 }
 
 bool Glove::GetState(GLOVE_STATE* state, bool euler_angles)
@@ -62,9 +69,9 @@ void Glove::QuatToEuler(GLOVE_EULER* v, const GLOVE_QUATERNION* q)
 	v->z = atan(gravity->y / sqrt(gravity->x*gravity->x + gravity->z*gravity->z));
 }
 
-void Glove::DeviceThread(Glove* glove, const char* device_path)
+void Glove::DeviceThread(Glove* glove)
 {
-	hid_device* device = hid_open_path(device_path);
+	hid_device* device = hid_open_path(glove->m_device_path);
 	if (!device)
 		return;
 

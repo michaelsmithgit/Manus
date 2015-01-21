@@ -26,6 +26,7 @@ private:
 	bool m_running;
 	unsigned int m_packets;
 	GLOVE_REPORT m_report;
+	char* m_device_path;
 	std::thread m_thread;
 
 public:
@@ -36,7 +37,7 @@ public:
 	bool GetState(GLOVE_STATE* state, bool euler_angles);
 
 private:
-	static void DeviceThread(Glove* glove, const char* device_path);
+	static void DeviceThread(Glove* glove);
 	static void QuatToEuler(GLOVE_EULER* v, const GLOVE_QUATERNION* q);
 };
 

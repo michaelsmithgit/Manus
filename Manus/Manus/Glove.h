@@ -33,6 +33,8 @@ public:
 	Glove(const char* device_path);
 	~Glove();
 
+	void Connect();
+	void Disconnect();
 	bool IsRunning() const { return m_running; }
 	bool GetState(GLOVE_STATE* state, bool euler_angles);
 

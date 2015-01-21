@@ -15,17 +15,12 @@ Glove::Glove(const char* device_path)
 	m_device_path = new char[len];
 	memcpy(m_device_path, device_path, len * sizeof(char));
 
-	m_thread = std::thread(DeviceThread, this);
+	Connect();
 }
 
 Glove::~Glove()
 {
-	// Instruct the device thread to stop and
-	// wait for it to shut down.
-	m_running = false;
-	if (m_thread.joinable())
-		m_thread.join();
-
+	Disconnect();
 	delete m_device_path;
 }
 
@@ -46,6 +41,21 @@ bool Glove::GetState(GLOVE_STATE* state, bool euler_angles)
 		memset(&state->data.Angles, 0, sizeof(GLOVE_EULER));
 
 	return m_packets > 0;
+}
+
+void Glove::Connect()
+{
+	Disconnect();
+	m_thread = std::thread(DeviceThread, this);
+}
+
+void Glove::Disconnect()
+{
+	// Instruct the device thread to stop and
+	// wait for it to shut down.
+	m_running = false;
+	if (m_thread.joinable())
+		m_thread.join();
 }
 
 // Taken from the I2CDevic library

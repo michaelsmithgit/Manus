@@ -15,6 +15,8 @@
 
 #define MANUS_VENDOR_ID 0x2341
 #define MANUS_PRODUCT_ID 0x8037
+#define MANUS_GLOVE_PAGE 0x03
+#define MANUS_GLOVE_USAGE 0x04
 
 std::vector<Glove*> g_gloves;
 Devices* g_devices;
@@ -38,7 +40,7 @@ int ManusInit()
 	for (int i = 0; current_device != nullptr; ++i)
 	{
 		// The Arduino Micro has two interfaces, the second one contains the input data
-		if (current_device->interface_number == 2)
+		if (current_device->usage_page == MANUS_GLOVE_PAGE && current_device->usage == MANUS_GLOVE_USAGE)
 		{
 			g_gloves.push_back(new Glove(current_device->path));
 		}

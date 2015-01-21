@@ -52,7 +52,7 @@ int ManusGetGloveCount()
 	return g_gloves.size();
 }
 
-int ManusGetState(unsigned int glove, GLOVE_STATE* state)
+int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool euler_angles)
 {
 	if (glove >= g_gloves.size())
 		return MANUS_OUT_OF_RANGE;
@@ -63,7 +63,7 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state)
 	if (!state)
 		return MANUS_INVALID_ARGUMENT;
 
-	return g_gloves[glove]->GetState(state) ? MANUS_SUCCESS : MANUS_ERROR;
+	return g_gloves[glove]->GetState(state, euler_angles) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
 int ManusEnableGamepad(bool enabled)

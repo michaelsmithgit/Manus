@@ -33,9 +33,10 @@ public:
 	~Glove();
 
 	bool IsRunning() const { return m_running; }
-	bool GetState(GLOVE_STATE* state);
+	bool GetState(GLOVE_STATE* state, bool euler_angles);
 
 private:
 	static void DeviceThread(Glove* glove, const char* device_path);
+	static void QuatToEuler(GLOVE_EULER* v, const GLOVE_QUATERNION* q);
 };
 

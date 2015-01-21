@@ -14,9 +14,17 @@
 #define MANUS_DISCONNECTED 3
 
 typedef struct {
+	float w, x, y, z;
+} GLOVE_QUATERNION;
+
+typedef struct {
+	float x, y, z;
+} GLOVE_EULER;
+
+typedef struct {
 	bool RightHand;
-	float Quaternion[4];
-	float Angles[3];
+	GLOVE_QUATERNION Quaternion;
+	GLOVE_EULER Angles;
 	float Fingers[5];
 } GLOVE_DATA;
 
@@ -51,8 +59,9 @@ extern "C" {
 	*
 	*  \param glove The glove index.
 	*  \param state Output variable to receive the state.
+	*  \param euler_angles Also output euler angles calculated from the quaternions.
 	*/
-	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state);
+	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool euler_angles = false);
 
 	/*! \brief Enable gamepad emulation.
 	*

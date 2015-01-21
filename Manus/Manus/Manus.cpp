@@ -4,7 +4,12 @@
 #include "stdafx.h"
 #include "Manus.h"
 #include "Glove.h"
+#include "Devices.h"
 #include "hidapi.h"
+
+#ifdef _WIN32
+#include "WinDevices.h"
+#endif
 
 #include <vector>
 
@@ -12,6 +17,14 @@
 #define MANUS_PRODUCT_ID 0x8037
 
 std::vector<Glove*> g_gloves;
+Devices* g_devices;
+
+void DeviceConnected()
+{
+	for (Glove* glove : g_gloves)
+		if (!glove->IsRunning())
+			glove->Connect();
+}
 
 int ManusInit()
 {
@@ -33,6 +46,11 @@ int ManusInit()
 	}
 	hid_free_enumeration(hid_devices);
 
+#ifdef _WIN32
+	g_devices = new WinDevices();
+	g_devices->SetDeviceConnected(DeviceConnected);
+#endif
+
 	return MANUS_SUCCESS;
 }
 
@@ -43,6 +61,10 @@ int ManusExit()
 
 	if (hid_exit() != 0)
 		return MANUS_ERROR;
+
+#ifdef _WIN32
+	delete g_devices;
+#endif
 
 	return MANUS_SUCCESS;
 }

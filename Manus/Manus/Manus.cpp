@@ -21,11 +21,18 @@
 std::vector<Glove*> g_gloves;
 Devices* g_devices;
 
-void DeviceConnected()
+void DeviceConnected(const char* device_path)
 {
+	// Check if the glove already exists
 	for (Glove* glove : g_gloves)
-		if (!glove->IsRunning())
+	{
+		if (strcmp(device_path, glove->GetDevicePath()) == 0)
+		{
+			// The glove was previously connected, reconnect it
 			glove->Connect();
+			return;
+		}
+	}
 }
 
 int ManusInit()

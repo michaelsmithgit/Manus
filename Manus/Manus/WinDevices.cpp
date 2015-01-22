@@ -60,8 +60,17 @@ LRESULT CALLBACK WinDevices::WinProcCallback(HWND hWnd, UINT message, WPARAM wPa
 	WinDevices* devices = (WinDevices*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 	if (message == WM_DEVICECHANGE && wParam == DBT_DEVICEARRIVAL) {
+		PDEV_BROADCAST_DEVICEINTERFACE broadcast = (PDEV_BROADCAST_DEVICEINTERFACE)lParam;
+
+		// Convert the device string to a lower case ASCII device path
+		size_t len = wcslen(broadcast->dbcc_name);
+		char* device_path = new char[len + 1];
+		for (size_t i = 0; i < len; i++)
+			device_path[i] = tolower(wctob(broadcast->dbcc_name[i]));
+		device_path[len] = '\0'; // Don't forget the terminator
+
 		if (devices->m_connected)
-			devices->m_connected();
+			devices->m_connected(device_path);
 		return TRUE;
 	}
 	else

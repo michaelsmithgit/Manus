@@ -5,9 +5,9 @@
 class Devices
 {
 protected:
-	std::function<void()> m_connected;
+	std::function<void(const char*)> m_connected;
 
 public:
 	virtual ~Devices() {};
-	virtual void SetDeviceConnected(std::function<void()> callback) { m_connected = callback; };
+	virtual void SetDeviceConnected(std::function<void(const char*)> callback) { m_connected = callback; };
 };

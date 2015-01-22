@@ -58,7 +58,7 @@ void Glove::Disconnect()
 		m_thread.join();
 }
 
-// Taken from the I2CDevic library
+// Taken from the I2CDevice library
 // Copyright (c) 2012 Jeff Rowberg
 // TODO: Add MIT license information.
 void Glove::QuatToEuler(GLOVE_EULER* v, const GLOVE_QUATERNION* q)

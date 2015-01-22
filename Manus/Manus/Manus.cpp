@@ -12,6 +12,7 @@
 #endif
 
 #include <vector>
+#include <mutex>
 
 #define MANUS_VENDOR_ID 0x2341
 #define MANUS_PRODUCT_ID 0x8037
@@ -19,6 +20,8 @@
 #define MANUS_GLOVE_USAGE 0x04
 
 std::vector<Glove*> g_gloves;
+std::mutex g_gloves_mutex;
+
 Devices* g_devices;
 
 void DeviceConnected(const char* device_path)
@@ -34,6 +37,7 @@ void DeviceConnected(const char* device_path)
 		}
 	}
 
+	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 	struct hid_device_info *hid_device = hid_enumerate_device(device_path);
 
 	// The glove hasn't been connected before, add it to the list of gloves
@@ -47,6 +51,8 @@ int ManusInit()
 {
 	if (hid_init() != 0)
 		return MANUS_ERROR;
+
+	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
 	// Enumerate the Manus devices on the system
 	struct hid_device_info *hid_devices, *current_device;
@@ -73,6 +79,8 @@ int ManusInit()
 
 int ManusExit()
 {
+	std::lock_guard<std::mutex> lock(g_gloves_mutex);
+
 	for (Glove* glove : g_gloves)
 		delete glove;
 
@@ -93,6 +101,8 @@ int ManusGetGloveCount()
 
 int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool euler_angles)
 {
+	std::lock_guard<std::mutex> lock(g_gloves_mutex);
+
 	if (glove >= g_gloves.size())
 		return MANUS_OUT_OF_RANGE;
 

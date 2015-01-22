@@ -33,6 +33,14 @@ void DeviceConnected(const char* device_path)
 			return;
 		}
 	}
+
+	struct hid_device_info *hid_device = hid_enumerate_device(device_path);
+
+	// The glove hasn't been connected before, add it to the list of gloves
+	if (hid_device->usage_page == MANUS_GLOVE_PAGE && hid_device->usage == MANUS_GLOVE_USAGE)
+		g_gloves.push_back(new Glove(device_path));
+
+	hid_free_enumeration(hid_device);
 }
 
 int ManusInit()

@@ -1,3 +1,6 @@
 [submodule "Manus/hidapi/source"]
 	path = Manus/hidapi/source
 	url = https://github.com/Armada651/hidapi.git
+[submodule "Interface"]
+	path = Interface
+	url = https://github.com/ManusMachina/Interface.git

@@ -24,7 +24,6 @@ typedef struct {
 typedef struct {
 	bool RightHand;
 	GLOVE_QUATERNION Quaternion;
-	GLOVE_EULER Angles;
 	float Fingers[5];
 } GLOVE_DATA;
 
@@ -59,9 +58,17 @@ extern "C" {
 	*
 	*  \param glove The glove index.
 	*  \param state Output variable to receive the state.
-	*  \param euler_angles Also output euler angles calculated from the quaternions.
 	*/
-	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool euler_angles = false);
+	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state);
+
+	/*! \brief Convert a Quaternion to Euler angles.
+	*
+	*  Returns the Quaternion as Yaw, Pitch and Roll angles.
+	*
+	*  \param euler Output variable to receive the Euler angles.
+	*  \param quaternion The quaternion to convert.
+	*/
+	MANUS_API int ManusQuaternionToEuler(GLOVE_EULER* euler, const GLOVE_QUATERNION* quaternion);
 
 	/*! \brief Enable gamepad emulation.
 	*

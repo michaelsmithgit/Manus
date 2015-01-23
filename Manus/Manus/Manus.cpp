@@ -99,7 +99,7 @@ int ManusGetGloveCount()
 	return g_gloves.size();
 }
 
-int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool euler_angles)
+int ManusGetState(unsigned int glove, GLOVE_STATE* state)
 {
 	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
@@ -112,7 +112,30 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool euler_angles)
 	if (!state)
 		return MANUS_INVALID_ARGUMENT;
 
-	return g_gloves[glove]->GetState(state, euler_angles) ? MANUS_SUCCESS : MANUS_ERROR;
+	return g_gloves[glove]->GetState(state) ? MANUS_SUCCESS : MANUS_ERROR;
+}
+
+// Taken from the I2CDevice library
+// Copyright (c) 2012 Jeff Rowberg
+// TODO: Add MIT license information.
+int ManusQuaternionToEuler(GLOVE_EULER* v, const GLOVE_QUATERNION* q)
+{
+	if (!v || !q)
+		return MANUS_INVALID_ARGUMENT;
+
+	GLOVE_EULER gravity[1];
+	gravity->x = 2 * (q->x*q->z - q->w*q->y);
+	gravity->y = 2 * (q->w*q->x + q->y*q->z);
+	gravity->z = q->w*q->w - q->x*q->x - q->y*q->y + q->z*q->z;
+
+	// yaw: (about Z axis)
+	v->x = atan2(2 * q->x*q->y - 2 * q->w*q->z, 2 * q->w*q->w + 2 * q->x*q->x - 1);
+	// pitch: (nose up/down, about Y axis)
+	v->y = atan(gravity->x / sqrt(gravity->y*gravity->y + gravity->z*gravity->z));
+	// roll: (tilt left/right, about X axis)
+	v->z = atan(gravity->y / sqrt(gravity->x*gravity->x + gravity->z*gravity->z));
+
+	return MANUS_SUCCESS;
 }
 
 int ManusEnableGamepad(bool enabled)

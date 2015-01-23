@@ -58,8 +58,9 @@ extern "C" {
 	*
 	*  \param glove The glove index.
 	*  \param state Output variable to receive the state.
+	*  \param blocking Wait until the glove returns a value.
 	*/
-	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state);
+	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking = false);
 
 	/*! \brief Convert a Quaternion to Euler angles.
 	*

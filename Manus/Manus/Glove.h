@@ -3,6 +3,8 @@
 #include "Manus.h"
 
 #include <thread>
+#include <condition_variable>
+#include <mutex>
 #include <inttypes.h>
 
 #define GLOVE_FLAGS_RIGHTHAND 0x1
@@ -27,7 +29,10 @@ private:
 	unsigned int m_packets;
 	GLOVE_REPORT m_report;
 	char* m_device_path;
+
 	std::thread m_thread;
+	std::mutex m_report_mutex;
+	std::condition_variable m_report_block;
 
 public:
 	Glove(const char* device_path);
@@ -37,7 +42,7 @@ public:
 	void Disconnect();
 	bool IsRunning() const { return m_running; }
 	const char* GetDevicePath() const { return m_device_path; }
-	bool GetState(GLOVE_STATE* state);
+	bool GetState(GLOVE_STATE* state, bool blocking);
 
 private:
 	static void DeviceThread(Glove* glove);

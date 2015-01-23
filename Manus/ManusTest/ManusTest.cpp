@@ -13,7 +13,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		for (int i = 0; i < ManusGetGloveCount(); i++)
 		{
 			GLOVE_STATE state = { 0 };
-			if (ManusGetState(i, &state) == MANUS_SUCCESS)
+			if (ManusGetState(i, &state, true) == MANUS_SUCCESS)
 				printf("glove: %d - %d\n", i, state.PacketNumber);
 			else
 				printf("glove: %d\n", i);

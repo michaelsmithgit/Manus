@@ -99,7 +99,7 @@ int ManusGetGloveCount()
 	return g_gloves.size();
 }
 
-int ManusGetState(unsigned int glove, GLOVE_STATE* state)
+int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)
 {
 	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
@@ -112,7 +112,7 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state)
 	if (!state)
 		return MANUS_INVALID_ARGUMENT;
 
-	return g_gloves[glove]->GetState(state) ? MANUS_SUCCESS : MANUS_ERROR;
+	return g_gloves[glove]->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
 // Taken from the I2CDevice library

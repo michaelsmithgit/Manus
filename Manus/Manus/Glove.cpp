@@ -24,8 +24,15 @@ Glove::~Glove()
 	delete m_device_path;
 }
 
-bool Glove::GetState(GLOVE_STATE* state)
+bool Glove::GetState(GLOVE_STATE* state, bool blocking)
 {
+	// Wait until the thread is done writing a packet
+	std::unique_lock<std::mutex> lk(m_report_mutex);
+
+	// Optionally wait until the next package is sent
+	if (blocking)
+		m_report_block.wait(lk);
+
 	state->PacketNumber = m_packets;
 	state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
 
@@ -34,6 +41,8 @@ bool Glove::GetState(GLOVE_STATE* state)
 
 	for (int i = 0; i < GLOVE_FINGERS; i++)
 		state->data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
+
+	lk.unlock();
 
 	return m_packets > 0;
 }
@@ -74,8 +83,11 @@ void Glove::DeviceThread(Glove* glove)
 		// TODO: Check if the bytes read matches the report size
 		if (report.id == 3)
 		{
+			std::lock_guard<std::mutex> lk(glove->m_report_mutex);
+
 			glove->m_report = report;
 			glove->m_packets++;
+			glove->m_report_block.notify_all();
 		}
 	}
 

@@ -3,7 +3,7 @@
 #include "hidapi.h"
 
 #define QUAT_DIVISOR 16384.0f
-#define FINGER_DIVISOR 1024.0f
+#define FINGER_DIVISOR 300.0f
 
 Glove::Glove(const char* device_path)
 	: m_running(false)

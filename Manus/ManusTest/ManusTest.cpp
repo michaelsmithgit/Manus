@@ -19,10 +19,12 @@ int _tmain(int argc, _TCHAR* argv[])
 				printf("glove: %d\n", i);
 			
 			printf("quats: %f;%f;%f;%f\n", state.data.Quaternion.x, state.data.Quaternion.y, state.data.Quaternion.z, state.data.Quaternion.w);
-			
+
 			GLOVE_EULER euler = { 0 };
 			ManusQuaternionToEuler(&euler, &state.data.Quaternion);
 			printf("euler: %f;%f;%f\n", euler.x, euler.y, euler.z);
+
+			printf("fingers: %f;%f;%f;%f;%f\n", state.data.Fingers[0], state.data.Fingers[0], state.data.Fingers[1], state.data.Fingers[2], state.data.Fingers[3], state.data.Fingers[4]);
 		}
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD());
 	}

@@ -102,18 +102,24 @@ int ManusGetGloveCount()
 
 int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)
 {
-	std::lock_guard<std::mutex> lock(g_gloves_mutex);
+	// Get the glove from the list
+	Glove* elem;
+	{
+		std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
-	if (glove >= g_gloves.size())
-		return MANUS_OUT_OF_RANGE;
+		if (glove >= g_gloves.size())
+			return MANUS_OUT_OF_RANGE;
 
-	if (!g_gloves[glove]->IsRunning())
-		return MANUS_DISCONNECTED;
+		if (!g_gloves[glove]->IsRunning())
+			return MANUS_DISCONNECTED;
 
-	if (!state)
-		return MANUS_INVALID_ARGUMENT;
+		if (!state)
+			return MANUS_INVALID_ARGUMENT;
 
-	return g_gloves[glove]->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
+		elem = g_gloves[glove];
+	}
+
+	return elem->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
 // Taken from the I2CDevice library

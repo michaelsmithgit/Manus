@@ -31,7 +31,14 @@ bool Glove::GetState(GLOVE_STATE* state, bool blocking)
 
 	// Optionally wait until the next package is sent
 	if (blocking)
+	{
 		m_report_block.wait(lk);
+		if (!m_running)
+		{
+			lk.unlock();
+			return false;
+		}
+	}
 
 	state->PacketNumber = m_packets;
 	state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
@@ -94,4 +101,5 @@ void Glove::DeviceThread(Glove* glove)
 	hid_close(device);
 
 	glove->m_running = false;
+	glove->m_report_block.notify_all();
 }

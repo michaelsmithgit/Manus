@@ -26,6 +26,8 @@ Devices* g_devices;
 
 void DeviceConnected(const char* device_path)
 {
+	std::lock_guard<std::mutex> lock(g_gloves_mutex);
+
 	// Check if the glove already exists
 	for (Glove* glove : g_gloves)
 	{
@@ -37,7 +39,6 @@ void DeviceConnected(const char* device_path)
 		}
 	}
 
-	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 	struct hid_device_info *hid_device = hid_enumerate_device(device_path);
 
 	// The glove hasn't been connected before, add it to the list of gloves

@@ -11,6 +11,8 @@ class WinDevices :
 private:
 	bool m_running;
 	std::thread m_thread;
+	HWND hWnd;
+	HDEVNOTIFY device_notify;
 
 public:
 	WinDevices();

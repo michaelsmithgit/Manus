@@ -2,6 +2,7 @@
 #include "Glove.h"
 #include "hidapi.h"
 
+#define ACCEL_DIVISOR 8192.0f
 #define QUAT_DIVISOR 16384.0f
 #define FINGER_DIVISOR 300.0f
 
@@ -42,6 +43,9 @@ bool Glove::GetState(GLOVE_STATE* state, bool blocking)
 
 	state->PacketNumber = m_packets;
 	state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
+
+	for (int i = 0; i < GLOVE_AXES; i++)
+		((float*)&state->data.Acceleration)[i] = m_report.accel[i] / ACCEL_DIVISOR;
 
 	for (int i = 0; i < GLOVE_QUATS; i++)
 		((float*)&state->data.Quaternion)[i] = m_report.quat[i] / QUAT_DIVISOR;

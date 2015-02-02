@@ -125,12 +125,12 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)
 // Taken from the I2CDevice library
 // Copyright (c) 2012 Jeff Rowberg
 // TODO: Add MIT license information.
-int ManusQuaternionToEuler(GLOVE_EULER* v, const GLOVE_QUATERNION* q)
+int ManusQuaternionToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q)
 {
 	if (!v || !q)
 		return MANUS_INVALID_ARGUMENT;
 
-	GLOVE_EULER gravity[1];
+	GLOVE_VECTOR gravity[1];
 	gravity->x = 2 * (q->x*q->z - q->w*q->y);
 	gravity->y = 2 * (q->w*q->x + q->y*q->z);
 	gravity->z = q->w*q->w - q->x*q->x - q->y*q->y + q->z*q->z;

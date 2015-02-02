@@ -9,6 +9,7 @@
 
 #define GLOVE_FLAGS_RIGHTHAND 0x1
 
+#define GLOVE_AXES 3
 #define GLOVE_QUATS 4
 #define GLOVE_FINGERS 5
 
@@ -17,6 +18,7 @@ typedef struct
 {
 	uint8_t id;
 	uint8_t flags;
+	int16_t accel[GLOVE_AXES];
 	int16_t quat[GLOVE_QUATS];
 	uint16_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;
@@ -46,6 +48,6 @@ public:
 
 private:
 	static void DeviceThread(Glove* glove);
-	static void QuatToEuler(GLOVE_EULER* v, const GLOVE_QUATERNION* q);
+	static void QuatToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q);
 };
 

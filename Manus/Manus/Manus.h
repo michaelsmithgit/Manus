@@ -19,10 +19,11 @@ typedef struct {
 
 typedef struct {
 	float x, y, z;
-} GLOVE_EULER;
+} GLOVE_VECTOR;
 
 typedef struct {
 	bool RightHand;
+	GLOVE_VECTOR Acceleration;
 	GLOVE_QUATERNION Quaternion;
 	float Fingers[5];
 } GLOVE_DATA;
@@ -69,7 +70,7 @@ extern "C" {
 	*  \param euler Output variable to receive the Euler angles.
 	*  \param quaternion The quaternion to convert.
 	*/
-	MANUS_API int ManusQuaternionToEuler(GLOVE_EULER* euler, const GLOVE_QUATERNION* quaternion);
+	MANUS_API int ManusQuaternionToEuler(GLOVE_VECTOR* euler, const GLOVE_QUATERNION* quaternion);
 
 	/*! \brief Enable gamepad emulation.
 	*

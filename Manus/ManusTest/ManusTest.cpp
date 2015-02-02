@@ -18,9 +18,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			else
 				printf("glove: %d\n", i);
 			
+			printf("accel: %f;%f;%f\n", state.data.Acceleration.x, state.data.Acceleration.y, state.data.Acceleration.z);
 			printf("quats: %f;%f;%f;%f\n", state.data.Quaternion.x, state.data.Quaternion.y, state.data.Quaternion.z, state.data.Quaternion.w);
 
-			GLOVE_EULER euler = { 0 };
+			GLOVE_VECTOR euler = { 0 };
 			ManusQuaternionToEuler(&euler, &state.data.Quaternion);
 			printf("euler: %f;%f;%f\n", euler.x, euler.y, euler.z);
 

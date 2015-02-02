@@ -90,9 +90,8 @@ void Glove::DeviceThread(Glove* glove)
 		if (read == -1)
 			break;
 
-		// The Manus has three reports, the third one is the raw input report
+		// Set the new data report and notify all blocked callers
 		// TODO: Check if the bytes read matches the report size
-		if (report.id == 3)
 		{
 			std::lock_guard<std::mutex> lk(glove->m_report_mutex);
 

@@ -16,7 +16,6 @@
 #pragma pack(push, 1) // exact fit - no padding
 typedef struct
 {
-	uint8_t id;
 	uint8_t flags;
 	int16_t accel[GLOVE_AXES];
 	int16_t quat[GLOVE_QUATS];

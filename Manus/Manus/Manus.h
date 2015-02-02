@@ -65,12 +65,32 @@ extern "C" {
 
 	/*! \brief Convert a Quaternion to Euler angles.
 	*
-	*  Returns the Quaternion as Yaw, Pitch and Roll angles.
+	*  Returns the Quaternion as Yaw, Pitch and Roll angles
+	*  relative to the Earth's gravity.
 	*
 	*  \param euler Output variable to receive the Euler angles.
 	*  \param quaternion The quaternion to convert.
 	*/
-	MANUS_API int ManusQuaternionToEuler(GLOVE_VECTOR* euler, const GLOVE_QUATERNION* quaternion);
+	MANUS_API int ManusGetEuler(GLOVE_VECTOR* euler, const GLOVE_QUATERNION* quaternion, const GLOVE_VECTOR* gravity);
+
+	/*! \brief Remove gravity from acceleration vector.
+	*
+	*  Returns the Acceleration as a vector independent from
+	*  the Earth's gravity.
+	*
+	*  \param linear Output vector to receive the linear acceleration.
+	*  \param acceleation The acceleration vector to convert.
+	*/
+	MANUS_API int ManusGetLinearAcceleration(GLOVE_VECTOR* linear, const GLOVE_VECTOR* acceleration, const GLOVE_VECTOR* gravity);
+
+	/*! \brief Return gravity vector from the Quaternion.
+	*
+	*  Returns an estimation of the Earth's gravity vector.
+	*
+	*  \param gravity Output vector to receive the gravity vector.
+	*  \param quaternion The quaternion to base the gravity vector on.
+	*/
+	MANUS_API int ManusGetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* quaternion);
 
 	/*! \brief Enable gamepad emulation.
 	*

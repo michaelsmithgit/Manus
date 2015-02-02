@@ -21,8 +21,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			printf("accel: %f;%f;%f\n", state.data.Acceleration.x, state.data.Acceleration.y, state.data.Acceleration.z);
 			printf("quats: %f;%f;%f;%f\n", state.data.Quaternion.x, state.data.Quaternion.y, state.data.Quaternion.z, state.data.Quaternion.w);
 
-			GLOVE_VECTOR euler = { 0 };
-			ManusQuaternionToEuler(&euler, &state.data.Quaternion);
+			GLOVE_VECTOR euler = { 0 }, gravity;
+			ManusGetGravity(&gravity, &state.data.Quaternion);
+			printf("gravi: %f;%f;%f\n", gravity.x, gravity.y, gravity.z);
+			ManusGetEuler(&euler, &state.data.Quaternion, &gravity);
 			printf("euler: %f;%f;%f\n", euler.x, euler.y, euler.z);
 
 			printf("fingers: %f;%f;%f;%f;%f\n", state.data.Fingers[0], state.data.Fingers[1], state.data.Fingers[2], state.data.Fingers[3], state.data.Fingers[4]);

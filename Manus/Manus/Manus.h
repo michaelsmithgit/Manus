@@ -1,3 +1,10 @@
+/*! \file
+*  \version 1.0
+*  \brief The Manus SDK header.
+*  
+*  The Manus SDK header.
+*/
+
 #ifndef _MANUS_H
 #define _MANUS_H
 
@@ -6,12 +13,6 @@
 #else
 #define MANUS_API __declspec(dllimport)
 #endif
-
-#define MANUS_ERROR -1
-#define MANUS_SUCCESS 0
-#define MANUS_INVALID_ARGUMENT 1
-#define MANUS_OUT_OF_RANGE 2
-#define MANUS_DISCONNECTED 3
 
 typedef struct {
 	float w, x, y, z;
@@ -32,6 +33,17 @@ typedef struct {
 	unsigned int PacketNumber;
 	GLOVE_DATA data;
 } GLOVE_STATE;
+
+/**
+* \defgroup Glove Manus Glove
+* @{
+*/
+
+#define MANUS_ERROR -1
+#define MANUS_SUCCESS 0
+#define MANUS_INVALID_ARGUMENT 1
+#define MANUS_OUT_OF_RANGE 2
+#define MANUS_DISCONNECTED 3
 
 extern "C" {
 	/*! \brief Initialize the Manus SDK.
@@ -113,5 +125,7 @@ extern "C" {
 	*/
 	MANUS_API int ManusEnableMouse(bool enabled);
 }
+
+/**@}*/
 
 #endif

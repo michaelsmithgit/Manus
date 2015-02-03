@@ -131,11 +131,11 @@ int ManusGetEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q, const GLOVE_VECTOR
 		return MANUS_INVALID_ARGUMENT;
 
 	// yaw: (about Z axis)
-	v->x = atan2(2 * q->x*q->y - 2 * q->w*q->z, 2 * q->w*q->w + 2 * q->x*q->x - 1);
+	v->z = atan2(2 * q->x*q->y - 2 * q->w*q->z, 2 * q->w*q->w + 2 * q->x*q->x - 1);
 	// pitch: (nose up/down, about Y axis)
 	v->y = atan(gravity->x / sqrt(gravity->y*gravity->y + gravity->z*gravity->z));
 	// roll: (tilt left/right, about X axis)
-	v->z = atan(gravity->y / sqrt(gravity->x*gravity->x + gravity->z*gravity->z));
+	v->x = atan(gravity->y / sqrt(gravity->x*gravity->x + gravity->z*gravity->z));
 
 	return MANUS_SUCCESS;
 }

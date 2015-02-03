@@ -86,9 +86,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Devices.h" />
     <ClInclude Include="Glove.h" />
     <ClInclude Include="Manus.h" />

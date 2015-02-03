@@ -110,16 +110,19 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)
 		if (glove >= g_gloves.size())
 			return MANUS_OUT_OF_RANGE;
 
-		if (!g_gloves[glove]->IsRunning())
-			return MANUS_DISCONNECTED;
-
-		if (!state)
-			return MANUS_INVALID_ARGUMENT;
-
 		elem = g_gloves[glove];
 	}
 
-	return elem->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
+	int ret;
+	if (state)
+		ret = elem->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
+	else
+		ret = MANUS_INVALID_ARGUMENT;
+
+	if (!elem->IsRunning())
+		return MANUS_DISCONNECTED;
+
+	return ret;
 }
 
 // Taken from the I2CDevice library

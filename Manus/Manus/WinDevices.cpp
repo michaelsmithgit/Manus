@@ -25,18 +25,20 @@
 
 WinDevices::WinDevices()
 {
-	m_thread = std::thread(DeviceThread, this);
+	m_thread = CreateThread(NULL, 0, WinDevices::DeviceThread, this, 0, &m_thread_id);
 }
 
 WinDevices::~WinDevices()
 {
 	m_running = false;
-	if (m_thread.joinable())
-		m_thread.join();
+	PostThreadMessage(m_thread_id, WM_QUIT, 0, 0);
+	WaitForSingleObject(m_thread, INFINITE);
+	CloseHandle(m_thread);
 }
 
-void WinDevices::DeviceThread(WinDevices* devices)
+DWORD WINAPI WinDevices::DeviceThread(LPVOID param)
 {
+	WinDevices* devices = (WinDevices*)param;
 	devices->m_running = true;
 
 	// Register a ManusDevices class
@@ -63,7 +65,7 @@ void WinDevices::DeviceThread(WinDevices* devices)
 	// Get all messages for the window that belongs to this thread.
 	// TODO: Message type filtering.
 	MSG msg;
-	while (devices->m_running && GetMessage(&msg, hWnd, 0, 0))
+	while (devices->m_running && GetMessage(&msg, nullptr, 0, 0) != 0)
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -72,6 +74,8 @@ void WinDevices::DeviceThread(WinDevices* devices)
 	devices->m_running = false;
 	UnregisterDeviceNotification(device_notify);
 	DestroyWindow(hWnd);
+
+	return 0;
 }
 
 LRESULT CALLBACK WinDevices::WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

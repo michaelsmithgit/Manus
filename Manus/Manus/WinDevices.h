@@ -29,13 +29,14 @@ class WinDevices :
 {
 private:
 	bool m_running;
-	std::thread m_thread;
+	HANDLE m_thread;
+	DWORD m_thread_id;
 
 public:
 	WinDevices();
 	~WinDevices();
 
 private:
-	static void DeviceThread(WinDevices* devices);
+	static DWORD WINAPI WinDevices::DeviceThread(LPVOID param);
 	static LRESULT CALLBACK WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };

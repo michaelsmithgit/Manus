@@ -186,18 +186,3 @@ int ManusGetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* q)
 
 	return MANUS_SUCCESS;
 }
-
-int ManusEnableGamepad(bool enabled)
-{
-	return MANUS_ERROR;
-}
-
-int ManusEnableKeyboard(bool enabled)
-{
-	return MANUS_ERROR;
-}
-
-int ManusEnableMouse(bool enabled)
-{
-	return MANUS_ERROR;
-}

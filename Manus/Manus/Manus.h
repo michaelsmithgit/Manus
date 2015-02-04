@@ -115,27 +115,6 @@ extern "C" {
 	*  \param quaternion The quaternion to base the gravity vector on.
 	*/
 	MANUS_API int ManusGetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* quaternion);
-
-	/*! \brief Enable gamepad emulation.
-	*
-	*  Allows the SDK to convert glove data to gamepad
-	*  input.
-	*/
-	MANUS_API int ManusEnableGamepad(bool enabled);
-
-	/*! \brief Enable mouse emulation.
-	*
-	*  Allows the SDK to convert glove data to mouse
-	*  input.
-	*/
-	MANUS_API int ManusEnableKeyboard(bool enabled);
-
-	/*! \brief Enable keyboard emulation.
-	*
-	*  Allows the SDK to convert glove data to keyboard
-	*  input.
-	*/
-	MANUS_API int ManusEnableMouse(bool enabled);
 }
 
 /**@}*/

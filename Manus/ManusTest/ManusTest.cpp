@@ -20,6 +20,9 @@
 #include "stdafx.h"
 #include "Manus.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	ManusInit();
@@ -41,7 +44,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			ManusGetGravity(&gravity, &state.data.Quaternion);
 			printf("gravi: %f;%f;%f\n", gravity.x, gravity.y, gravity.z);
 			ManusGetEuler(&euler, &state.data.Quaternion, &gravity);
-			printf("euler: %f;%f;%f\n", euler.x, euler.y, euler.z);
+			printf("euler: %f;%f;%f\n", euler.x * (180.0 / M_PI), euler.y * (180.0 / M_PI), euler.z * (180.0 / M_PI));
 
 			printf("fingers: %f;%f;%f;%f;%f\n", state.data.Fingers[0], state.data.Fingers[1], state.data.Fingers[2], state.data.Fingers[3], state.data.Fingers[4]);
 		}

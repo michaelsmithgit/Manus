@@ -104,7 +104,7 @@ void Glove::DeviceThread(Glove* glove)
 	while (glove->m_running && device)
 	{
 		GLOVE_REPORT report;
-		int read = hid_read(device, (unsigned char*)&report, sizeof(report) + 1);
+		int read = hid_read(device, (unsigned char*)&report, sizeof(report));
 
 		if (read == -1)
 			break;

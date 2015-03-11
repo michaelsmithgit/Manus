@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner" dslVersion="1.0.0.0" Id="cc960fc9-0b6d-4ff2-ab8d-53d075eda2b1" name="Interface" linkedPackageId="adeb13ab-c159-4d95-afdb-dc94e072ac77" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="f1c834f7-38b3-459b-a133-609f9d7197e8">
+      <profileInstance Id="9aa3e0a4-6df9-472f-b77d-8cee9f7eb6f6" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="acae9280-a293-49de-b217-88d365bd6689">
+      <profileInstance Id="79a458e7-8ac5-4925-b717-5d0dd02a598e" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="90f36fcc-e41f-4c11-9e55-7778b29406fc" name="Configuration" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="a3949a03-4557-4753-95b1-9de389d6df69" />
+        <targetEnds>
+          <association Id="1a10b106-e90b-4ede-b641-dd3324f2f77f" isDerived="false" sourceEndRoleName="Configuration" targetEndRoleName="GloveInputSimulator" isLeaf="false" isAbstract="false">
+            <classMoniker Id="c633e542-72a7-4aa8-893e-68ce1801728b" LastKnownName="GloveInputHandler" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="a2107c79-cd7a-4dd6-b831-869fa0df7a32" name="Configuration" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="a7d870d3-d2eb-4c84-a332-a78b56947f04" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="90b6fb29-ad42-4566-b88c-7f59a8d155bc" name="GloveInputSimulator" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="40e44bdd-661d-45d9-9b15-549e83d92d1d" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="021e89ca-4377-4828-bcca-09db1e7c03db" />
+          </association>
+          <association Id="bc843769-50a4-4c2b-a66d-45132694e534" isDerived="false" sourceEndRoleName="Configuration" targetEndRoleName="GUI" isLeaf="false" isAbstract="false">
+            <classMoniker Id="b5568849-9545-4343-8b4e-dc7bcd6b8c1f" LastKnownName="GUI" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="2431f1c7-e31e-416c-8828-40583f7fd32f" name="Configuration" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="15151291-eccd-4ecc-b69e-690b8287ab62" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="57c691f7-a6d2-4b75-bc19-78d43787170e" name="GUI" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="ddbc51e6-1ac7-4bb4-8827-551793c93685" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="f3143911-349f-495e-a7cd-343db0af7a4b" />
+          </association>
+        </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="abfe4d18-c283-476a-b6c0-11ca69c665e5" name="struct GLOVE_CONFIGURATION" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="17ccb2c1-e60b-43b7-9ed5-eb51170ea353" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="d84cb855-09ed-4f2c-a1aa-7145634dc980" name="readFromFile" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="7991c45d-cc33-49bb-b642-193618a97bb5" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="49631ec3-593d-4e5c-8177-89779fe5bd7c" name="file" direction="In" isUnique="false">
+                  <elementDefinition Id="7cbf72e6-ae04-46f7-9ed0-4d051aa02542" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="6a19cb70-628a-40c9-9480-e86e6bc9fb87" name="glove getConfig" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="1908038f-78ae-4e31-9472-d77eeb37e44b" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="097c365b-a964-4451-a63e-2dc218065cde" name="int configId" direction="In" isUnique="false">
+                  <elementDefinition Id="335606df-b6eb-471d-99e5-d1bfd37719a5" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="ff8f745a-52ae-441f-8427-a86c35d0c9c0" name="saveToFile" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="4b7305e3-a44f-48da-bb3d-67d79a1f201a" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="1ef10d7c-86c3-4b48-9307-d7bcade0308b" name="file" direction="In" isUnique="false">
+                  <elementDefinition Id="085b007c-69db-4204-8b82-125bbd040124" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="dc07a0d2-c154-470d-b029-304f9fb3b44e" name="config" direction="In" isUnique="false">
+                  <elementDefinition Id="bccb5dfa-2c11-4dce-b860-76490412df5a" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="2538893a-8eef-4a47-865d-473d01f93c23" name="getConfigList" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="493591b7-094a-487f-8e1e-18d89e49c87f" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="c633e542-72a7-4aa8-893e-68ce1801728b" name="GloveInputHandler" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="a937eac1-9f92-451f-8611-63673eb9db73" />
+        <targetEnds>
+          <association Id="b50b78fe-7890-47af-9bfa-aa1ac762832b" isDerived="false" sourceEndRoleName="GloveInputSimulator" targetEndRoleName="MouseSimulator" isLeaf="false" isAbstract="false">
+            <classMoniker Id="f954b168-b3aa-432f-81bb-bf34a23b9874" LastKnownName="MouseSimulator" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="4cd367c7-6cfd-4a7d-aace-3ab6feff8f62" name="GloveInputSimulator" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="549327e1-9c4f-4e66-8564-3da4cdc543f6" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="6c2e62d0-013f-4b08-a64d-ec476fc8272f" name="MouseSimulator" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="f6c7c468-3d10-4286-9c44-d5acd0fd9716" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="3be2f3bb-cd4a-47af-8526-6b5c996a4dad" />
+          </association>
+          <association Id="96947b99-3336-4154-a812-62c746a975c4" isDerived="false" sourceEndRoleName="GloveInputSimulator" targetEndRoleName="KeyboardSimulator" isLeaf="false" isAbstract="false">
+            <classMoniker Id="54d57d10-4e44-4fe6-9c9a-ccb96be80853" LastKnownName="KeyboardSimulator" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="61bf8c8c-64a1-41fe-bc31-279481e12c7c" name="GloveInputSimulator" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="def6658f-a8f2-4495-b419-3535ea40c6ce" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="de29d15d-88ab-494c-8223-d8d1b3a8e45a" name="KeyboardSimulator" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="2c852323-d87a-4613-b243-36eb81543ed1" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="97e47222-1789-409f-a21c-a1f1a985363e" />
+          </association>
+          <association Id="6015f8fa-29e0-4327-806d-725e3c9e0dee" isDerived="false" sourceEndRoleName="GloveInputSimulator" targetEndRoleName="GUI" isLeaf="false" isAbstract="false">
+            <classMoniker Id="b5568849-9545-4343-8b4e-dc7bcd6b8c1f" LastKnownName="GUI" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="35481848-1e74-4877-a355-758f14b3202a" name="GloveInputSimulator" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="da64c560-5349-4087-a8f9-4607ff3b5055" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="a007d433-7456-40fa-bef1-61c44a113f11" name="GUI" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="b2357eca-00c9-4a40-8c0f-136f476ecf62" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="5b14c1c9-bfa9-4675-b5db-99c22eb5923b" />
+          </association>
+          <association Id="f66b6fb0-5c1e-4b44-a85d-8f9ddcfebd7f" isDerived="false" sourceEndRoleName="GloveInputHandler" targetEndRoleName="ProcessHandler" isLeaf="false" isAbstract="false">
+            <classMoniker Id="60061614-32fd-48cd-8fdd-d96525552075" LastKnownName="ProcessHandler" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="66717a4a-42af-4f8b-9944-24098afa8561" name="GloveInputHandler" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="21e321b0-2c1a-4925-9c28-7981be64ae46" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="142d05c7-a760-42fd-81b5-1ea8c7e9bba8" name="ProcessHandler" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="035dd845-e8a8-4385-99f2-fd127f3d1c99" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="83b10816-4386-4968-a2b8-31e60de23fb6" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="f954b168-b3aa-432f-81bb-bf34a23b9874" name="MouseSimulator" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="51b9c451-c588-404e-b264-07265800f9f8" />
+        <ownedAttributesInternal>
+          <property Id="f3d9b14f-faa1-46fa-9b47-6dccd83cef6c" name="struct MOUSEINPUT" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="a60f4bb7-de98-4d5f-82d8-4252179d5b92" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="4f336220-c774-4628-a1d5-3cdfa8f85444" name="uint ButtonToFlag" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="d8fc7c7e-92b1-405c-a547-e2369ff917cb" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="28317c8d-059c-4864-8a2e-2df7448e5145" name="MouseButton b" direction="In" isUnique="false">
+                  <elementDefinition Id="48d3f919-3e9d-4803-a910-584d4e9474c4" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="220acac0-dbab-4886-bf19-d581367456c9" name="MouseButtonState state" direction="In" isUnique="false">
+                  <elementDefinition Id="a2535613-6d6f-4989-999a-872207c6f700" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="56687429-5ba4-4443-8885-bf9bbc18cd69" name="uint ButtonToData" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="e6859275-016c-4cea-8bb8-e0ddf5ef09ec" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="087de78e-38b4-4b17-a332-d531577ca5b6" name="MouseButton b" direction="In" isUnique="false">
+                  <elementDefinition Id="f00e6df5-ec90-4904-8f89-d3257f6aabc8" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="51a11155-fe87-4bcc-a2b3-de7c56cecf31" name="void click" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="7ba3a32a-fd8b-4fc3-b07e-f3dd206253e0" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="ef67d245-606d-4205-b1d7-1aae2f81cfc4" name="MouseButton b" direction="In" isUnique="false">
+                  <elementDefinition Id="4a6f3efa-aa93-49b4-9f7a-538a5dbf1792" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="efe468ea-fe13-49d3-92cb-f910a118fe67" name="void move" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="91f7dd2a-d392-4c0f-8b33-6c157363edad" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="edf5da90-8425-44be-9f20-7b64ffc863e1" name="int x" direction="In" isUnique="false">
+                  <elementDefinition Id="24f4f161-edcd-4f27-8432-44d35f790b27" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="8b8b13ec-5c13-4635-8164-d757f79a074b" name="int y" direction="In" isUnique="false">
+                  <elementDefinition Id="bff15dc6-272f-4109-8b67-c01e06fe6e47" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="1a78e1d7-4e5f-499b-b7c8-01993bef766d" name="int wheel" direction="In" isUnique="false">
+                  <elementDefinition Id="4467256b-e1ed-4c4a-b768-289d7f0fb27f" />
+                  <defaultValue>
+                    <literalString Id="a30703d7-d914-45f4-bbc6-1e34a5e74fac" name="DefaultValue" value="0">
+                      <elementDefinition Id="4dcdc1f0-8e86-471f-9531-9d4a36465db6" />
+                    </literalString>
+                  </defaultValue>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="c30531e3-de60-47cf-a296-a9a69b1e8872" name="void press" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="51a34c75-5e1a-4328-8b3e-f62cc81e8fb3" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="025d3628-7c45-4c50-af55-3a0b10a0a9dd" name="MouseButton b" direction="In" isUnique="false">
+                  <elementDefinition Id="49fc2bcc-7d50-4cb9-b871-aca87cf8847c" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="db7ebc5a-be95-428c-92ad-d5995fdc735e" name="void release" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="cb969ceb-691b-4818-aac0-e0a65615318c" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="2b2f71f5-23d9-461b-b05a-07768029c74f" name="MouseButton b" direction="In" isUnique="false">
+                  <elementDefinition Id="9f587492-c4f6-4792-b6b8-9030859f69ce" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="e99a7dde-4dca-4126-8e59-bf95e5d25da5" name="bool isPressed" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="11c65b7e-e8a2-44be-bd9f-a5327f5677c4" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="b6bacd4f-a73b-4dc2-9d20-3b088de4b9c0" name="MouseButton b" direction="In" isUnique="false">
+                  <elementDefinition Id="b59cb40f-1606-45ed-9f22-fa284840c95b" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="54d57d10-4e44-4fe6-9c9a-ccb96be80853" name="KeyboardSimulator" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="56197fa7-0319-4304-8fa5-6e17710c294e" />
+        <ownedAttributesInternal>
+          <property Id="97959a89-9db6-484c-aef4-46a52a255327" name="struct KEYBDINPUT" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="a518c85d-f945-4456-99c0-2269f7113e79" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="c507c503-81ba-4a77-b719-8ee4ce8908f9" name="uint ScanCodeFromKey" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="bc4933da-430e-44d6-afa2-f6989bb5ae18" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="305d0b51-612e-4323-8768-b7f298734daf" name="Key k" direction="In" isUnique="false">
+                  <elementDefinition Id="a43b6f19-e8c8-4bc9-a8af-0f508e73b6ce" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="071bbcd7-31f2-4e39-b040-f9f95339d1bc" name="void press" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="3fba145b-47ac-4067-a97a-ee9f736b002b" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="c1fd355c-5fe8-400d-8e92-223cc9521bb7" name="Key k" direction="In" isUnique="false">
+                  <elementDefinition Id="eb21fbec-c17a-4f69-b06a-a176c705c23f" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="89a22246-15b3-4657-93fd-a58bcdc73fcd" name="void release" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="5a4278a4-1b92-439e-a135-b12bf4b23d00" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="bcfb38a7-d3f2-4341-adc5-21c2c23bfeb2" name="Key k" direction="In" isUnique="false">
+                  <elementDefinition Id="f2f5ad3e-c28d-429c-9994-5a08c472f7ae" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="bf7dbfa7-564e-4112-8cbe-83840b4f0c12" name="void write" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="653787cb-5abc-4c2a-af88-ecd68aca089d" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="292c477b-8a7d-49e7-9ddd-d06570236d80" name="Key c" direction="In" isUnique="false">
+                  <elementDefinition Id="eab8db78-2695-4a39-b327-f6966e5fa9b9" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="76593001-52b2-4028-8933-f0cae38799b4" name="Manus" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="89fa9eb1-c214-4199-9384-f6ea2ecbfdcd" />
+        <ownedOperationsInternal>
+          <operation Id="8932976d-739c-431d-ab9b-b7086bb013a0" name="ManusInit" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="12ee5ff1-00f2-40d8-b472-a15211b4cdc0" />
+          </operation>
+          <operation Id="8e9e45be-f115-4f65-9333-3e3b365080ba" name="ManusExit" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="a332efde-60a1-42e3-a062-ca9f1ec56dea" />
+          </operation>
+          <operation Id="089319a7-a648-4822-86ca-f066971b9ad6" name="ManusGetGloveCount" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="3a410957-9157-49b6-b66e-0aa9a4079095" />
+          </operation>
+          <operation Id="94866fae-cabd-420e-9b74-59ab9bc34688" name="ManusGetState" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="4f1d9d65-1c37-464d-8662-4d72fbf21143" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="42dc73d3-3bd0-4247-b4ab-a4c802004e07" name="uint glove" direction="In" isUnique="false">
+                  <elementDefinition Id="3c8aa7f2-84c8-412f-99a1-2868a48ed3a7" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="ce204af1-a445-475b-b5f7-02f287f24819" name="GLOVE_STATE state" direction="Out" isUnique="false">
+                  <elementDefinition Id="22fd395a-d0dd-4f52-a362-44cbe3ce126a" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="84690833-196b-46d0-9ce9-8b4f9d285f12" name="bool blocking" direction="In" isUnique="false">
+                  <elementDefinition Id="e520c0a7-4c1b-4c6f-bd6c-482ed67b9620" />
+                  <defaultValue>
+                    <literalString Id="855961d9-fae4-4f95-9af1-eef8925ff54b" name="DefaultValue" value="false">
+                      <elementDefinition Id="1b0d1f23-c080-4d00-9c77-ccc69681b505" />
+                    </literalString>
+                  </defaultValue>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="9d6724f7-0127-474f-9563-2f4dd8314dec" name="ManusGetEuler" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="9b9856ec-66d9-4efa-bc26-8e7d8e5b492e" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="86b158a2-33df-4476-91f3-4c293ea37b8f" name="GLOVE_VECTOR euler" direction="Out" isUnique="false">
+                  <elementDefinition Id="d7a1bc3d-de0f-4900-ad8b-f0d9bc28dc02" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="85b68a73-692c-4964-be72-752f07240356" name="ref GLOVE_QUATERNION quaternion" direction="In" isUnique="false">
+                  <elementDefinition Id="258dc444-a543-4af3-9723-64e7e8da1918" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="ebc6da77-f7de-4a79-a138-f688c39c3866" name="ref GLOVE_VECTOR gravity" direction="In" isUnique="false">
+                  <elementDefinition Id="ca2afa16-eba2-4a33-a708-54ec05e2d0fa" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="2064da88-ab3e-4fc8-876a-fc965d0e934a" name="ManusGetLinearAcceleration" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="b9f1b90f-9105-4c85-a175-b65ba4781493" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="e43d0932-4053-4a66-98a5-aea2ba8af75b" name="GLOVE_VECTOR linear" direction="Out" isUnique="false">
+                  <elementDefinition Id="f1b08bd9-3739-47ee-96ae-00f94a2d2fba" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="f6a546c4-bd21-46c0-bc6e-395c2bba843f" name="ref GLOVE_VECTOR acceleration" direction="In" isUnique="false">
+                  <elementDefinition Id="3f679a09-d5ed-434e-b21e-099f70bb15e5" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="610d178b-e622-401e-a680-ef6efdef0d4e" name="ref GLOVE_VECTOR gravity" direction="In" isUnique="false">
+                  <elementDefinition Id="4951b482-198c-4c13-bbc8-e09f31fead65" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation Id="79181963-8287-4849-989e-104c8cbda477" name="ManusGetGravity" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="64efc7f0-f9c5-463f-ab3f-66ff10b99b7c" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="555122e9-591e-43d3-b61d-eb73bd644f79" name="GLOVE_VECTOR gravity" direction="Out" isUnique="false">
+                  <elementDefinition Id="fd163c68-7a71-4fa0-b199-b419fee7166b" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="e91b1dda-3cab-43c2-afdc-e0583d0ec436" name="ref GLOVE_QUATERNION quaternion" direction="In" isUnique="false">
+                  <elementDefinition Id="45143ff1-1299-4ce3-add0-d7b69b66fcfa" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <enumeration Id="affe9a58-f56b-4270-8c53-2c7e35e0ceda" name="Enumeration1" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="a37dff68-4837-44f3-a29c-5d10f6b656ca" />
+        <targetEnds>
+          <association Id="f1c2d15c-03fd-453c-b60f-f8b5034f2962" isDerived="false" sourceEndRoleName="Enumeration1" targetEndRoleName="Manus" isLeaf="false" isAbstract="false">
+            <classMoniker Id="76593001-52b2-4028-8933-f0cae38799b4" LastKnownName="Manus" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="fedfee66-e8b5-4989-abae-0e96732135f5" name="Enumeration1" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="b36933df-5f2e-4d6a-99f8-18ed301d271b" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="a35e490b-792c-46b6-9bc8-8a5f59980675" name="Manus" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="9e7b02d7-012c-4151-a259-95af8ce6d108" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="3185f8c0-463c-4c18-a373-81ca870532d0" />
+          </association>
+        </targetEnds>
+        <ownedLiterals>
+          <enumerationLiteral Id="cf79e7a1-2d23-492d-bebd-1cec93430dc5" name="+ struct GLOVE_QUATERNION">
+            <elementDefinition Id="1690bd37-de53-4fac-a0ef-dde29cd2ad89" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="66228ebe-9eeb-4795-96b6-70771cbaa1fd" name="+ struct GLOVE_DATA">
+            <elementDefinition Id="75180d85-1c44-4d35-9f2f-a1cc9448811f" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="50b1c563-be70-4059-ae4b-3cb602f47c66" name="+ struct GLOVE_STATE">
+            <elementDefinition Id="5f4818d1-d75a-4b85-85c2-43eda1ca4e1b" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="6b6f9c9e-a959-45bc-b1e6-d63b3a2bc9e7" name="+ struct GLOVE_VECTOR">
+            <elementDefinition Id="2ab8233f-3309-498c-9d38-4ba6007e64a3" />
+          </enumerationLiteral>
+        </ownedLiterals>
+      </enumeration>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="b5568849-9545-4343-8b4e-dc7bcd6b8c1f" name="GUI" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="be4f216f-f9a9-4e0d-9576-2dcfa993fcf4" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="60061614-32fd-48cd-8fdd-d96525552075" name="ProcessHandler" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="03a99ace-6f22-4284-886c-329dc2e8c379" />
+        <ownedOperationsInternal>
+          <operation Id="bb9e7096-31da-4bd9-afc3-b6fc80b84a85" name="getActiveProcess" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="e91ee189-16ae-47b3-9c76-5555006e7c25" />
+          </operation>
+          <operation Id="0227718b-c04a-42ae-9a1d-4809c9fcc029" name="getProcessList" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="e9de37bb-5650-4a47-bbae-e296b6559725" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="adeb13ab-c159-4d95-afdb-dc94e072ac77" name="ModelingProject">
+    <elementDefinition Id="6612bedf-1fb8-4706-975f-249391ce456a" />
+  </package>
+</logicalClassDesignerModel>

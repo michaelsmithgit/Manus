@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SequenceDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" dslVersion="1.0.0.0" Id="d89c6bbd-3b90-4b8d-bcf8-ef2f48f683ed" name="Interface" linkedPackageId="34503f7e-5ea7-4163-a79d-9a622ec9aec0" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="3da27364-0f5e-4ee8-bdbd-f33abb280755">
+      <profileInstance Id="88064ff9-47e0-444f-8af0-3edaca565f99" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="6825ec9c-865c-4368-83d5-459313c8d692">
+      <profileInstance Id="1fb3e333-44fc-4029-b1a2-791d8aba85c3" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <packageHasNamedElement>
+      <interaction Id="9e15be56-3ca7-4b9e-93ad-e6270d616e75" name="Interface" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
+        <elementDefinition Id="0d28c5cf-f24a-4dc0-b58c-621dd9fd9a49" />
+      </interaction>
+    </packageHasNamedElement>
+  </packagedElements>
+  <package Id="34503f7e-5ea7-4163-a79d-9a622ec9aec0" name="ModelingProject">
+    <elementDefinition Id="6612bedf-1fb8-4706-975f-249391ce456a" />
+  </package>
+</SequenceDesignerModel>

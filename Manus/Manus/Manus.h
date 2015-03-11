@@ -35,10 +35,10 @@ typedef struct {
 } GLOVE_VECTOR;
 
 typedef struct {
-	bool RightHand;
+	bool Handedness;
 	GLOVE_VECTOR Acceleration;
 	GLOVE_QUATERNION Quaternion;
-	float Fingers[5];
+	GLOVE_VECTOR Magnetometer;
 } GLOVE_DATA;
 
 typedef struct {

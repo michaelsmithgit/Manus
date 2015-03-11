@@ -21,15 +21,15 @@
 #include "Glove.h"
 #include "hidapi.h"
 
-#define ACCEL_DIVISOR 8192.0f
+#define ACCEL_DIVISOR 16384.0f
+#define MAG_DIVISOR 4096.0f
 #define QUAT_DIVISOR 16384.0f
-#define FINGER_DIVISOR 300.0f
+#define FINGER_DIVISOR 255.0f
 
 Glove::Glove(const char* device_path)
 	: m_running(false)
-	, m_packets(0)
 {
-	memset(&m_report, 0, sizeof(m_report));
+	//memset(&m_report, 0, sizeof(m_report));
 
 	size_t len = strlen(device_path) + 1;
 	m_device_path = new char[len];
@@ -59,22 +59,12 @@ bool Glove::GetState(GLOVE_STATE* state, bool blocking)
 			return false;
 		}
 	}
-
-	state->PacketNumber = m_packets;
-	state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
-
-	for (int i = 0; i < GLOVE_AXES; i++)
-		((float*)&state->data.Acceleration)[i] = m_report.accel[i] / ACCEL_DIVISOR;
-
-	for (int i = 0; i < GLOVE_QUATS; i++)
-		((float*)&state->data.Quaternion)[i] = m_report.quat[i] / QUAT_DIVISOR;
-
-	for (int i = 0; i < GLOVE_FINGERS; i++)
-		state->data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
+	
+	*state = m_state;
 
 	lk.unlock();
 
-	return m_packets > 0;
+	return m_state.PacketNumber > 0;
 }
 
 void Glove::Connect()
@@ -108,14 +98,13 @@ void Glove::DeviceThread(Glove* glove)
 
 		if (read == -1)
 			break;
-
+		
 		// Set the new data report and notify all blocked callers
 		// TODO: Check if the bytes read matches the report size
 		{
 			std::lock_guard<std::mutex> lk(glove->m_report_mutex);
 
-			glove->m_report = report;
-			glove->m_packets++;
+			glove->SetState(&report);
 			glove->m_report_block.notify_all();
 		}
 	}
@@ -124,4 +113,49 @@ void Glove::DeviceThread(Glove* glove)
 
 	glove->m_running = false;
 	glove->m_report_block.notify_all();
+}
+
+void Glove::SetState(GLOVE_REPORT *report)
+{
+	// temp data
+	AccelSensor myAccel;
+	MagSensor myMag;
+	fquaternion myQuaternion;
+	fquaternion myQuaternionOut;
+
+	m_state.PacketNumber++;
+	m_state.data.Handedness = 0;// report->flags & GLOVE_FLAGS_HANDEDNESS;
+
+	// normalize acceleration data
+	for (int i = 0; i < GLOVE_AXES; i++){
+		myAccel.fGpFast[i] = report->accel[i] / ACCEL_DIVISOR;
+		myAccel.iGp[i] = report->accel[i];
+		myAccel.iGpFast[i] = report->accel[i];
+	}
+
+	// normalize quaternion data
+	myQuaternion.q0 = report->quat[0] / QUAT_DIVISOR;
+	myQuaternion.q1 = report->quat[1] / QUAT_DIVISOR;
+	myQuaternion.q2 = report->quat[2] / QUAT_DIVISOR;
+	myQuaternion.q3 = report->quat[3] / QUAT_DIVISOR;
+
+	// normalize magnetometer data
+	for (int i = 0; i < GLOVE_AXES; i++){
+		myMag.iBp[i] = report->mag[i];
+		myMag.fBp[i] = report->mag[i] / MAG_DIVISOR;
+		myMag.iBpFast[i] = report->mag[i];
+		myMag.fBcFast[i] = report->mag[i] / MAG_DIVISOR;
+	}
+
+	// normalize finger data
+	//for (int i = 0; i < GLOVE_FINGERS; i++)
+	//	m_state.data.Fingers[i] = report->fingers[i] / FINGER_DIVISOR;
+
+	// execute the magnetometer and yaw sensor fusion
+	m_sensorFusion.fusionTask(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);
+
+	// copy the output of the sensor fusion to m_state
+	memcpy(&(m_state.data.Quaternion), &myQuaternionOut, sizeof(GLOVE_QUATERNION));
+	memcpy(&(m_state.data.Acceleration), &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
+	memcpy(&(m_state.data.Magnetometer), &(myMag.fBcFast), sizeof(GLOVE_VECTOR));
 }

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="sensorFusion">
+      <UniqueIdentifier>{5ce47c8a-1d9a-475b-9ab3-957eb1db4255}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sensorFusion\Header">
+      <UniqueIdentifier>{297362a4-9f4e-414d-b756-7bbad7db22da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -33,6 +39,21 @@
     <ClInclude Include="WinDevices.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="approximations.h">
+      <Filter>sensorFusion\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="magnetic.h">
+      <Filter>sensorFusion\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="orientation.h">
+      <Filter>sensorFusion\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="SensorFusion.h">
+      <Filter>sensorFusion\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -46,6 +67,21 @@
     </ClCompile>
     <ClCompile Include="WinDevices.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="approximations.cpp">
+      <Filter>sensorFusion</Filter>
+    </ClCompile>
+    <ClCompile Include="magnetic.cpp">
+      <Filter>sensorFusion</Filter>
+    </ClCompile>
+    <ClCompile Include="orientation.cpp">
+      <Filter>sensorFusion</Filter>
+    </ClCompile>
+    <ClCompile Include="SensorFusion.cpp">
+      <Filter>sensorFusion</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

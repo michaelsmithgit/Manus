@@ -20,13 +20,15 @@
 #pragma once
 
 #include "Manus.h"
+#include "SensorFusion.h"
 
 #include <thread>
 #include <condition_variable>
 #include <mutex>
 #include <inttypes.h>
 
-#define GLOVE_FLAGS_RIGHTHAND 0x1
+// flag for handedness (0 = left, 1 = right)
+#define GLOVE_FLAGS_HANDEDNESS 0x1
 
 #define GLOVE_AXES 3
 #define GLOVE_QUATS 4
@@ -35,20 +37,22 @@
 #pragma pack(push, 1) // exact fit - no padding
 typedef struct
 {
-	uint8_t flags;
-	int16_t accel[GLOVE_AXES];
 	int16_t quat[GLOVE_QUATS];
-	uint16_t fingers[GLOVE_FINGERS];
+	int16_t accel[GLOVE_AXES];
+	int16_t mag[GLOVE_AXES];
 } GLOVE_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
+
+
 
 class Glove
 {
 private:
 	bool m_running;
-	unsigned int m_packets;
-	GLOVE_REPORT m_report;
+	//GLOVE_REPORT m_report;
+	GLOVE_STATE m_state;
 	char* m_device_path;
+	SensorFusion m_sensorFusion;
 
 	std::thread m_thread;
 	std::mutex m_report_mutex;
@@ -67,5 +71,5 @@ public:
 private:
 	static void DeviceThread(Glove* glove);
 	static void QuatToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q);
+	void SetState(GLOVE_REPORT *report);
 };
-

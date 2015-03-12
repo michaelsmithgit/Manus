@@ -21,9 +21,10 @@
 #include "Glove.h"
 #include "hidapi.h"
 
-#define ACCEL_DIVISOR 8192.0f
+#define ACCEL_DIVISOR 16384.0f
 #define QUAT_DIVISOR 16384.0f
-#define FINGER_DIVISOR 300.0f
+#define COMPASS_DIVISOR 32.0f
+#define FINGER_DIVISOR 255.0f
 
 Glove::Glove(const char* device_path)
 	: m_running(false)
@@ -61,13 +62,13 @@ bool Glove::GetState(GLOVE_STATE* state, bool blocking)
 	}
 
 	state->PacketNumber = m_packets;
-	state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
-
-	for (int i = 0; i < GLOVE_AXES; i++)
-		((float*)&state->data.Acceleration)[i] = m_report.accel[i] / ACCEL_DIVISOR;
+	//state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
 
 	for (int i = 0; i < GLOVE_QUATS; i++)
 		((float*)&state->data.Quaternion)[i] = m_report.quat[i] / QUAT_DIVISOR;
+
+	for (int i = 0; i < GLOVE_AXES; i++)
+		((float*)&state->data.Acceleration)[i] = m_report.accel[i] / ACCEL_DIVISOR;
 
 	for (int i = 0; i < GLOVE_FINGERS; i++)
 		state->data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
@@ -103,8 +104,8 @@ void Glove::DeviceThread(Glove* glove)
 	// Keep retrieving reports while the SDK is running and the device is connected
 	while (glove->m_running && device)
 	{
-		GLOVE_REPORT report;
-		int read = hid_read(device, (unsigned char*)&report, sizeof(report));
+		unsigned char report[sizeof(GLOVE_REPORT) + 1];
+		int read = hid_read(device, report, sizeof(report));
 
 		if (read == -1)
 			break;
@@ -114,7 +115,10 @@ void Glove::DeviceThread(Glove* glove)
 		{
 			std::lock_guard<std::mutex> lk(glove->m_report_mutex);
 
-			glove->m_report = report;
+			if (report[0] == GLOVE_REPORT_ID)
+				memcpy(&glove->m_report, report + 1, sizeof(GLOVE_REPORT));
+			else if (report[0] == COMPASS_REPORT_ID)
+				memcpy(&glove->m_compass, report + 1, sizeof(COMPASS_REPORT));
 			glove->m_packets++;
 			glove->m_report_block.notify_all();
 		}

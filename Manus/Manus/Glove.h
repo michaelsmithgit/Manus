@@ -28,18 +28,25 @@
 
 #define GLOVE_FLAGS_RIGHTHAND 0x1
 
-#define GLOVE_AXES 3
-#define GLOVE_QUATS 4
-#define GLOVE_FINGERS 5
+#define GLOVE_AXES      3
+#define GLOVE_QUATS     4
+#define GLOVE_FINGERS   5
+
+#define GLOVE_REPORT_ID     1
+#define COMPASS_REPORT_ID   2
 
 #pragma pack(push, 1) // exact fit - no padding
 typedef struct
 {
-	uint8_t flags;
-	int16_t accel[GLOVE_AXES];
 	int16_t quat[GLOVE_QUATS];
-	uint16_t fingers[GLOVE_FINGERS];
+	int16_t accel[GLOVE_AXES];
+	uint8_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;
+
+typedef struct
+{
+	int16_t compass[GLOVE_AXES];
+} COMPASS_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 
 class Glove
@@ -48,6 +55,7 @@ private:
 	bool m_running;
 	unsigned int m_packets;
 	GLOVE_REPORT m_report;
+	COMPASS_REPORT m_compass;
 	char* m_device_path;
 
 	std::thread m_thread;

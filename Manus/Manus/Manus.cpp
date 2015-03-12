@@ -114,7 +114,7 @@ int ManusExit()
 
 int ManusGetGloveCount()
 {
-	return g_gloves.size();
+	return (int)g_gloves.size();
 }
 
 int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)

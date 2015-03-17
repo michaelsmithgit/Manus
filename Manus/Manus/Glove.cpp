@@ -62,7 +62,7 @@ bool Glove::GetState(GLOVE_STATE* state, bool blocking)
 	}
 
 	state->PacketNumber = m_packets;
-	//state->data.RightHand = m_report.flags & GLOVE_FLAGS_RIGHTHAND;
+	state->data.RightHand = m_flags.flags & GLOVE_FLAGS_RIGHTHAND;
 
 	for (int i = 0; i < GLOVE_QUATS; i++)
 		((float*)&state->data.Quaternion)[i] = m_report.quat[i] / QUAT_DIVISOR;
@@ -99,13 +99,22 @@ void Glove::DeviceThread(Glove* glove)
 	if (!device)
 		return;
 
+	// Get the flags from the feature report
+	unsigned char flags[sizeof(FLAGS_REPORT) + 1];
+	flags[0] = 1; // Set feature report ID
+	int read = hid_get_feature_report(device, flags, sizeof(flags));
+
+	// If the feature have been read correctly set the flags
+	if (read != -1)
+		memcpy(&glove->m_flags, flags + 1, sizeof(FLAGS_REPORT));
+
 	glove->m_running = true;
 
 	// Keep retrieving reports while the SDK is running and the device is connected
 	while (glove->m_running && device)
 	{
 		unsigned char report[sizeof(GLOVE_REPORT) + 1];
-		int read = hid_read(device, report, sizeof(report));
+		read = hid_read(device, report, sizeof(report));
 
 		if (read == -1)
 			break;

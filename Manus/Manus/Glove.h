@@ -47,6 +47,11 @@ typedef struct
 {
 	int16_t compass[GLOVE_AXES];
 } COMPASS_REPORT;
+
+typedef struct
+{
+	uint8_t flags;
+} FLAGS_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 
 class Glove
@@ -56,6 +61,7 @@ private:
 	unsigned int m_packets;
 	GLOVE_REPORT m_report;
 	COMPASS_REPORT m_compass;
+	FLAGS_REPORT m_flags;
 	char* m_device_path;
 
 	std::thread m_thread;

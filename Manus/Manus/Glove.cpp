@@ -105,8 +105,9 @@ void Glove::DeviceThread(Glove* glove)
 	int read = hid_get_feature_report(device, flags, sizeof(flags));
 
 	// If the feature have been read correctly set the flags
+	// FIXME: HIDAPI returns the data starting at index 0 instead of index 1
 	if (read != -1)
-		memcpy(&glove->m_flags, flags + 1, sizeof(FLAGS_REPORT));
+		memcpy(&glove->m_flags, flags, sizeof(FLAGS_REPORT));
 
 	glove->m_running = true;
 

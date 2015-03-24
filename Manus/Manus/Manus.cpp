@@ -139,20 +139,17 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)
 	return elem->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
-// Taken from the I2CDevice library
-// Copyright (c) 2012 Jeff Rowberg
-// TODO: Add MIT license information.
-int ManusGetEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q, const GLOVE_VECTOR* gravity)
+int ManusGetEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q)
 {
-	if (!v || !q || !gravity)
+	if (!v || !q)
 		return MANUS_INVALID_ARGUMENT;
 
-	// yaw: (about Z axis)
-	v->z = atan2(2 * q->x*q->y - 2 * q->w*q->z, 2 * q->w*q->w + 2 * q->x*q->x - 1);
-	// pitch: (nose up/down, about Y axis)
-	v->y = atan(gravity->x / sqrt(gravity->y*gravity->y + gravity->z*gravity->z));
 	// roll: (tilt left/right, about X axis)
-	v->x = atan(gravity->y / sqrt(gravity->x*gravity->x + gravity->z*gravity->z));
+	v->x = atan2(2 * (q->w * q->x + q->y * q->z), 1 - 2 * (q->x * q->x + q->y * q->y));
+	// pitch: (nose up/down, about Y axis)
+	v->y = asin(2 * (q->w * q->y - q->z * q->x));
+	// yaw: (about Z axis)
+	v->z = atan2(2 * (q->w * q->z + q->x * q->y), 1 - 2 * (q->y * q->y + q->z * q->z));
 
 	return MANUS_SUCCESS;
 }

@@ -51,6 +51,7 @@ typedef struct
 typedef struct
 {
 	uint8_t flags;
+	uint8_t fingers[GLOVE_FINGERS];
 } FLAGS_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 

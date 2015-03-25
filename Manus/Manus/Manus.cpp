@@ -157,7 +157,7 @@ int ManusGetEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q)
 // Taken from the I2CDevice library
 // Copyright (c) 2012 Jeff Rowberg
 // TODO: Add MIT license information.
-int ManusGetLinearAcceleration(GLOVE_VECTOR* v, const GLOVE_VECTOR* vRaw, const GLOVE_QUATERNION* gravity)
+int ManusGetLinearAcceleration(GLOVE_VECTOR* v, const GLOVE_VECTOR* vRaw, const GLOVE_VECTOR* gravity)
 {
 	if (!v || !vRaw || !gravity)
 		return MANUS_INVALID_ARGUMENT;

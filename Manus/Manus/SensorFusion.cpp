@@ -34,8 +34,8 @@ SensorFusion::SensorFusion()
 		thisMag.iSumBpFast[i] = 0;
 	}
 
-	fInitMagCalibration(&thisMagCal, &thisMagBuffer);
 	thisSV_9DOF_GBY_KALMAN.resetflag = true;
+	fInitMagCalibration(&thisMagCal, &thisMagBuffer);
 	loopcounter = 0;
 
 	return;
@@ -617,7 +617,7 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	fRotationMatrixFromQuaternion(pthisSV->fRPl, &(pthisSV->fqPl));
 
 	// compute the rotation vector from the a posteriori quaternion
-	fRotationVectorDegFromQuaternion(&(pthisSV->fqPl), pthisSV->fRVecPl);
+	fRotationVectorDegFromQuaternion(&(pthisSV->fqPl), pthisSV->fRVecPl); // last time the quaternion is modified
 
 	// update the a posteriori gyro offset vector b+ and
 	// assign the entire linear acceleration error vector to update the linear acceleration

@@ -33,7 +33,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			GLOVE_STATE state = { 0 };
 			if (ManusGetState(i, &state, true) == MANUS_SUCCESS)
-				printf("glove: %d - %d\n", i, state.PacketNumber);
+				printf("glove: %d - %d                                   \n", i, state.PacketNumber);
 			else
 				printf("glove: %d\n", i);
 

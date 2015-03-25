@@ -25,6 +25,12 @@
 #define MAG_DIVISOR 4096.0f
 #define QUAT_DIVISOR 16384.0f
 #define FINGER_DIVISOR 255.0f
+// magnetometer conversion values
+#define FUTPERCOUNT 0.3f; 
+#define FCOUNTSPERUT 3.333f;
+// accelerometer converion values
+#define FGPERCOUNT 0.00006103515; // 2 / (2^15)
+
 
 Glove::Glove(const char* device_path)
 	: m_running(false)
@@ -145,6 +151,8 @@ void Glove::SetState(GLOVE_REPORT *report)
 		myMag.fBp[i] = report->mag[i] / MAG_DIVISOR;
 		myMag.iBpFast[i] = report->mag[i];
 		myMag.fBcFast[i] = report->mag[i] / MAG_DIVISOR;
+		myMag.fCountsPeruT = FCOUNTSPERUT;
+		myMag.fuTPerCount = FUTPERCOUNT;
 	}
 
 	// normalize finger data

@@ -30,9 +30,12 @@
 // flag for handedness (0 = left, 1 = right)
 #define GLOVE_FLAGS_HANDEDNESS 0x1
 
-#define GLOVE_AXES 3
-#define GLOVE_QUATS 4
-#define GLOVE_FINGERS 5
+#define GLOVE_AXES      3
+#define GLOVE_QUATS     4
+#define GLOVE_FINGERS   5
+
+#define GLOVE_REPORT_ID     1
+#define COMPASS_REPORT_ID   2
 
 #pragma pack(push, 1) // exact fit - no padding
 typedef struct
@@ -40,7 +43,19 @@ typedef struct
 	int16_t quat[GLOVE_QUATS];
 	int16_t accel[GLOVE_AXES];
 	int16_t mag[GLOVE_AXES];
+	uint8_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;
+
+typedef struct
+{
+	int16_t compass[GLOVE_AXES];
+} COMPASS_REPORT;
+
+typedef struct
+{
+	uint8_t flags;
+	uint8_t fingers[GLOVE_FINGERS];
+} FLAGS_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 
 
@@ -49,8 +64,13 @@ class Glove
 {
 private:
 	bool m_running;
-	//GLOVE_REPORT m_report;
+
 	GLOVE_STATE m_state;
+	unsigned int m_packets;
+	GLOVE_REPORT m_report;
+	COMPASS_REPORT m_compass;
+	FLAGS_REPORT m_flags;
+
 	char* m_device_path;
 	SensorFusion m_sensorFusion;
 
@@ -71,5 +91,5 @@ public:
 private:
 	static void DeviceThread(Glove* glove);
 	static void QuatToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q);
-	void SetState(GLOVE_REPORT *report);
+	void SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report);
 };

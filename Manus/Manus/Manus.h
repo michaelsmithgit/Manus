@@ -95,7 +95,7 @@ extern "C" {
 	*  \param euler Output variable to receive the Euler angles.
 	*  \param quaternion The quaternion to convert.
 	*/
-	MANUS_API int ManusGetEuler(GLOVE_VECTOR* euler, const GLOVE_QUATERNION* quaternion, const GLOVE_VECTOR* gravity);
+	MANUS_API int ManusGetEuler(GLOVE_VECTOR* euler, const GLOVE_QUATERNION* quaternion);
 
 	/*! \brief Remove gravity from acceleration vector.
 	*

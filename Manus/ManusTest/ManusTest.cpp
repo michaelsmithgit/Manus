@@ -44,7 +44,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			GLOVE_VECTOR euler = { 0 }, gravity;
 			ManusGetGravity(&gravity, &state.data.Quaternion);
 			printf("gravi: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", gravity.x, gravity.y, gravity.z);
-			ManusGetEuler(&euler, &state.data.Quaternion, &gravity);
+			ManusGetEuler(&euler, &state.data.Quaternion);
 			printf("euler: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", euler.x * (180.0 / M_PI), euler.y * (180.0 / M_PI), euler.z * (180.0 / M_PI));
 
 			//printf("fingers: %f;%f;%f;%f;%f\n", state.data.Fingers[0], state.data.Fingers[1], state.data.Fingers[2], state.data.Fingers[3], state.data.Fingers[4]);

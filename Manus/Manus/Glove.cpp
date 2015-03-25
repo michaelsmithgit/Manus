@@ -22,8 +22,8 @@
 #include "hidapi.h"
 
 #define ACCEL_DIVISOR 16384.0f
-#define MAG_DIVISOR 4096.0f
 #define QUAT_DIVISOR 16384.0f
+#define COMPASS_DIVISOR 32.0f
 #define FINGER_DIVISOR 255.0f
 // magnetometer conversion values
 #define FUTPERCOUNT 0.3f; 
@@ -94,13 +94,23 @@ void Glove::DeviceThread(Glove* glove)
 	if (!device)
 		return;
 
+	// Get the flags from the feature report
+	unsigned char flags[sizeof(FLAGS_REPORT) + 1];
+	flags[0] = 1; // Set feature report ID
+	int read = hid_get_feature_report(device, flags, sizeof(flags));
+
+	// If the feature have been read correctly set the flags
+	// FIXME: HIDAPI returns the data starting at index 0 instead of index 1
+	if (read != -1)
+		memcpy(&glove->m_flags, flags, sizeof(FLAGS_REPORT));
+
 	glove->m_running = true;
 
 	// Keep retrieving reports while the SDK is running and the device is connected
 	while (glove->m_running && device)
 	{
-		GLOVE_REPORT report;
-		int read = hid_read(device, (unsigned char*)&report, sizeof(report));
+		unsigned char report[sizeof(GLOVE_REPORT) + 1];
+		read = hid_read(device, report, sizeof(report));
 
 		if (read == -1)
 			break;
@@ -110,7 +120,13 @@ void Glove::DeviceThread(Glove* glove)
 		{
 			std::lock_guard<std::mutex> lk(glove->m_report_mutex);
 
-			glove->SetState(&report);
+			if (report[0] == GLOVE_REPORT_ID)
+				memcpy(&glove->m_report, report + 1, sizeof(GLOVE_REPORT));
+			else if (report[0] == COMPASS_REPORT_ID)
+				memcpy(&glove->m_compass, report + 1, sizeof(COMPASS_REPORT));
+
+			glove->SetState(&glove->m_report, &glove->m_compass);
+
 			glove->m_report_block.notify_all();
 		}
 	}
@@ -121,7 +137,7 @@ void Glove::DeviceThread(Glove* glove)
 	glove->m_report_block.notify_all();
 }
 
-void Glove::SetState(GLOVE_REPORT *report)
+void Glove::SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report)
 {
 	// temp data
 	AccelSensor myAccel;
@@ -148,9 +164,9 @@ void Glove::SetState(GLOVE_REPORT *report)
 	// normalize magnetometer data
 	for (int i = 0; i < GLOVE_AXES; i++){
 		myMag.iBp[i] = report->mag[i];
-		myMag.fBp[i] = report->mag[i] / MAG_DIVISOR;
+		myMag.fBp[i] = report->mag[i] / COMPASS_DIVISOR;
 		myMag.iBpFast[i] = report->mag[i];
-		myMag.fBcFast[i] = report->mag[i] / MAG_DIVISOR;
+		myMag.fBcFast[i] = report->mag[i] / COMPASS_DIVISOR;
 		myMag.fCountsPeruT = FCOUNTSPERUT;
 		myMag.fuTPerCount = FUTPERCOUNT;
 	}

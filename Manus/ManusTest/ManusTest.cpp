@@ -38,7 +38,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				printf("glove: %d\n", i);
 
 			printf("accel: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Acceleration.x, state.data.Acceleration.y, state.data.Acceleration.z);
-			printf("mag  : x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Magnetometer.x, state.data.Magnetometer.y, state.data.Magnetometer.z);
+			//printf("mag  : x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Magnetometer.x, state.data.Magnetometer.y, state.data.Magnetometer.z);
 			printf("quats: x: % 1.5f; y: % 1.5f; z: % 1.5f; w: % 1.5f \n", state.data.Quaternion.x, state.data.Quaternion.y, state.data.Quaternion.z, state.data.Quaternion.w);
 
 			GLOVE_VECTOR euler = { 0 }, gravity;
@@ -47,7 +47,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			ManusGetEuler(&euler, &state.data.Quaternion);
 			printf("euler: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", euler.x * (180.0 / M_PI), euler.y * (180.0 / M_PI), euler.z * (180.0 / M_PI));
 
-			//printf("fingers: %f;%f;%f;%f;%f\n", state.data.Fingers[0], state.data.Fingers[1], state.data.Fingers[2], state.data.Fingers[3], state.data.Fingers[4]);
+			printf("fingers: %f;%f;%f;%f;%f\n", state.data.Fingers[0], state.data.Fingers[1], state.data.Fingers[2], state.data.Fingers[3], state.data.Fingers[4]);
 		}
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD());
 	}

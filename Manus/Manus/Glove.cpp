@@ -163,17 +163,17 @@ void Glove::SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report)
 
 	// normalize magnetometer data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		myMag.iBp[i] = report->mag[i];
-		myMag.fBp[i] = report->mag[i] / COMPASS_DIVISOR;
-		myMag.iBpFast[i] = report->mag[i];
-		myMag.fBcFast[i] = report->mag[i] / COMPASS_DIVISOR;
+		myMag.iBp[i] = c_report->compass[i];
+		myMag.fBp[i] = c_report->compass[i] / COMPASS_DIVISOR;
+		myMag.iBpFast[i] = c_report->compass[i];
+		myMag.fBcFast[i] = c_report->compass[i] / COMPASS_DIVISOR;
 		myMag.fCountsPeruT = FCOUNTSPERUT;
 		myMag.fuTPerCount = FUTPERCOUNT;
 	}
 
 	// normalize finger data
-	//for (int i = 0; i < GLOVE_FINGERS; i++)
-	//	m_state.data.Fingers[i] = report->fingers[i] / FINGER_DIVISOR;
+	for (int i = 0; i < GLOVE_FINGERS; i++)
+		m_state.data.Fingers[i] = report->fingers[i] / FINGER_DIVISOR;
 
 	// execute the magnetometer and yaw sensor fusion
 	m_sensorFusion.fusionTask(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);
@@ -181,5 +181,4 @@ void Glove::SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report)
 	// copy the output of the sensor fusion to m_state
 	memcpy(&(m_state.data.Quaternion), &myQuaternionOut, sizeof(GLOVE_QUATERNION));
 	memcpy(&(m_state.data.Acceleration), &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
-	memcpy(&(m_state.data.Magnetometer), &(myMag.fBcFast), sizeof(GLOVE_VECTOR));
 }

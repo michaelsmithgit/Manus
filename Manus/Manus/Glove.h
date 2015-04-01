@@ -42,7 +42,6 @@ typedef struct
 {
 	int16_t quat[GLOVE_QUATS];
 	int16_t accel[GLOVE_AXES];
-	int16_t mag[GLOVE_AXES];
 	uint8_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;
 

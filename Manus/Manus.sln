@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Manus", "Manus\Manus.vcxproj", "{6EACBE18-ABDA-44E3-8E0F-3BE6C9781E0D}"
 EndProject
@@ -93,7 +93,7 @@ Global
 		{FAE0E66D-C68E-4C88-970E-BBC0B0BA6287}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FAE0E66D-C68E-4C88-970E-BBC0B0BA6287}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FAE0E66D-C68E-4C88-970E-BBC0B0BA6287}.Release|Win32.ActiveCfg = Release|Any CPU
-		{FAE0E66D-C68E-4C88-970E-BBC0B0BA6287}.Release|x64.ActiveCfg = Release|x64
+		{FAE0E66D-C68E-4C88-970E-BBC0B0BA6287}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

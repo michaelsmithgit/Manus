@@ -118,13 +118,6 @@ namespace ManusMachina
 
     public class Manus
     {
-        public enum HANDEDNESS
-        {
-            HAND_NONE = 0,
-            HAND_LEFT = 1,
-            HAND_RIGHT = 2
-        }
-
         public const int ERROR = -1;
         public const int SUCCESS = 0;
         public const int INVALID_ARGUMENT = 1;

@@ -39,7 +39,7 @@ public class Manus {
     private static final byte GLOVE_PAGE    = 0x03;
     private static final byte GLOVE_USAGE   = 0x04;
 
-    private static List<Glove> getGloves(Context con) {
+    public static List<Glove> getGloves(Context con) {
         // Use this check to determine whether BLE is supported on the device.
         if (!con.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             throw new UnsupportedOperationException();
@@ -57,7 +57,7 @@ public class Manus {
             Glove glove = new Glove(con, dev);
 
             // Check if the report map matches a VR Glove
-            if (glove.mPage == GlovePage && glove.mUsage == GloveUsage) {
+            if (glove.mPage == GLOVE_PAGE && glove.mUsage == GLOVE_USAGE) {
                 // Add it to the list of connected gloves
                 gloves.add(glove);
             } else {

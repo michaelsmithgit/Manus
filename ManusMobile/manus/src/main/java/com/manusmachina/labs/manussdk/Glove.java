@@ -33,8 +33,7 @@ import java.util.UUID;
 /**
  * Created by Armada on 8-4-2015.
  */
-// TODO: Make this an observable class
-public class Glove {
+public class Glove extends Observable {
     public class Quaternion {
         public float w, x, y, z;
 
@@ -53,6 +52,11 @@ public class Glove {
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+
+        public Vector ToDegrees()
+        {
+            return new Vector((float)(x * 180.0 / Math.PI), (float)(y * 180.0 / Math.PI), (float)(z * 180.0 / Math.PI));
         }
     }
 
@@ -77,6 +81,11 @@ public class Glove {
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        @Override
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            super.onCharacteristicChanged(gatt, characteristic);
+            notifyObservers(characteristic);
+        }
     };
 
     public Glove(Context con, BluetoothDevice dev) {
@@ -117,7 +126,7 @@ public class Glove {
     *
     *  \return True if the glove is connected, False if it is not.
     */
-    Quaternion getQuaternion() {
+    public Quaternion getQuaternion() {
         BluetoothGattCharacteristic report = mReports.get(0);
         int format = BluetoothGattCharacteristic.FORMAT_UINT16;
 
@@ -129,7 +138,7 @@ public class Glove {
         );
     }
 
-    Vector getAcceleration() {
+    public Vector getAcceleration() {
         BluetoothGattCharacteristic report = mReports.get(0);
         int format = BluetoothGattCharacteristic.FORMAT_UINT16;
 
@@ -140,7 +149,7 @@ public class Glove {
         );
     }
 
-    float getFinger(int i) {
+    public float getFinger(int i) {
         BluetoothGattCharacteristic report = mReports.get(0);
         return report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
     }
@@ -153,7 +162,7 @@ public class Glove {
     *  \param euler Output variable to receive the Euler angles.
     *  \param quaternion The quaternion to convert.
     */
-    Vector getEuler(final Quaternion q) {
+    public Vector getEuler(final Quaternion q) {
         return new Vector(
                 // roll: (tilt left/right, about X axis)
                 (float)Math.atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y)),
@@ -172,7 +181,7 @@ public class Glove {
     *  \param linear Output vector to receive the linear acceleration.
     *  \param acceleation The acceleration vector to convert.
     */
-    Vector getLinearAcceleration(final Vector vRaw, final Vector gravity) {
+    public Vector getLinearAcceleration(final Vector vRaw, final Vector gravity) {
         return new Vector(
                 vRaw.x - gravity.x,
                 vRaw.y - gravity.y,
@@ -187,7 +196,7 @@ public class Glove {
     *  \param gravity Output vector to receive the gravity vector.
     *  \param quaternion The quaternion to base the gravity vector on.
     */
-    Vector getGravity(Quaternion q) {
+    public Vector getGravity(Quaternion q) {
         return new Vector(
                 2 * (q.x*q.z - q.w*q.y),
                 2 * (q.w*q.x + q.y*q.z),

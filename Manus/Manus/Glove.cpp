@@ -125,7 +125,7 @@ void Glove::DeviceThread(Glove* glove)
 			else if (report[0] == COMPASS_REPORT_ID)
 				memcpy(&glove->m_compass, report + 1, sizeof(COMPASS_REPORT));
 
-			glove->SetState(&glove->m_report, &glove->m_compass);
+			glove->UpdateState();
 
 			glove->m_report_block.notify_all();
 		}
@@ -137,7 +137,7 @@ void Glove::DeviceThread(Glove* glove)
 	glove->m_report_block.notify_all();
 }
 
-void Glove::SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report)
+void Glove::UpdateState()
 {
 	// temp data
 	AccelSensor myAccel;
@@ -146,34 +146,34 @@ void Glove::SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report)
 	fquaternion myQuaternionOut;
 
 	m_state.PacketNumber++;
-	m_state.data.Handedness = 0;// report->flags & GLOVE_FLAGS_HANDEDNESS;
+	m_state.data.Handedness = m_flags.flags & GLOVE_FLAGS_HANDEDNESS;
 
 	// normalize acceleration data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		myAccel.fGpFast[i] = report->accel[i] / ACCEL_DIVISOR;
-		myAccel.iGp[i] = report->accel[i];
-		myAccel.iGpFast[i] = report->accel[i];
+		myAccel.fGpFast[i] = m_report.accel[i] / ACCEL_DIVISOR;
+		myAccel.iGp[i] = m_report.accel[i];
+		myAccel.iGpFast[i] = m_report.accel[i];
 	}
 
 	// normalize quaternion data
-	myQuaternion.q0 = report->quat[0] / QUAT_DIVISOR;
-	myQuaternion.q1 = report->quat[1] / QUAT_DIVISOR;
-	myQuaternion.q2 = report->quat[2] / QUAT_DIVISOR;
-	myQuaternion.q3 = report->quat[3] / QUAT_DIVISOR;
+	myQuaternion.q0 = m_report.quat[0] / QUAT_DIVISOR;
+	myQuaternion.q1 = m_report.quat[1] / QUAT_DIVISOR;
+	myQuaternion.q2 = m_report.quat[2] / QUAT_DIVISOR;
+	myQuaternion.q3 = m_report.quat[3] / QUAT_DIVISOR;
 
 	// normalize magnetometer data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		myMag.iBp[i] = c_report->compass[i];
-		myMag.fBp[i] = c_report->compass[i] / COMPASS_DIVISOR;
-		myMag.iBpFast[i] = c_report->compass[i];
-		myMag.fBcFast[i] = c_report->compass[i] / COMPASS_DIVISOR;
+		myMag.iBp[i] = m_compass.compass[i];
+		myMag.fBp[i] = m_compass.compass[i] / COMPASS_DIVISOR;
+		myMag.iBpFast[i] = m_compass.compass[i];
+		myMag.fBcFast[i] = m_compass.compass[i] / COMPASS_DIVISOR;
 		myMag.fCountsPeruT = FCOUNTSPERUT;
 		myMag.fuTPerCount = FUTPERCOUNT;
 	}
 
 	// normalize finger data
 	for (int i = 0; i < GLOVE_FINGERS; i++)
-		m_state.data.Fingers[i] = report->fingers[i] / FINGER_DIVISOR;
+		m_state.data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
 
 	// execute the magnetometer and yaw sensor fusion
 	m_sensorFusion.fusionTask(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);

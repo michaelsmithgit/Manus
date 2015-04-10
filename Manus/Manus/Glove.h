@@ -90,5 +90,5 @@ public:
 private:
 	static void DeviceThread(Glove* glove);
 	static void QuatToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q);
-	void SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report);
+	void UpdateState();
 };

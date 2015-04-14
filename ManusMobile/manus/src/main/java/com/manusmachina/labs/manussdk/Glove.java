@@ -23,6 +23,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 
@@ -60,11 +61,13 @@ public class Glove extends Observable {
         }
     }
 
-    private static final UUID HID_SERVICE       = new UUID(0x18, 0x12);
-    private static final UUID HID_INFORMATION   = new UUID(0x2A, 0x4A);
-    private static final UUID HID_REPORT_MAP    = new UUID(0x2A, 0x4B);
-    private static final UUID HID_CONTROL_POINT = new UUID(0x2A, 0x4C);
-    private static final UUID HID_REPORT        = new UUID(0x2A, 0x4D);
+    protected static final UUID HID_SERVICE       = UUID16.toUUID(0x18, 0x12);
+    protected static final UUID HID_INFORMATION   = UUID16.toUUID(0x2A, 0x4A);
+    protected static final UUID HID_REPORT_MAP    = UUID16.toUUID(0x2A, 0x4B);
+    protected static final UUID HID_CONTROL_POINT = UUID16.toUUID(0x2A, 0x4C);
+    protected static final UUID HID_REPORT        = UUID16.toUUID(0x2A, 0x4D);
+
+    private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     private static final float ACCEL_DIVISOR    = 16384.0f;
     private static final float QUAT_DIVISOR     = 16384.0f;
@@ -86,36 +89,70 @@ public class Glove extends Observable {
             super.onCharacteristicChanged(gatt, characteristic);
             notifyObservers(characteristic);
         }
-    };
 
-    public Glove(Context con, BluetoothDevice dev) {
-        mPage = mUsage = 0;
-        mGatt = dev.connectGatt(con, true, mGattCallback);
+        @Override
+        public void onConnectionStateChange(final BluetoothGatt gatt, final int status, final int newState) {
+            super.onConnectionStateChange(gatt, status, newState);
 
-        // Get the HID Service if it exists
-        BluetoothGattService service = mGatt.getService(HID_SERVICE);
-        if (service != null) {
-            // Get the HID Report Map if there is one
-            BluetoothGattCharacteristic gchar = service.getCharacteristic(HID_REPORT_MAP);
-
-            if (gchar != null) {
-                mReportMap = gchar.getValue();
-                mPage = mReportMap[0];
-                mUsage = mReportMap[1];
+            if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED) {
+                gatt.discoverServices();
             }
+        }
 
-            for (BluetoothGattCharacteristic report : service.getCharacteristics()) {
-                if (report.getUuid() == HID_REPORT) {
-                    if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0)
-                        mGatt.setCharacteristicNotification(report, true);
-                    mReports.add(report);
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            super.onServicesDiscovered(gatt, status);
+
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                // Get the HID Service if it exists
+                BluetoothGattService service = gatt.getService(HID_SERVICE);
+                if (service != null) {
+                    // Get the HID Report Map if there is one
+                    BluetoothGattCharacteristic reportChar = service.getCharacteristic(HID_REPORT_MAP);
+                    if (reportChar != null) {
+                        gatt.readCharacteristic(reportChar);
+                    }
+
+                    // Enable notifcations on all input reports
+                    for (BluetoothGattCharacteristic report : service.getCharacteristics()) {
+                        if (report.getUuid().equals(HID_REPORT)) {
+                            if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
+                                gatt.setCharacteristicNotification(report, true);
+                                BluetoothGattDescriptor descriptor = report.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
+                                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                gatt.writeDescriptor(descriptor);
+                            }
+                            mReports.add(report);
+                        }
+                    }
                 }
             }
         }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicRead(gatt, characteristic, status);
+
+            if (characteristic.getUuid().equals(HID_REPORT_MAP)) {
+                mReportMap = characteristic.getValue();
+                mPage = mReportMap[0];
+                mUsage = mReportMap[1];
+            }
+        }
+    };
+
+    protected Glove(Context con, BluetoothDevice dev) {
+        mPage = mUsage = 0;
+        mGatt = dev.connectGatt(con, true, mGattCallback);
+        mReports = new ArrayList<>();
     }
 
-    public void close() {
+    protected void close() {
+        if (mGatt == null)
+            return;
+
         mGatt.close();
+        mGatt = null;
     }
 
     /*! \brief Get the state of a glove.

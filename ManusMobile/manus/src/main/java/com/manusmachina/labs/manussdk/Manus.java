@@ -22,10 +22,12 @@ package com.manusmachina.labs.manussdk;
 import android.bluetooth.*;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.ParcelUuid;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -51,18 +53,14 @@ public class Manus {
                 (BluetoothManager) con.getSystemService(Context.BLUETOOTH_SERVICE);
 
         // Build the list of gloves
-        List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(BluetoothGatt.GATT);
-        List<Glove> gloves = new ArrayList<Glove>();
+        Set<BluetoothDevice> devices = bluetoothManager.getAdapter().getBondedDevices();
+        List<Glove> gloves = new ArrayList<>();
         for (BluetoothDevice dev : devices) {
-            Glove glove = new Glove(con, dev);
-
-            // Check if the report map matches a VR Glove
-            if (glove.mPage == GLOVE_PAGE && glove.mUsage == GLOVE_USAGE) {
-                // Add it to the list of connected gloves
-                gloves.add(glove);
-            } else {
-                // Close the GATT server connection
-                glove.close();
+            for (ParcelUuid uuid : dev.getUuids()) {
+                if (uuid.getUuid().equals(Glove.HID_SERVICE)) {
+                    Glove glove = new Glove(con, dev);
+                    gloves.add(glove);
+                }
             }
         }
 

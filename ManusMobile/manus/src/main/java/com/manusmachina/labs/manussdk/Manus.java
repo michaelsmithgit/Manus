@@ -56,6 +56,7 @@ public class Manus {
         Set<BluetoothDevice> devices = bluetoothManager.getAdapter().getBondedDevices();
         List<Glove> gloves = new ArrayList<>();
         for (BluetoothDevice dev : devices) {
+            // Check if the cached services contain an HID service
             for (ParcelUuid uuid : dev.getUuids()) {
                 if (uuid.getUuid().equals(Glove.HID_SERVICE)) {
                     Glove glove = new Glove(con, dev);

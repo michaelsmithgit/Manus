@@ -87,6 +87,7 @@ public class Glove extends Observable {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
+            setChanged();
             notifyObservers(characteristic);
         }
 
@@ -119,8 +120,10 @@ public class Glove extends Observable {
                             if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
                                 gatt.setCharacteristicNotification(report, true);
                                 BluetoothGattDescriptor descriptor = report.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
-                                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                gatt.writeDescriptor(descriptor);
+                                if (descriptor != null) {
+                                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                    gatt.writeDescriptor(descriptor);
+                                }
                             }
                             mReports.add(report);
                         }
@@ -165,7 +168,7 @@ public class Glove extends Observable {
     */
     public Quaternion getQuaternion() {
         BluetoothGattCharacteristic report = mReports.get(0);
-        int format = BluetoothGattCharacteristic.FORMAT_UINT16;
+        int format = BluetoothGattCharacteristic.FORMAT_SINT16;
 
         return new Quaternion(
                 report.getIntValue(format, 0) / QUAT_DIVISOR,
@@ -177,7 +180,7 @@ public class Glove extends Observable {
 
     public Vector getAcceleration() {
         BluetoothGattCharacteristic report = mReports.get(0);
-        int format = BluetoothGattCharacteristic.FORMAT_UINT16;
+        int format = BluetoothGattCharacteristic.FORMAT_SINT16;
 
         return new Vector(
                 report.getIntValue(format, 8) / ACCEL_DIVISOR,
@@ -216,7 +219,7 @@ public class Glove extends Observable {
     *  the Earth's gravity.
     *
     *  \param linear Output vector to receive the linear acceleration.
-    *  \param acceleation The acceleration vector to convert.
+    *  \param acceleration The acceleration vector to convert.
     */
     public Vector getLinearAcceleration(final Vector vRaw, final Vector gravity) {
         return new Vector(

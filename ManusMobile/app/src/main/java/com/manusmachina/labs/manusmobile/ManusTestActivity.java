@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 
 import com.manusmachina.labs.manussdk.*;
 
@@ -26,6 +27,14 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         Glove.Quaternion quat = glove.getQuaternion();
         Glove.Vector euler = glove.getEuler(quat);
         Glove.Vector degrees = euler.ToDegrees();
+
+        ProgressBar yaw = (ProgressBar)findViewById(R.id.yaw);
+        ProgressBar pitch = (ProgressBar)findViewById(R.id.pitch);
+        ProgressBar roll = (ProgressBar)findViewById(R.id.roll);
+
+        roll.setProgress((int)degrees.x + 180);
+        pitch.setProgress((int)degrees.y + 90);
+        yaw.setProgress((int)degrees.z + 180);
     }
 
     /**

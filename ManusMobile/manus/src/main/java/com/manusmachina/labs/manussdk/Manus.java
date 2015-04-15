@@ -21,8 +21,10 @@ package com.manusmachina.labs.manussdk;
 
 import android.app.Service;
 import android.bluetooth.*;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -51,8 +53,8 @@ public class Manus extends Service {
     // Binder given to clients
     private final IBinder mBinder = new GloveBinder();
 
-    // The Bluetooth adapter
-    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    // The bluetooth adapter
+    private BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
 
     // List of detected gloves
     private List<Glove> mGloves = new ArrayList<>();
@@ -60,41 +62,43 @@ public class Manus extends Service {
     // List of event listeners
     private ArrayList<OnGloveChangedListener> mOnGloveChangedListeners = new ArrayList<>();
 
-    // The current context
-    private Context mContext = this;
-
-    // Scheduler to detect newly bonded gloves
-    private final ScheduledExecutorService mScheduler =
-            Executors.newScheduledThreadPool(1);
-
-    // Updates the list of gloves at a set interval
-    private final Runnable mGloveUpdater = new Runnable() {
-        public void run() {
-            if (mBluetoothAdapter == null)
+    // Connect to a BluetoothDevice
+    private void connect(BluetoothDevice dev) {
+        // Reconnect to this device if a glove has already been added for it
+        for (Glove glove : mGloves) {
+            if (glove.mGatt.getDevice().getAddress().equals(dev.getAddress())) {
+                glove.mGatt.connect();
                 return;
+            }
+        }
 
-            // Build the list of gloves
-            Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-            for (BluetoothDevice dev : devices) {
-                // Skip this device if a glove has already been added for it
-                boolean gloveFound = false;
-                for (Glove glove : mGloves) {
-                    if (glove.mGatt.getDevice().getAddress().equals(dev.getAddress())) {
-                        gloveFound = true;
-                        break;
-                    }
+        Glove glove = new Glove(this, dev);
+        glove.addObserver(mGloveObserver);
+        mGloves.add(glove);
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                final BluetoothDevice dev = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,
+                        BluetoothDevice.BOND_NONE);
+                if (state == BluetoothDevice.BOND_BONDED) {
+                    // Connect to the new bluetooth device
+                    connect(dev);
                 }
+            } else if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE,
+                        BluetoothAdapter.ERROR);
 
-                if (gloveFound)
-                    continue;
-
-                // Check if the cached services contain an HID service
-                for (ParcelUuid uuid : dev.getUuids()) {
-                    if (uuid.getUuid().equals(Glove.HID_SERVICE)) {
-                        Glove glove = new Glove(mContext, dev);
-                        glove.addObserver(mGloveObserver);
-                        mGloves.add(glove);
-                        break;
+                // Connect to all bonded devices
+                if (state == BluetoothAdapter.STATE_ON && mAdapter != null) {
+                    // Connect to all bonded devices
+                    for (BluetoothDevice dev : mAdapter.getBondedDevices()) {
+                        connect(dev);
                     }
                 }
             }
@@ -159,17 +163,32 @@ public class Manus extends Service {
 
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
         // BluetoothAdapter through BluetoothManager.
-        final BluetoothManager mBluetoothManager =
+        final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 
-        if (mBluetoothManager != null)
-            mBluetoothAdapter = mBluetoothManager.getAdapter();
+        // Retrieve the bluetooth adapter
+        if (bluetoothManager != null) {
+            mAdapter = bluetoothManager.getAdapter();
+        }
 
-        mScheduler.scheduleAtFixedRate(mGloveUpdater, 0, 1, TimeUnit.SECONDS);
+        // Connect to all bonded devices
+        if (mAdapter != null) {
+            for (BluetoothDevice dev : mAdapter.getBondedDevices()) {
+                connect(dev);
+            }
+        }
+
+        // Register for broadcasts
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(mReceiver);
+
         for (Glove glove : mGloves) {
             glove.deleteObservers();
             glove.mGatt.close();

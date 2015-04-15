@@ -29,10 +29,10 @@ import android.os.IBinder;
 import android.os.ParcelUuid;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +53,9 @@ public class Manus extends Service {
 
     // List of detected gloves
     private List<Glove> mGloves = new ArrayList<>();
+
+    // List of event listeners
+    private ArrayList<OnGloveChangedListener> mOnGloveChangedListeners = new ArrayList<>();
 
     // The current context
     private Context mContext = this;
@@ -78,21 +81,44 @@ public class Manus extends Service {
             Set<BluetoothDevice> devices = bluetoothManager.getAdapter().getBondedDevices();
             for (BluetoothDevice dev : devices) {
                 // Skip this device if a glove has already been added for it
+                boolean gloveFound = false;
                 for (Glove glove : mGloves) {
-                    if (glove.mGatt.getDevice().getAddress().equals(dev.getAddress()))
-                        continue;
+                    if (glove.mGatt.getDevice().getAddress().equals(dev.getAddress())) {
+                        gloveFound = true;
+                        break;
+                    }
                 }
+
+                if (gloveFound)
+                    continue;
 
                 // Check if the cached services contain an HID service
                 for (ParcelUuid uuid : dev.getUuids()) {
                     if (uuid.getUuid().equals(Glove.HID_SERVICE)) {
-                        mGloves.add(new Glove(mContext, dev));
+                        Glove glove = new Glove(mContext, dev);
+                        glove.addObserver(mGloveObserver);
+                        mGloves.add(glove);
                         break;
                     }
                 }
             }
         }
     };
+
+    private Observer mGloveObserver = new Observer() {
+        @Override
+        public void update(Observable observable, Object data) {
+            Glove glove = (Glove)observable;
+            int index = mGloves.indexOf(glove);
+            for (OnGloveChangedListener listener : mOnGloveChangedListeners) {
+                listener.OnGloveChanged(index, glove);
+            }
+        }
+    };
+
+    public interface OnGloveChangedListener {
+        public void OnGloveChanged(int index, Glove glove);
+    }
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -106,6 +132,26 @@ public class Manus extends Service {
         public Glove getGlove(int glove) {
             return mGloves.get(glove);
         }
+
+        /**
+         * Add a listener that will be called when the glove state is changed.
+         *
+         * @param listener The listener that will be called when the glove state changes.
+         */
+        public void addOnGloveChangedListener(OnGloveChangedListener listener) {
+            if (!mOnGloveChangedListeners.contains(listener)) {
+                mOnGloveChangedListeners.add(listener);
+            }
+        }
+
+        /**
+         * Remove a listener for glove state changes.
+         *
+         * @param listener The listener for glove state changes.
+         */
+        public void removeOnGloveChangedListener(OnGloveChangedListener listener) {
+            mOnGloveChangedListeners.remove(listener);
+        }
     }
 
     @Override
@@ -115,8 +161,10 @@ public class Manus extends Service {
 
     @Override
     public void onDestroy() {
-        for (Glove glove : mGloves)
+        for (Glove glove : mGloves) {
+            glove.deleteObservers();
             glove.mGatt.close();
+        }
         mGloves.clear();
     }
 

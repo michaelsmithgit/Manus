@@ -24,24 +24,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public class ManusTestActivity extends ActionBarActivity implements ActionBar.OnNavigationListener, Observer {
-
-    @Override
-    public void update(Observable observable, Object data) {
-        Glove glove = (Glove)observable;
-        Glove.Quaternion quat = glove.getQuaternion();
-        Glove.Vector euler = glove.getEuler(quat);
-        Glove.Vector degrees = euler.ToDegrees();
-
-        ProgressBar yaw = (ProgressBar)findViewById(R.id.yaw);
-        ProgressBar pitch = (ProgressBar)findViewById(R.id.pitch);
-        ProgressBar roll = (ProgressBar)findViewById(R.id.roll);
-
-        roll.setProgress((int)degrees.x + 180);
-        pitch.setProgress((int)degrees.y + 90);
-        yaw.setProgress((int)degrees.z + 180);
-    }
-
+public class ManusTestActivity extends ActionBarActivity implements ActionBar.OnNavigationListener, Manus.OnGloveChangedListener {
     /**
      * The serialization (saved instance state) Bundle key representing the
      * current dropdown position.
@@ -49,7 +32,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
     private ManusTestActivity mScope = this;
-    private Manus.GloveBinder mBinder;
+    private Manus.GloveBinder mBinder = null;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -58,8 +41,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             mBinder = (Manus.GloveBinder) service;
-            if (mBinder.getGloveCount() > 0)
-                mBinder.getGlove(0).addObserver(mScope);
+            mBinder.addOnGloveChangedListener(mScope);
         }
 
         @Override
@@ -144,6 +126,24 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
         return true;
+    }
+
+    @Override
+    public void OnGloveChanged(int index, Glove glove) {
+        if (index > 0)
+            return;
+
+        Glove.Quaternion quat = glove.getQuaternion();
+        Glove.Vector euler = glove.getEuler(quat);
+        Glove.Vector degrees = euler.ToDegrees();
+
+        ProgressBar yaw = (ProgressBar)findViewById(R.id.yaw);
+        ProgressBar pitch = (ProgressBar)findViewById(R.id.pitch);
+        ProgressBar roll = (ProgressBar)findViewById(R.id.roll);
+
+        roll.setProgress((int)degrees.x + 180);
+        pitch.setProgress((int)degrees.y + 90);
+        yaw.setProgress((int)degrees.z + 180);
     }
 
     /**

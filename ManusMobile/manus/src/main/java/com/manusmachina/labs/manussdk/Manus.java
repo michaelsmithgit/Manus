@@ -51,6 +51,9 @@ public class Manus extends Service {
     // Binder given to clients
     private final IBinder mBinder = new GloveBinder();
 
+    // The Bluetooth adapter
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
     // List of detected gloves
     private List<Glove> mGloves = new ArrayList<>();
 
@@ -67,18 +70,11 @@ public class Manus extends Service {
     // Updates the list of gloves at a set interval
     private final Runnable mGloveUpdater = new Runnable() {
         public void run() {
-            // Use this check to determine whether BLE is supported on the device.
-            if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-                throw new UnsupportedOperationException();
-            }
-
-            // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-            // BluetoothAdapter through BluetoothManager.
-            final BluetoothManager bluetoothManager =
-                    (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+            if (mBluetoothAdapter == null)
+                return;
 
             // Build the list of gloves
-            Set<BluetoothDevice> devices = bluetoothManager.getAdapter().getBondedDevices();
+            Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
             for (BluetoothDevice dev : devices) {
                 // Skip this device if a glove has already been added for it
                 boolean gloveFound = false;
@@ -156,6 +152,19 @@ public class Manus extends Service {
 
     @Override
     public void onCreate() {
+        // Use this check to determine whether BLE is supported on the device.
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            throw new UnsupportedOperationException();
+        }
+
+        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
+        // BluetoothAdapter through BluetoothManager.
+        final BluetoothManager mBluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+
+        if (mBluetoothManager != null)
+            mBluetoothAdapter = mBluetoothManager.getAdapter();
+
         mScheduler.scheduleAtFixedRate(mGloveUpdater, 0, 1, TimeUnit.SECONDS);
     }
 

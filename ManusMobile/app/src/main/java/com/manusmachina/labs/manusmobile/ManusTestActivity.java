@@ -1,5 +1,10 @@
 package com.manusmachina.labs.manusmobile;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -43,16 +48,34 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
      */
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
-    private List<Glove> gloves;
+    private ManusTestActivity mScope = this;
+    private Manus.GloveBinder mBinder;
+
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            mBinder = (Manus.GloveBinder) service;
+            if (mBinder.getGloveCount() > 0)
+                mBinder.getGlove(0).addObserver(mScope);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manus_test);
 
-        gloves = Manus.getGloves(this);
-        for (Glove glove : gloves)
-            glove.addObserver(this);
+        // Bind to Manus service
+        Intent intent = new Intent(this, Manus.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getSupportActionBar();

@@ -27,6 +27,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.UUID;
@@ -148,14 +149,6 @@ public class Glove extends Observable {
         mPage = mUsage = 0;
         mGatt = dev.connectGatt(con, true, mGattCallback);
         mReports = new ArrayList<>();
-    }
-
-    protected void close() {
-        if (mGatt == null)
-            return;
-
-        mGatt.close();
-        mGatt = null;
     }
 
     /*! \brief Get the state of a glove.

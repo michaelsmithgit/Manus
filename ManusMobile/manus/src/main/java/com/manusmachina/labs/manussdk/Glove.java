@@ -75,12 +75,13 @@ public class Glove extends Observable {
     private static final float COMPASS_DIVISOR  = 32.0f;
     private static final float FINGER_DIVISOR   = 255.0f;
 
-    private byte[] mReportMap;
-    private ArrayList<BluetoothGattCharacteristic> mReports;
+    private byte[] mReportMap = null;
+    private ArrayList<BluetoothGattCharacteristic> mReports = new ArrayList<>();
 
-    protected BluetoothGatt mGatt;
-    protected byte mPage;
-    protected byte mUsage;
+    protected BluetoothGatt mGatt = null;
+    protected int mConnectionState = BluetoothGatt.STATE_DISCONNECTED;
+    protected byte mPage = 0;
+    protected byte mUsage = 0;
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -95,6 +96,7 @@ public class Glove extends Observable {
         @Override
         public void onConnectionStateChange(final BluetoothGatt gatt, final int status, final int newState) {
             super.onConnectionStateChange(gatt, status, newState);
+            mConnectionState = newState;
 
             if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED) {
                 gatt.discoverServices();
@@ -146,9 +148,11 @@ public class Glove extends Observable {
     };
 
     protected Glove(Context con, BluetoothDevice dev) {
-        mPage = mUsage = 0;
         mGatt = dev.connectGatt(con, true, mGattCallback);
-        mReports = new ArrayList<>();
+    }
+
+    public boolean isConnected() {
+        return mConnectionState == BluetoothGatt.STATE_CONNECTED;
     }
 
     /*! \brief Get the state of a glove.

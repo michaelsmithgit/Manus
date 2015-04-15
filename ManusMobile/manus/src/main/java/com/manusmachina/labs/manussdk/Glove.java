@@ -98,7 +98,8 @@ public class Glove extends Observable {
             super.onConnectionStateChange(gatt, status, newState);
             mConnectionState = newState;
 
-            if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED) {
+            if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED &&
+                    gatt.getServices().isEmpty()) {
                 gatt.discoverServices();
             }
         }

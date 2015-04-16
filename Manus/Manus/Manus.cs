@@ -201,7 +201,7 @@ namespace ManusMachina
 	    *  \param right_hand Set the glove as a right hand.
 	    */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-	    public static int ManusSetHandedness(uint glove, bool right_hand);
+        public static extern int ManusSetHandedness(uint glove, bool right_hand);
 
 	    /*! \brief Calibrate the IMU on the glove.
 	    *
@@ -217,6 +217,6 @@ namespace ManusMachina
 	    *  \param accel Calibrate the accelerometer.
 	    */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-	    public static int ManusCalibrate(uint glove, bool gyro, bool accel = true);
+        public static extern int ManusCalibrate(uint glove, bool gyro, bool accel = true);
     }
 }

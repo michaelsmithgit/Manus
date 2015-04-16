@@ -84,4 +84,9 @@
       <Filter>sensorFusion</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Manus.cs">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

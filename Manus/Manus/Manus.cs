@@ -189,5 +189,34 @@ namespace ManusMachina
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ManusGetGravity(out GLOVE_VECTOR gravity, ref GLOVE_QUATERNION quaternion);
+
+	    /*! \brief Configure the handedness of the glove.
+	    *
+	    *  This reconfigures the glove for a different hand.
+	    *
+	    *  \warning This function overwrites factory settings on the
+	    *  glove, it should only be called if the user requested it.
+	    *
+	    *  \param glove The glove index.
+	    *  \param right_hand Set the glove as a right hand.
+	    */
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+	    public static int ManusSetHandedness(uint glove, bool right_hand);
+
+	    /*! \brief Calibrate the IMU on the glove.
+	    *
+	    *  This will run a self-test of the IMU and recalibrate it.
+	    *  The glove should be placed on a stable flat surface during
+	    *  recalibration.
+	    *
+	    *  \warning This function overwrites factory settings on the
+	    *  glove, it should only be called if the user requested it.
+	    *
+	    *  \param glove The glove index.
+	    *  \param gyro Calibrate the gyroscope.
+	    *  \param accel Calibrate the accelerometer.
+	    */
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+	    public static int ManusCalibrate(uint glove, bool gyro, bool accel = true);
     }
 }

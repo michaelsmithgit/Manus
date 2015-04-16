@@ -34,6 +34,7 @@
 
 Glove::Glove(const char* device_path)
 	: m_running(false)
+	, m_update_flags(false)
 {
 	//memset(&m_report, 0, sizeof(m_report));
 
@@ -109,6 +110,14 @@ void Glove::DeviceThread(Glove* glove)
 	// Keep retrieving reports while the SDK is running and the device is connected
 	while (glove->m_running && device)
 	{
+		if (glove->m_update_flags)
+		{
+			glove->m_update_flags = false;
+			flags[0] = 1; // Set feature report ID
+			memcpy(flags + 1, &glove->m_flags, sizeof(FLAGS_REPORT));
+			hid_send_feature_report(device, flags, sizeof(flags));
+		}
+
 		unsigned char report[sizeof(GLOVE_REPORT) + 1];
 		read = hid_read(device, report, sizeof(report));
 
@@ -181,4 +190,15 @@ void Glove::UpdateState()
 	// copy the output of the sensor fusion to m_state
 	memcpy(&(m_state.data.Quaternion), &myQuaternionOut, sizeof(GLOVE_QUATERNION));
 	memcpy(&(m_state.data.Acceleration), &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
+}
+
+uint8_t Glove::GetFlags()
+{
+	return m_flags.flags;
+}
+
+void Glove::SetFlags(uint8_t flags)
+{
+	m_flags.flags = flags;
+	m_update_flags = true;
 }

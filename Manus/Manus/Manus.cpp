@@ -31,15 +31,35 @@
 #include <mutex>
 
 // TODO: Acquire Manus VID/PID
-#define MANUS_VENDOR_ID 0x0
-#define MANUS_PRODUCT_ID 0x0
-#define MANUS_GLOVE_PAGE 0x03
-#define MANUS_GLOVE_USAGE 0x04
+#define MANUS_VENDOR_ID         0x0
+#define MANUS_PRODUCT_ID        0x0
+#define MANUS_GLOVE_PAGE	    0x03
+#define MANUS_GLOVE_USAGE       0x04
+
+// flag for handedness (0 = left, 1 = right)
+#define GLOVE_FLAGS_HANDEDNESS  0x1
+#define GLOVE_FLAGS_CAL_GYRO    0x2
+#define GLOVE_FLAGS_CAL_ACCEL   0x4
 
 std::vector<Glove*> g_gloves;
 std::mutex g_gloves_mutex;
 
 Devices* g_devices;
+
+int GetGlove(unsigned int glove, Glove** elem)
+{
+	std::lock_guard<std::mutex> lock(g_gloves_mutex);
+
+	if (glove >= g_gloves.size())
+		return MANUS_OUT_OF_RANGE;
+
+	if (!g_gloves[glove]->IsRunning())
+		return MANUS_DISCONNECTED;
+
+	*elem = g_gloves[glove];
+
+	return MANUS_SUCCESS;
+}
 
 void DeviceConnected(const char* device_path)
 {
@@ -121,20 +141,12 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)
 {
 	// Get the glove from the list
 	Glove* elem;
-	{
-		std::lock_guard<std::mutex> lock(g_gloves_mutex);
+	int ret = GetGlove(glove, &elem);
+	if (ret != MANUS_SUCCESS)
+		return ret;
 
-		if (glove >= g_gloves.size())
-			return MANUS_OUT_OF_RANGE;
-
-		if (!g_gloves[glove]->IsRunning())
-			return MANUS_DISCONNECTED;
-
-		if (!state)
-			return MANUS_INVALID_ARGUMENT;
-
-		elem = g_gloves[glove];
-	}
+	if (!state)
+		return MANUS_INVALID_ARGUMENT;
 
 	return elem->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
 }
@@ -180,6 +192,44 @@ int ManusGetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* q)
 	gravity->x = 2 * (q->x*q->z - q->w*q->y);
 	gravity->y = 2 * (q->w*q->x + q->y*q->z);
 	gravity->z = q->w*q->w - q->x*q->x - q->y*q->y + q->z*q->z;
+
+	return MANUS_SUCCESS;
+}
+
+int ManusSetHandedness(unsigned int glove, bool right_hand)
+{
+	// Get the glove from the list
+	Glove* elem;
+	int ret = GetGlove(glove, &elem);
+	if (ret != MANUS_SUCCESS)
+		return ret;
+
+	// Set the flags
+	uint8_t flags = elem->GetFlags();
+	if (right_hand)
+		flags |= GLOVE_FLAGS_HANDEDNESS;
+	else
+		flags &= ~GLOVE_FLAGS_HANDEDNESS;
+	elem->SetFlags(flags);
+
+	return MANUS_SUCCESS;
+}
+
+int ManusCalibrate(unsigned int glove, bool gyro, bool accel)
+{
+	// Get the glove from the list
+	Glove* elem;
+	int ret = GetGlove(glove, &elem);
+	if (ret != MANUS_SUCCESS)
+		return ret;
+
+	// Set the flags
+	uint8_t flags = elem->GetFlags();
+	if (gyro)
+		flags |= GLOVE_FLAGS_CAL_GYRO;
+	if (accel)
+		flags |= GLOVE_FLAGS_CAL_ACCEL;
+	elem->SetFlags(flags);
 
 	return MANUS_SUCCESS;
 }

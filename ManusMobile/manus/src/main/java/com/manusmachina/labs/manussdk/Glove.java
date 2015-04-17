@@ -27,9 +27,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 
-import java.io.Closeable;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.UUID;
 
 /**
@@ -37,8 +35,8 @@ import java.util.UUID;
  */
 public class Glove extends BluetoothGattCallback {
     public enum Handedness {
-        LeftHand,
-        RightHand
+        LEFT_HAND,
+        RIGHT_HAND
     }
 
     public class Quaternion {
@@ -67,11 +65,11 @@ public class Glove extends BluetoothGattCallback {
         }
     }
 
-    protected static final UUID HID_SERVICE       = UUID16.toUUID(0x18, 0x12);
-    protected static final UUID HID_INFORMATION   = UUID16.toUUID(0x2A, 0x4A);
-    protected static final UUID HID_REPORT_MAP    = UUID16.toUUID(0x2A, 0x4B);
-    protected static final UUID HID_CONTROL_POINT = UUID16.toUUID(0x2A, 0x4C);
-    protected static final UUID HID_REPORT        = UUID16.toUUID(0x2A, 0x4D);
+    private static final UUID HID_SERVICE       = UUID16.toUUID(0x18, 0x12);
+    private static final UUID HID_INFORMATION   = UUID16.toUUID(0x2A, 0x4A);
+    private static final UUID HID_REPORT_MAP    = UUID16.toUUID(0x2A, 0x4B);
+    private static final UUID HID_CONTROL_POINT = UUID16.toUUID(0x2A, 0x4C);
+    private static final UUID HID_REPORT        = UUID16.toUUID(0x2A, 0x4D);
 
     private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID16.toUUID(0x29, 0x02);
 
@@ -176,9 +174,9 @@ public class Glove extends BluetoothGattCallback {
         byte flags = value[0];
 
         if ((flags & GLOVE_FLAGS_HANDEDNESS) == 0)
-            return Handedness.LeftHand;
+            return Handedness.LEFT_HAND;
         else
-            return Handedness.RightHand;
+            return Handedness.RIGHT_HAND;
     }
 
     /*! \brief Get the state of a glove.

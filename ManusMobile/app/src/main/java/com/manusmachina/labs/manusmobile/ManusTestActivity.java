@@ -39,10 +39,6 @@ import android.widget.ProgressBar;
 
 import com.manusmachina.labs.manussdk.*;
 
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 
 public class ManusTestActivity extends ActionBarActivity implements ActionBar.OnNavigationListener, Manus.OnGloveChangedListener {
     /**
@@ -165,7 +161,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         roll.setProgress((int)degrees.x + 180);
         pitch.setProgress((int)degrees.y + 90);
         yaw.setProgress((int)degrees.z + 180);
-        handedness.setChecked(glove.getHandedness() == Glove.Handedness.RightHand);
+        handedness.setChecked(glove.getHandedness() == Glove.Handedness.RIGHT_HAND);
     }
 
     /**

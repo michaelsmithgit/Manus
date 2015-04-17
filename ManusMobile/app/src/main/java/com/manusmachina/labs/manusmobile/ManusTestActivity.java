@@ -34,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 
 import com.manusmachina.labs.manussdk.*;
@@ -159,10 +160,12 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         ProgressBar yaw = (ProgressBar)findViewById(R.id.yaw);
         ProgressBar pitch = (ProgressBar)findViewById(R.id.pitch);
         ProgressBar roll = (ProgressBar)findViewById(R.id.roll);
+        CheckBox handedness = (CheckBox)findViewById(R.id.handedness);
 
         roll.setProgress((int)degrees.x + 180);
         pitch.setProgress((int)degrees.y + 90);
         yaw.setProgress((int)degrees.z + 180);
+        handedness.setChecked(glove.getHandedness() == Glove.Handedness.RightHand);
     }
 
     /**

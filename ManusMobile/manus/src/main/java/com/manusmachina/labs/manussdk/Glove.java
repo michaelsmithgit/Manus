@@ -36,6 +36,11 @@ import java.util.UUID;
  * Created by Armada on 8-4-2015.
  */
 public class Glove extends BluetoothGattCallback {
+    public enum Handedness {
+        LeftHand,
+        RightHand
+    }
+
     public class Quaternion {
         public float w, x, y, z;
 
@@ -74,6 +79,9 @@ public class Glove extends BluetoothGattCallback {
     private static final float QUAT_DIVISOR     = 16384.0f;
     private static final float COMPASS_DIVISOR  = 32.0f;
     private static final float FINGER_DIVISOR   = 255.0f;
+
+    // flag for handedness (0 = left, 1 = right)
+    private static final int GLOVE_FLAGS_HANDEDNESS = 0x1;
 
     private byte[] mReportMap = null;
     private ArrayList<BluetoothGattCharacteristic> mReports = new ArrayList<>();
@@ -140,6 +148,9 @@ public class Glove extends BluetoothGattCallback {
             mReportMap = characteristic.getValue();
             mPage = mReportMap[0];
             mUsage = mReportMap[1];
+
+            // Only when we have the report map it's safe to read the feature report
+            mGatt.readCharacteristic(mReports.get(2));
         }
     }
 
@@ -150,6 +161,19 @@ public class Glove extends BluetoothGattCallback {
 
     public boolean isConnected() {
         return mConnectionState == BluetoothGatt.STATE_CONNECTED;
+    }
+
+    public Handedness getHandedness() {
+        byte[] value = mReports.get(2).getValue();
+        if (value == null)
+            return null;
+
+        byte flags = value[0];
+
+        if ((flags & GLOVE_FLAGS_HANDEDNESS) == 0)
+            return Handedness.LeftHand;
+        else
+            return Handedness.RightHand;
     }
 
     /*! \brief Get the state of a glove.

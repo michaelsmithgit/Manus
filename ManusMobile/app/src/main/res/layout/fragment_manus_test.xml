@@ -55,5 +55,12 @@
             android:id="@+id/roll"
             android:max="360"
             android:indeterminate="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Right Hand"
+            android:id="@+id/handedness"
+            android:checked="false" />
     </LinearLayout>
 </RelativeLayout>

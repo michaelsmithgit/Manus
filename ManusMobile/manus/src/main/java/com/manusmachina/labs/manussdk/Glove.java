@@ -73,7 +73,7 @@ public class Glove extends BluetoothGattCallback {
     protected static final UUID HID_CONTROL_POINT = UUID16.toUUID(0x2A, 0x4C);
     protected static final UUID HID_REPORT        = UUID16.toUUID(0x2A, 0x4D);
 
-    private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID16.toUUID(0x29, 0x02);
 
     private static final float ACCEL_DIVISOR    = 16384.0f;
     private static final float QUAT_DIVISOR     = 16384.0f;
@@ -124,11 +124,14 @@ public class Glove extends BluetoothGattCallback {
                     gatt.readCharacteristic(reportChar);
                 }
 
-                // Enable notifcations on all input reports
                 for (BluetoothGattCharacteristic report : service.getCharacteristics()) {
                     if (report.getUuid().equals(HID_REPORT)) {
+                        // Enable notification if the report supports it
                         if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
+                            // Enable the notification on the client
                             gatt.setCharacteristicNotification(report, true);
+
+                            // Enable the notification on the server
                             BluetoothGattDescriptor descriptor = report.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
                             if (descriptor != null) {
                                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
@@ -190,6 +193,9 @@ public class Glove extends BluetoothGattCallback {
         BluetoothGattCharacteristic report = mReports.get(0);
         int format = BluetoothGattCharacteristic.FORMAT_SINT16;
 
+        if (report.getValue() == null)
+            return null;
+
         return new Quaternion(
                 report.getIntValue(format, 0) / QUAT_DIVISOR,
                 report.getIntValue(format, 2) / QUAT_DIVISOR,
@@ -202,6 +208,9 @@ public class Glove extends BluetoothGattCallback {
         BluetoothGattCharacteristic report = mReports.get(0);
         int format = BluetoothGattCharacteristic.FORMAT_SINT16;
 
+        if (report.getValue() == null)
+            return null;
+
         return new Vector(
                 report.getIntValue(format, 8) / ACCEL_DIVISOR,
                 report.getIntValue(format, 10) / ACCEL_DIVISOR,
@@ -211,6 +220,10 @@ public class Glove extends BluetoothGattCallback {
 
     public float getFinger(int i) {
         BluetoothGattCharacteristic report = mReports.get(0);
+
+        if (report.getValue() == null)
+            return -1.0f;
+
         return report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
     }
 

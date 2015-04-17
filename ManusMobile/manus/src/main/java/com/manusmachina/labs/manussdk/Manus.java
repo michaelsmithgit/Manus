@@ -128,7 +128,10 @@ public class Manus extends Service {
         }
 
         public Glove getGlove(int glove) {
-            return mGloves.get(glove);
+            if (glove < mGloves.size())
+                return mGloves.get(glove);
+            else
+                return null;
         }
 
         /**

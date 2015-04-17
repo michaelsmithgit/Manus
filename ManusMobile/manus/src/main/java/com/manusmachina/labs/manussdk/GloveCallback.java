@@ -23,6 +23,9 @@ package com.manusmachina.labs.manussdk;
  * Created by Armada on 17-4-2015.
  */
 abstract class GloveCallback {
+    public void OnDetected(Glove glove, boolean isGlove) {
+    }
+
     public void OnChanged(Glove glove) {
     }
 }

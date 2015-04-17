@@ -78,6 +78,12 @@ public class Glove extends BluetoothGattCallback {
     private static final float COMPASS_DIVISOR  = 32.0f;
     private static final float FINGER_DIVISOR   = 255.0f;
 
+    // TODO: Acquire Manus VID/PID
+    protected static final int VENDOR_ID      = 0x0;
+    protected static final int PRODUCT_ID     = 0x0;
+    protected static final byte GLOVE_PAGE    = 0x03;
+    protected static final byte GLOVE_USAGE   = 0x04;
+
     // flag for handedness (0 = left, 1 = right)
     private static final int GLOVE_FLAGS_HANDEDNESS = 0x1;
 
@@ -87,8 +93,6 @@ public class Glove extends BluetoothGattCallback {
     protected GloveCallback mGloveCallback = null;
     protected BluetoothGatt mGatt = null;
     protected int mConnectionState = BluetoothGatt.STATE_DISCONNECTED;
-    protected byte mPage = 0;
-    protected byte mUsage = 0;
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
@@ -149,11 +153,17 @@ public class Glove extends BluetoothGattCallback {
 
         if (characteristic.getUuid().equals(HID_REPORT_MAP)) {
             mReportMap = characteristic.getValue();
-            mPage = mReportMap[0];
-            mUsage = mReportMap[1];
 
-            // Only when we have the report map it's safe to read the feature report
-            mGatt.readCharacteristic(mReports.get(2));
+            // Detect if this device is really a glove
+            if (mReportMap[1] == GLOVE_PAGE && mReportMap[3] == GLOVE_USAGE) {
+                mGloveCallback.OnDetected(this, true);
+
+                // Only when we have the report map it's safe to read the feature report
+                mGatt.readCharacteristic(mReports.get(2));
+            } else {
+                mGloveCallback.OnDetected(this, false);
+                mGatt.close();
+            }
         }
     }
 

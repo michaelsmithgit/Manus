@@ -44,17 +44,14 @@ import java.util.concurrent.TimeUnit;
  * @{
  */
 public class Manus extends Service {
-    // TODO: Acquire Manus VID/PID
-    private static final int VENDOR_ID      = 0x0;
-    private static final int PRODUCT_ID     = 0x0;
-    private static final byte GLOVE_PAGE    = 0x03;
-    private static final byte GLOVE_USAGE   = 0x04;
-
     // Binder given to clients
     private final IBinder mBinder = new GloveBinder();
 
     // The bluetooth adapter
     private BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
+
+    // List of gloves pending detection
+    private List<Glove> mPendingGloves = new ArrayList<>();
 
     // List of detected gloves
     private List<Glove> mGloves = new ArrayList<>();
@@ -65,7 +62,7 @@ public class Manus extends Service {
     // Connect to a BluetoothDevice
     private void connect(BluetoothDevice dev) {
         // Reconnect to this device if a glove has already been added for it
-        for (Glove glove : mGloves) {
+        for (Glove glove : mPendingGloves) {
             if (glove.mGatt.getDevice().getAddress().equals(dev.getAddress())) {
                 glove.mGatt.connect();
                 return;
@@ -73,7 +70,7 @@ public class Manus extends Service {
         }
 
         Glove glove = new Glove(this, dev, mGloveCallback);
-        mGloves.add(glove);
+        mPendingGloves.add(glove);
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -105,6 +102,14 @@ public class Manus extends Service {
     };
 
     private GloveCallback mGloveCallback = new GloveCallback() {
+        @Override
+        public void OnDetected(Glove glove, boolean isGlove) {
+            if (isGlove)
+                mGloves.add(glove);
+            else
+                mPendingGloves.remove(glove);
+        }
+
         @Override
         public void OnChanged(Glove glove) {
             int index = mGloves.indexOf(glove);

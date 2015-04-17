@@ -94,7 +94,9 @@ public class Glove extends BluetoothGattCallback {
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-        mGloveCallback.OnChanged(this);
+        // Only callback when the primary input report changed
+        if (mReports.indexOf(characteristic) == 0)
+            mGloveCallback.OnChanged(this);
     }
 
     @Override

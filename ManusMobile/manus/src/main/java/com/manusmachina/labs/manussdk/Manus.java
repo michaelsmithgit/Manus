@@ -72,8 +72,7 @@ public class Manus extends Service {
             }
         }
 
-        Glove glove = new Glove(this, dev);
-        glove.addObserver(mGloveObserver);
+        Glove glove = new Glove(this, dev, mGloveCallback);
         mGloves.add(glove);
     }
 
@@ -105,10 +104,9 @@ public class Manus extends Service {
         }
     };
 
-    private Observer mGloveObserver = new Observer() {
+    private GloveCallback mGloveCallback = new GloveCallback() {
         @Override
-        public void update(Observable observable, Object data) {
-            Glove glove = (Glove)observable;
+        public void OnChanged(Glove glove) {
             int index = mGloves.indexOf(glove);
             for (OnGloveChangedListener listener : mOnGloveChangedListeners) {
                 listener.OnGloveChanged(index, glove);
@@ -190,7 +188,6 @@ public class Manus extends Service {
         unregisterReceiver(mReceiver);
 
         for (Glove glove : mGloves) {
-            glove.deleteObservers();
             glove.mGatt.close();
         }
         mGloves.clear();

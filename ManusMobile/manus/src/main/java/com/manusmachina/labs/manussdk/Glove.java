@@ -35,7 +35,7 @@ import java.util.UUID;
 /**
  * Created by Armada on 8-4-2015.
  */
-public class Glove extends Observable {
+public class Glove extends BluetoothGattCallback {
     public class Quaternion {
         public float w, x, y, z;
 
@@ -78,78 +78,74 @@ public class Glove extends Observable {
     private byte[] mReportMap = null;
     private ArrayList<BluetoothGattCharacteristic> mReports = new ArrayList<>();
 
+    protected GloveCallback mGloveCallback = null;
     protected BluetoothGatt mGatt = null;
     protected int mConnectionState = BluetoothGatt.STATE_DISCONNECTED;
     protected byte mPage = 0;
     protected byte mUsage = 0;
 
-    // Implements callback methods for GATT events that the app cares about.  For example,
-    // connection change and services discovered.
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-        @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            super.onCharacteristicChanged(gatt, characteristic);
-            setChanged();
-            notifyObservers(characteristic);
+    @Override
+    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        mGloveCallback.OnChanged(this);
+    }
+
+    @Override
+    public void onConnectionStateChange(final BluetoothGatt gatt, final int status, final int newState) {
+        super.onConnectionStateChange(gatt, status, newState);
+        mConnectionState = newState;
+
+        if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED &&
+                gatt.getServices().isEmpty()) {
+            gatt.discoverServices();
         }
+    }
 
-        @Override
-        public void onConnectionStateChange(final BluetoothGatt gatt, final int status, final int newState) {
-            super.onConnectionStateChange(gatt, status, newState);
-            mConnectionState = newState;
+    @Override
+    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+        super.onServicesDiscovered(gatt, status);
 
-            if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED &&
-                    gatt.getServices().isEmpty()) {
-                gatt.discoverServices();
-            }
-        }
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            // Get the HID Service if it exists
+            BluetoothGattService service = gatt.getService(HID_SERVICE);
+            if (service != null) {
+                // Get the HID Report Map if there is one
+                BluetoothGattCharacteristic reportChar = service.getCharacteristic(HID_REPORT_MAP);
+                if (reportChar != null) {
+                    gatt.readCharacteristic(reportChar);
+                }
 
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            super.onServicesDiscovered(gatt, status);
-
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                // Get the HID Service if it exists
-                BluetoothGattService service = gatt.getService(HID_SERVICE);
-                if (service != null) {
-                    // Get the HID Report Map if there is one
-                    BluetoothGattCharacteristic reportChar = service.getCharacteristic(HID_REPORT_MAP);
-                    if (reportChar != null) {
-                        gatt.readCharacteristic(reportChar);
-                    }
-
-                    // Enable notifcations on all input reports
-                    for (BluetoothGattCharacteristic report : service.getCharacteristics()) {
-                        if (report.getUuid().equals(HID_REPORT)) {
-                            if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
-                                gatt.setCharacteristicNotification(report, true);
-                                BluetoothGattDescriptor descriptor = report.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
-                                if (descriptor != null) {
-                                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                    gatt.writeDescriptor(descriptor);
-                                }
+                // Enable notifcations on all input reports
+                for (BluetoothGattCharacteristic report : service.getCharacteristics()) {
+                    if (report.getUuid().equals(HID_REPORT)) {
+                        if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
+                            gatt.setCharacteristicNotification(report, true);
+                            BluetoothGattDescriptor descriptor = report.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
+                            if (descriptor != null) {
+                                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                gatt.writeDescriptor(descriptor);
                             }
-                            mReports.add(report);
                         }
+                        mReports.add(report);
                     }
                 }
             }
         }
+    }
 
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            super.onCharacteristicRead(gatt, characteristic, status);
+    @Override
+    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+        super.onCharacteristicRead(gatt, characteristic, status);
 
-            if (characteristic.getUuid().equals(HID_REPORT_MAP)) {
-                mReportMap = characteristic.getValue();
-                mPage = mReportMap[0];
-                mUsage = mReportMap[1];
-            }
+        if (characteristic.getUuid().equals(HID_REPORT_MAP)) {
+            mReportMap = characteristic.getValue();
+            mPage = mReportMap[0];
+            mUsage = mReportMap[1];
         }
-    };
+    }
 
-    protected Glove(Context con, BluetoothDevice dev) {
-        mGatt = dev.connectGatt(con, true, mGattCallback);
+    protected Glove(Context con, BluetoothDevice dev, GloveCallback callback) {
+        mGatt = dev.connectGatt(con, true, this);
+        mGloveCallback = callback;
     }
 
     public boolean isConnected() {

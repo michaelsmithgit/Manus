@@ -84,6 +84,17 @@ namespace ManusMachina
                     default: throw new InvalidOperationException();
                 }
             }
+
+            set
+            {
+                switch (index)
+                {
+                    case 0: this.x = value; return;
+                    case 1: this.y = value; return;
+                    case 2: this.z = value; return;
+                    default: throw new InvalidOperationException();
+                }
+            }
         }
 
 

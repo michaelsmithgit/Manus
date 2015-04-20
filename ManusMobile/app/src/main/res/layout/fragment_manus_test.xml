@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:text="Right Hand"
             android:id="@+id/handedness"
-            android:checked="false" />
+            android:checked="false"
+            android:enabled="false" />
     </LinearLayout>
 </RelativeLayout>

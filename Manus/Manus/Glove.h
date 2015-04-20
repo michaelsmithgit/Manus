@@ -54,7 +54,8 @@ typedef struct
 {
 	uint8_t flags;
 	uint8_t fingers[GLOVE_FINGERS];
-} FLAGS_REPORT;
+	uint8_t max_fingers[GLOVE_FINGERS];
+} CALIB_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 
 
@@ -69,7 +70,7 @@ private:
 	unsigned int m_packets;
 	GLOVE_REPORT m_report;
 	COMPASS_REPORT m_compass;
-	FLAGS_REPORT m_flags;
+	CALIB_REPORT m_calib;
 
 	char* m_device_path;
 	SensorFusion m_sensorFusion;

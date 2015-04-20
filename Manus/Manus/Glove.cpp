@@ -95,15 +95,15 @@ void Glove::DeviceThread(Glove* glove)
 	if (!device)
 		return;
 
-	// Get the flags from the feature report
-	unsigned char flags[sizeof(FLAGS_REPORT) + 1];
-	flags[0] = 1; // Set feature report ID
-	int read = hid_get_feature_report(device, flags, sizeof(flags));
+	// Get the calibration data from the feature report
+	unsigned char calib[sizeof(CALIB_REPORT) + 1];
+	calib[0] = 1; // Set feature report ID
+	int read = hid_get_feature_report(device, calib, sizeof(calib));
 
 	// If the feature have been read correctly set the flags
 	// FIXME: HIDAPI returns the data starting at index 0 instead of index 1
 	if (read != -1)
-		memcpy(&glove->m_flags, flags, sizeof(FLAGS_REPORT));
+		memcpy(&glove->m_calib, calib, sizeof(CALIB_REPORT));
 
 	glove->m_running = true;
 
@@ -113,9 +113,9 @@ void Glove::DeviceThread(Glove* glove)
 		if (glove->m_update_flags)
 		{
 			glove->m_update_flags = false;
-			flags[0] = 1; // Set feature report ID
-			memcpy(flags + 1, &glove->m_flags, sizeof(FLAGS_REPORT));
-			hid_send_feature_report(device, flags, sizeof(flags));
+			calib[0] = 1; // Set feature report ID
+			memcpy(calib + 1, &glove->m_calib, sizeof(CALIB_REPORT));
+			hid_send_feature_report(device, calib, sizeof(calib));
 		}
 
 		unsigned char report[sizeof(GLOVE_REPORT) + 1];
@@ -155,7 +155,7 @@ void Glove::UpdateState()
 	fquaternion myQuaternionOut;
 
 	m_state.PacketNumber++;
-	m_state.data.Handedness = m_flags.flags & GLOVE_FLAGS_HANDEDNESS;
+	m_state.data.Handedness = m_calib.flags & GLOVE_FLAGS_HANDEDNESS;
 
 	// normalize acceleration data
 	for (int i = 0; i < GLOVE_AXES; i++){
@@ -194,11 +194,11 @@ void Glove::UpdateState()
 
 uint8_t Glove::GetFlags()
 {
-	return m_flags.flags;
+	return m_calib.flags;
 }
 
 void Glove::SetFlags(uint8_t flags)
 {
-	m_flags.flags = flags;
+	m_calib.flags = flags;
 	m_update_flags = true;
 }

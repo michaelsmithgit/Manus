@@ -1,21 +1,28 @@
-/**
-* Copyright (C) 2015 Manus Machina
-*
-* This file is part of the Manus SDK.
-*
-* Manus SDK is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* Manus SDK is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with Manus SDK. If not, see <http://www.gnu.org/licenses/>.
-*/
+// Copyright (c) 2014, Freescale Semiconductor, Inc.
+// All rights reserved.
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of Freescale Semiconductor, Inc. nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL FREESCALE SEMICONDUCTOR, INC. BE LIABLE FOR ANY
+// DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+// ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 #include "stdafx.h"
 #include "SensorFusion.h"
 #include "matrix.h"
@@ -26,9 +33,7 @@
 
 SensorFusion::SensorFusion()
 {
-	int i;
-
-	for (i = X; i <= Z; i++)
+	for (int i = X; i <= Z; i++)
 	{
 		thisAccel.iSumGpFast[i] = 0;
 		thisMag.iSumBpFast[i] = 0;
@@ -37,28 +42,29 @@ SensorFusion::SensorFusion()
 	thisSV_9DOF_GBY_KALMAN.resetflag = true;
 	fInitMagCalibration(&thisMagCal, &thisMagBuffer);
 	loopcounter = 0;
-
-	return;
 }
 
-void SensorFusion::fusionTask(struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix, struct fquaternion *pthisOrientMatrixFused)
+void SensorFusion::Fusion_Task(struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix, struct fquaternion *pthisOrientMatrixFused)
 {
 	// copy all values to the local buffer for use with fusionRun
 	thisAccel = *pthisAccel;
 	thisMag = *pthisMag;
 	thisOrientMatrix = *pthisOrientMatrix;
 
-	fusionRun();
+	Fusion_Run();
 
 	*pthisOrientMatrixFused = thisSV_9DOF_GBY_KALMAN.fqPl;
 }
 
-void SensorFusion::fusionRun()
+void SensorFusion::Fusion_Run(void)
 {
-	int initiatemagcal;
+	int8 initiatemagcal;				// flag to initiate a new magnetic calibration
 
+	// magnetic DOF: remove hard and soft iron terms from Bp (uT) to get calibrated data Bc (uT)
 	fInvertMagCal(&thisMag, &thisMagCal);
 
+	// update magnetic buffer checking for i) absence of first all-zero magnetometer output and ii) no calibration in progress
+	// an all zero magnetometer reading can occur after power-on at rare intervals but it simply won't be used in the buffer
 	if (!((loopcounter < 100) && (thisMag.iBpFast[X] == 0) && (thisMag.iBpFast[Y] == 0) && (thisMag.iBpFast[Z] == 0)) && !thisMagCal.iCalInProgress)
 	{
 		// update the magnetometer measurement buffer integer magnetometer data (typically at 25Hz)
@@ -68,36 +74,45 @@ void SensorFusion::fusionRun()
 	// 9DOF Accel / Mag / Gyro: apply the Kalman filter
 	fRun_9DOF_GBY_KALMAN_MANUS(&thisSV_9DOF_GBY_KALMAN, &thisAccel, &thisMag, &thisOrientMatrix, &thisMagCal, THISCOORDSYSTEM, OVERSAMPLE_RATIO);
 
-	// do the first 4 element calibration immediately there are a minimum of MINMEASUREMENTS4CAL
-	initiatemagcal = (!thisMagCal.iMagCalHasRun && (thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL));
-
-	// otherwise initiate a calibration at intervals depending on the number of measurements available
-	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL) &&
-		(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS7CAL) &&
-		!(loopcounter % INTERVAL4CAL));
-	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS7CAL) &&
-		(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS10CAL) &&
-		!(loopcounter % INTERVAL7CAL));
-	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS10CAL) &&
-		!(loopcounter % INTERVAL10CAL));
-
-	// initiate the magnetic calibration if any of the conditions are met
-	if (initiatemagcal)
+	// 6DOF and 9DOF: decide whether to initiate a magnetic calibration
+	// check no magnetic calibration is in progress
+	if (!thisMagCal.iCalInProgress)
 	{
-		// set the flags denoting that a calibration is in progress
-		magCalRun(&thisMagCal, &thisMagBuffer);
-		thisMagCal.iMagCalHasRun = 1;
-	} // end of test whether to call calibration functions
+		// do the first 4 element calibration immediately there are a minimum of MINMEASUREMENTS4CAL
+		initiatemagcal = (!thisMagCal.iMagCalHasRun && (thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL));
 
+		// otherwise initiate a calibration at intervals depending on the number of measurements available
+		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL) &&
+			(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS7CAL) &&
+			!(loopcounter % INTERVAL4CAL));
+		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS7CAL) &&
+			(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS10CAL) &&
+			!(loopcounter % INTERVAL7CAL));
+		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS10CAL) &&
+			!(loopcounter % INTERVAL10CAL));
+
+		// initiate the magnetic calibration if any of the conditions are met
+		if (initiatemagcal)
+		{
+			// set the flags denoting that a calibration is in progress
+			thisMagCal.iCalInProgress = 1;
+			thisMagCal.iMagCalHasRun = 1;
+
+			// enable the magnetic calibration task to run
+			MagCal_Event_Flag = 1;
+		} // end of test whether to call calibration functions
+	} // end of test that no calibration is already in progress
+
+	// increment the loopcounter (used for time stamping magnetic data)
 	loopcounter++;
 
 	return;
 }
 
-void SensorFusion::magCalRun(struct MagCalibration *pthisMagCal, struct MagneticBuffer *pthisMagBuffer)
+void SensorFusion::MagCal_Run(struct MagCalibration *pthisMagCal, struct MagneticBuffer *pthisMagBuffer)
 {
-	UINT8 i, j;			// loop counters
-	UINT8 isolver;		// magnetic solver used
+	int8 i, j;			// loop counters
+	int8 isolver;		// magnetic solver used
 
 	// 4 element calibration case
 	if (pthisMagBuffer->iMagBufferCount < MINMEASUREMENTS7CAL)
@@ -168,12 +183,12 @@ void SensorFusion::magCalRun(struct MagCalibration *pthisMagCal, struct Magnetic
 }
 
 // function initializes the 9DOF Kalman filter
-void SensorFusion::fInit_9DOF_GBY_KALMAN(struct SV_9DOF_GBY_KALMAN *pthisSV, int ithisCoordSystem, int iSensorFS, int iOverSampleRatio)
+void SensorFusion::fInit_9DOF_GBY_KALMAN(struct SV_9DOF_GBY_KALMAN *pthisSV, int16 ithisCoordSystem, int16 iSensorFS, int16 iOverSampleRatio)
 {
-	int i, j;				// loop counters
+	int8 i, j;				// loop counters
 
 	// reset the flag denoting that a first 9DOF orientation lock has been achieved
-	// pthisSV->iFirstOrientationLock = 0;
+	pthisSV->iFirstOrientationLock = 0;
 
 	// compute and store useful product terms to save floating point calculations later
 	pthisSV->fFastdeltat = 1.0F / (float)iSensorFS;
@@ -249,8 +264,8 @@ void SensorFusion::fInit_9DOF_GBY_KALMAN(struct SV_9DOF_GBY_KALMAN *pthisSV, int
 	}
 
 	// update the default quaternion type supported to the most sophisticated
-	//if (globals.DefaultQuaternionPacketType < Q9)
-	//	globals.QuaternionPacketType = globals.DefaultQuaternionPacketType = Q9;
+	//if (DefaultQuaternionPacketType < Q9)
+	//	QuaternionPacketType = globals.DefaultQuaternionPacketType = Q9;
 
 	// clear the reset flag
 	pthisSV->resetflag = false;
@@ -259,7 +274,7 @@ void SensorFusion::fInit_9DOF_GBY_KALMAN(struct SV_9DOF_GBY_KALMAN *pthisSV, int
 } // end fInit_9DOF_GBY_KALMAN
 
 void SensorFusion::fRun_9DOF_GBY_KALMAN_MANUS(struct SV_9DOF_GBY_KALMAN *pthisSV, struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix,
-struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
+		struct MagCalibration *pthisMagCal, int16 ithisCoordSystem, int16 iOverSampleRatio)
 {
 	// local scalars and arrays
 	float fopp, fadj, fhyp;						// opposite, adjacent and hypoteneuse
@@ -267,8 +282,8 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	//float rvec[3];								// rotation vector
 	float ftmp;									// scratch variable
 	float ftmpA12x6[12][6];						// scratch array
-	int i, j, k;								// loop counters
-	int iMagJamming;							// magnetic jamming flag
+	int8 i, j, k;								// loop counters
+	int8 iMagJamming;							// magnetic jamming flag
 
 	// assorted array pointers
 	float *pfPPlus12x12ij;
@@ -286,9 +301,9 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 
 	// working arrays for 6x6 matrix inversion
 	float *pfRows[6];
-	int iColInd[6];
-	int iRowInd[6];
-	int iPivot[6];
+	int8 iColInd[6];
+	int8 iRowInd[6];
+	int8 iPivot[6];
 
 	// do a reset and return if requested
 	if (pthisSV->resetflag)
@@ -551,20 +566,16 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	// for fThErrPl, fbErrPl, faErrSePl but also magnetometer for fdErrSePl
 	for (i = X; i <= Z; i++)
 	{
-		pthisSV->fThErrPl[i] =
-			pthisSV->fK12x6[i][0] * pthisSV->fgErrSeMi[X] +
+		pthisSV->fThErrPl[i] = pthisSV->fK12x6[i][0] * pthisSV->fgErrSeMi[X] +
 			pthisSV->fK12x6[i][1] * pthisSV->fgErrSeMi[Y] +
 			pthisSV->fK12x6[i][2] * pthisSV->fgErrSeMi[Z];
-		pthisSV->fbErrPl[i] =
-			pthisSV->fK12x6[i + 3][0] * pthisSV->fgErrSeMi[X] +
+		pthisSV->fbErrPl[i] = pthisSV->fK12x6[i + 3][0] * pthisSV->fgErrSeMi[X] +
 			pthisSV->fK12x6[i + 3][1] * pthisSV->fgErrSeMi[Y] +
 			pthisSV->fK12x6[i + 3][2] * pthisSV->fgErrSeMi[Z];
-		pthisSV->faErrSePl[i] =
-			pthisSV->fK12x6[i + 6][0] * pthisSV->fgErrSeMi[X] +
+		pthisSV->faErrSePl[i] = pthisSV->fK12x6[i + 6][0] * pthisSV->fgErrSeMi[X] +
 			pthisSV->fK12x6[i + 6][1] * pthisSV->fgErrSeMi[Y] +
 			pthisSV->fK12x6[i + 6][2] * pthisSV->fgErrSeMi[Z];
-		pthisSV->fdErrSePl[i] =
-			pthisSV->fK12x6[i + 9][0] * pthisSV->fgErrSeMi[X] +
+		pthisSV->fdErrSePl[i] = pthisSV->fK12x6[i + 9][0] * pthisSV->fgErrSeMi[X] +
 			pthisSV->fK12x6[i + 9][1] * pthisSV->fgErrSeMi[Y] +
 			pthisSV->fK12x6[i + 9][2] * pthisSV->fgErrSeMi[Z] +
 			pthisSV->fK12x6[i + 9][3] * pthisSV->fmErrSeMi[X] +
@@ -573,9 +584,8 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	}
 
 	// set the magnetic jamming flag if there is a significant magnetic error power after calibration
-	ftmp =	pthisSV->fdErrSePl[X] * pthisSV->fdErrSePl[X] +
-			pthisSV->fdErrSePl[Y] * pthisSV->fdErrSePl[Y] +
-			pthisSV->fdErrSePl[Z] * pthisSV->fdErrSePl[Z];
+	ftmp = pthisSV->fdErrSePl[X] * pthisSV->fdErrSePl[X] + pthisSV->fdErrSePl[Y] * pthisSV->fdErrSePl[Y] +
+		pthisSV->fdErrSePl[Z] * pthisSV->fdErrSePl[Z];
 	iMagJamming = (pthisMagCal->iValidMagCal) && (ftmp > pthisMagCal->fFourBsq);
 
 	// add the remaining magnetic error terms if there is calibration and no magnetic jamming
@@ -583,16 +593,13 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	{
 		for (i = X; i <= Z; i++)
 		{
-			pthisSV->fThErrPl[i] +=
-				pthisSV->fK12x6[i][3] * pthisSV->fmErrSeMi[X] +
+			pthisSV->fThErrPl[i] += pthisSV->fK12x6[i][3] * pthisSV->fmErrSeMi[X] +
 				pthisSV->fK12x6[i][4] * pthisSV->fmErrSeMi[Y] +
 				pthisSV->fK12x6[i][5] * pthisSV->fmErrSeMi[Z];
-			pthisSV->fbErrPl[i] += 
-				pthisSV->fK12x6[i + 3][3] * pthisSV->fmErrSeMi[X] +
+			pthisSV->fbErrPl[i] += pthisSV->fK12x6[i + 3][3] * pthisSV->fmErrSeMi[X] +
 				pthisSV->fK12x6[i + 3][4] * pthisSV->fmErrSeMi[Y] +
 				pthisSV->fK12x6[i + 3][5] * pthisSV->fmErrSeMi[Z];
-			pthisSV->faErrSePl[i] += 
-				pthisSV->fK12x6[i + 6][3] * pthisSV->fmErrSeMi[X] +
+			pthisSV->faErrSePl[i] += pthisSV->fK12x6[i + 6][3] * pthisSV->fmErrSeMi[X] +
 				pthisSV->fK12x6[i + 6][4] * pthisSV->fmErrSeMi[Y] +
 				pthisSV->fK12x6[i + 6][5] * pthisSV->fmErrSeMi[Z];
 		}
@@ -617,7 +624,7 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	fRotationMatrixFromQuaternion(pthisSV->fRPl, &(pthisSV->fqPl));
 
 	// compute the rotation vector from the a posteriori quaternion
-	fRotationVectorDegFromQuaternion(&(pthisSV->fqPl), pthisSV->fRVecPl); // last time the quaternion is modified
+	fRotationVectorDegFromQuaternion(&(pthisSV->fqPl), pthisSV->fRVecPl);
 
 	// update the a posteriori gyro offset vector b+ and
 	// assign the entire linear acceleration error vector to update the linear acceleration
@@ -632,17 +639,11 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	// compute the linear acceleration in the global frame from the accelerometer measurement (sensor frame).
 	// de-rotate the accelerometer measurement from the sensor to global frame using the inverse (transpose) 
 	// of the a posteriori rotation matrix
-	pthisSV->faGlPl[X] = 
-		pthisSV->fRPl[X][X] * pthisAccel->fGpFast[X] + 
-		pthisSV->fRPl[Y][X] * pthisAccel->fGpFast[Y] +
+	pthisSV->faGlPl[X] = pthisSV->fRPl[X][X] * pthisAccel->fGpFast[X] + pthisSV->fRPl[Y][X] * pthisAccel->fGpFast[Y] +
 		pthisSV->fRPl[Z][X] * pthisAccel->fGpFast[Z];
-	pthisSV->faGlPl[Y] = 
-		pthisSV->fRPl[X][Y] * pthisAccel->fGpFast[X] + 
-		pthisSV->fRPl[Y][Y] * pthisAccel->fGpFast[Y] +
+	pthisSV->faGlPl[Y] = pthisSV->fRPl[X][Y] * pthisAccel->fGpFast[X] + pthisSV->fRPl[Y][Y] * pthisAccel->fGpFast[Y] +
 		pthisSV->fRPl[Z][Y] * pthisAccel->fGpFast[Z];
-	pthisSV->faGlPl[Z] = 
-		pthisSV->fRPl[X][Z] * pthisAccel->fGpFast[X] + 
-		pthisSV->fRPl[Y][Z] * pthisAccel->fGpFast[Y] +
+	pthisSV->faGlPl[Z] = pthisSV->fRPl[X][Z] * pthisAccel->fGpFast[X] + pthisSV->fRPl[Y][Z] * pthisAccel->fGpFast[Y] +
 		pthisSV->fRPl[Z][Z] * pthisAccel->fGpFast[Z];
 	// remove gravity and correct the sign if the coordinate system is gravity positive / acceleration negative 
 	switch (ithisCoordSystem)
@@ -675,13 +676,9 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 		{
 			// de-rotate the NED magnetic disturbance error de+ from the sensor to the global reference frame
 			// using the inverse (transpose) of the a posteriori rotation matrix
-			pthisSV->fdErrGlPl[X] = 
-				pthisSV->fRPl[X][X] * pthisSV->fdErrSePl[X] + 
-				pthisSV->fRPl[Y][X] * pthisSV->fdErrSePl[Y] +
+			pthisSV->fdErrGlPl[X] = pthisSV->fRPl[X][X] * pthisSV->fdErrSePl[X] + pthisSV->fRPl[Y][X] * pthisSV->fdErrSePl[Y] +
 				pthisSV->fRPl[Z][X] * pthisSV->fdErrSePl[Z];
-			pthisSV->fdErrGlPl[Z] = 
-				pthisSV->fRPl[X][Z] * pthisSV->fdErrSePl[X] + 
-				pthisSV->fRPl[Y][Z] * pthisSV->fdErrSePl[Y] +
+			pthisSV->fdErrGlPl[Z] = pthisSV->fRPl[X][Z] * pthisSV->fdErrSePl[X] + pthisSV->fRPl[Y][Z] * pthisSV->fdErrSePl[Y] +
 				pthisSV->fRPl[Z][Z] * pthisSV->fdErrSePl[Z];
 
 			// compute components of the new geomagnetic vector
@@ -724,13 +721,9 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 		{
 			// de-rotate the Android and Windows 8 magnetic disturbance error de+ from the sensor to the global reference frame
 			// using the inverse (transpose) of the a posteriori rotation matrix
-			pthisSV->fdErrGlPl[Y] = 
-				pthisSV->fRPl[X][Y] * pthisSV->fdErrSePl[X] + 
-				pthisSV->fRPl[Y][Y] * pthisSV->fdErrSePl[Y] +
+			pthisSV->fdErrGlPl[Y] = pthisSV->fRPl[X][Y] * pthisSV->fdErrSePl[X] + pthisSV->fRPl[Y][Y] * pthisSV->fdErrSePl[Y] +
 				pthisSV->fRPl[Z][Y] * pthisSV->fdErrSePl[Z];
-			pthisSV->fdErrGlPl[Z] = 
-				pthisSV->fRPl[X][Z] * pthisSV->fdErrSePl[X] + 
-				pthisSV->fRPl[Y][Z] * pthisSV->fdErrSePl[Y] +
+			pthisSV->fdErrGlPl[Z] = pthisSV->fRPl[X][Z] * pthisSV->fdErrSePl[X] + pthisSV->fRPl[Y][Z] * pthisSV->fdErrSePl[Y] +
 				pthisSV->fRPl[Z][Z] * pthisSV->fdErrSePl[Z];
 
 			// compute components of the new geomagnetic vector
@@ -937,4 +930,5 @@ struct MagCalibration *pthisMagCal, int ithisCoordSystem, int iOverSampleRatio)
 	}
 
 	return;
-}  // end fRun_9DOF_GBY_KALMAN
+}  // end fRun_9DOF_GBY_KALMAN_MANUS
+

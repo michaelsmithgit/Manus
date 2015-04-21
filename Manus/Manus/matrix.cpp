@@ -40,7 +40,7 @@
 void f3x3matrixAeqI(float A[][3])
 {
 	float *pAij;	// pointer to A[i][j]
-	int i, j;		// loop counters
+	int8 i, j;		// loop counters
 
 	for (i = 0; i < 3; i++)
 	{
@@ -56,12 +56,12 @@ void f3x3matrixAeqI(float A[][3])
 }
 
 // function sets the matrix A to the identity matrix
-void fmatrixAeqI(float *A[], int rc)
+void fmatrixAeqI(float *A[], int16 rc)
 {
 	// rc = rows and columns in A
 
 	float *pAij;	// pointer to A[i][j]
-	int i, j;		// loop counters
+	int8 i, j;		// loop counters
 
 	for (i = 0; i < rc; i++)
 	{
@@ -80,7 +80,7 @@ void fmatrixAeqI(float *A[], int rc)
 void f3x3matrixAeqScalar(float A[][3], float Scalar)
 {
 	float *pAij;	// pointer to A[i][j]
-	int i, j;		// counters
+	int8 i, j;		// counters
 
 	for (i = 0; i < 3; i++)
 	{
@@ -98,7 +98,7 @@ void f3x3matrixAeqScalar(float A[][3], float Scalar)
 void f3x3matrixAeqAxScalar(float A[][3], float Scalar)
 {
 	float *pAij;	// pointer to A[i][j]
-	int i, j;		// loop counters
+	int8 i, j;		// loop counters
 
 	for (i = 0; i < 3; i++)
 	{
@@ -117,7 +117,7 @@ void f3x3matrixAeqAxScalar(float A[][3], float Scalar)
 void f3x3matrixAeqMinusA(float A[][3])
 {
 	float *pAij;	// pointer to A[i][j]
-	int i, j;		// loop counters
+	int8 i, j;		// loop counters
 
 	for (i = 0; i < 3; i++)
 	{
@@ -173,8 +173,8 @@ void f3x3matrixAeqInvSymB(float A[][3], float B[][3])
 float f3x3matrixDetA(float A[][3])
 {
 	return (A[X][X] * (A[Y][Y] * A[Z][Z] - A[Y][Z] * A[Z][Y]) +
-			A[X][Y] * (A[Y][Z] * A[Z][X] - A[Y][X] * A[Z][Z]) +
-			A[X][Z] * (A[Y][X] * A[Z][Y] - A[Y][Y] * A[Z][X]));
+		A[X][Y] * (A[Y][Z] * A[Z][X] - A[Y][X] * A[Z][Z]) +
+		A[X][Z] * (A[Y][X] * A[Z][Y] - A[Y][Y] * A[Z][X]));
 }
 
 // function computes all eigenvalues and eigenvectors of a real symmetric matrix A[0..n-1][0..n-1]
@@ -183,7 +183,7 @@ float f3x3matrixDetA(float A[][3])
 // eigval[0..n-1] returns the eigenvalues of A[][].
 // eigvec[0..n-1][0..n-1] returns the normalized eigenvectors of A[][]
 // the eigenvectors are not sorted by value
-void eigencompute(float A[][10], float eigval[], float eigvec[][10], int n)
+void eigencompute(float A[][10], float eigval[], float eigvec[][10], int8 n)
 {
 	// maximum number of iterations to achieve convergence: in practice 6 is typical
 #define NITERATIONS 15
@@ -195,11 +195,11 @@ void eigencompute(float A[][10], float eigval[], float eigvec[][10], int n)
 	// residue from remaining non-zero above diagonal terms
 	float residue;
 	// matrix row and column indices
-	int ir, ic;
+	int8 ir, ic;
 	// general loop counter
-	int j;
+	int8 j;
 	// timeout ctr for number of passes of the algorithm
-	int ctr;
+	int8 ctr;
 
 	// initialize eigenvectors matrix and eigenvalues array
 	for (ir = 0; ir < n; ir++)
@@ -326,14 +326,14 @@ void eigencompute(float A[][10], float eigval[], float eigvec[][10], int n)
 
 // function uses Gauss-Jordan elimination to compute the inverse of matrix A in situ
 // on exit, A is replaced with its inverse
-void fmatrixAeqInvA(float *A[], int iColInd[], int iRowInd[], int iPivot[], int isize)
+void fmatrixAeqInvA(float *A[], int8 iColInd[], int8 iRowInd[], int8 iPivot[], int8 isize)
 {
 	float largest;					// largest element used for pivoting
 	float scaling;					// scaling factor in pivoting
 	float recippiv;					// reciprocal of pivot element
 	float ftmp;						// temporary variable used in swaps
-	int i, j, k, l, m;				// index counters
-	int iPivotRow, iPivotCol;		// row and column of pivot element
+	int8 i, j, k, l, m;				// index counters
+	int8 iPivotRow, iPivotCol;		// row and column of pivot element
 
 	// to avoid compiler warnings
 	iPivotRow = iPivotCol = 0;
@@ -367,7 +367,7 @@ void fmatrixAeqInvA(float *A[], int iColInd[], int iRowInd[], int iPivot[], int 
 							// and store this location as the current best candidate for pivoting
 							iPivotRow = j;
 							iPivotCol = k;
-							largest = (float) fabs(A[iPivotRow][iPivotCol]);
+							largest = (float)fabs(A[iPivotRow][iPivotCol]);
 						}
 					}
 					else if (iPivot[k] > 1)

@@ -44,10 +44,10 @@
 // magnetometer measurement buffer
 struct MagneticBuffer
 {
-	int iBpFast[3][MAGBUFFSIZEX][MAGBUFFSIZEY];	// uncalibrated magnetometer readings
-	int index[MAGBUFFSIZEX][MAGBUFFSIZEY];		// array of time indices
-	int tanarray[MAGBUFFSIZEX - 1];				// array of tangents of (100 * angle)
-	int iMagBufferCount;							// number of magnetometer readings
+	int16 iBpFast[3][MAGBUFFSIZEX][MAGBUFFSIZEY];	// uncalibrated magnetometer readings
+	int32 index[MAGBUFFSIZEX][MAGBUFFSIZEY];		// array of time indices
+	int16 tanarray[MAGBUFFSIZEX - 1];				// array of tangents of (100 * angle)
+	int16 iMagBufferCount;							// number of magnetometer readings
 };
 
 // magnetic calibration structure
@@ -68,15 +68,15 @@ struct MagCalibration
 	float fmatB[10][10];			// scratch 10x10 matrix used by calibration algorithms
 	float fvecA[10];				// scratch 10x1 vector used by calibration algorithms
 	float fvecB[4];					// scratch 4x1 vector used by calibration algorithms
-	int iCalInProgress;				// flag denoting that a calibration is in progress
-	int iMagCalHasRun;				// flag denoting that at least one calibration has been launched
-	int iValidMagCal;				// integer value 0, 4, 7, 10 denoting both valid calibration and solver used
+	int8 iCalInProgress;			// flag denoting that a calibration is in progress
+	int8 iMagCalHasRun;				// flag denoting that at least one calibration has been launched
+	int8 iValidMagCal;				// integer value 0, 4, 7, 10 denoting both valid calibration and solver used
 };
 
 // function prototypes for function in magnetic.c
 void fInitMagCalibration(struct MagCalibration *pthisMagCal, struct MagneticBuffer *pthisMagBuffer);
 void iUpdateMagnetometerBuffer(struct MagneticBuffer *pthisMagBuffer, struct AccelSensor *pthisAccel,
-		struct MagSensor *pthisMag, int loopcounter);
+struct MagSensor *pthisMag, int32 loopcounter);
 void fInvertMagCal(struct MagSensor *pthisMag, struct MagCalibration *pthisMagCal);
 void fUpdateCalibration4INV(struct MagCalibration *pthisMagCal, struct MagneticBuffer *pthisMagBuffer, struct MagSensor *pthisMag);
 void fUpdateCalibration7EIG(struct MagCalibration *pthisMagCal, struct MagneticBuffer *pthisMagBuffer, struct MagSensor *pthisMag);

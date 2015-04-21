@@ -185,7 +185,7 @@ void Glove::UpdateState()
 		m_state.data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
 
 	// execute the magnetometer and yaw sensor fusion
-	m_sensorFusion.fusionTask(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);
+	m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);
 
 	// copy the output of the sensor fusion to m_state
 	memcpy(&(m_state.data.Quaternion), &myQuaternionOut, sizeof(GLOVE_QUATERNION));

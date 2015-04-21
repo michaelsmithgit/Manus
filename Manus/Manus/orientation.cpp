@@ -28,6 +28,7 @@
 // It also includes functions designed to operate with specify reference frames
 // (Android, Windows 8, NED).
 //
+
 #include "stdafx.h"
 #include "SensorFusion.h"
 #include "orientation.h"
@@ -48,9 +49,9 @@
 void f3DOFTiltNED(float fR[][3], float fGp[])
 {
 	// the NED self-consistency twist occurs at 90 deg pitch
-	
+
 	// local variables
-	int i;				// counter
+	int16 i;				// counter
 	float fmodGxyz;			// modulus of the x, y, z accelerometer readings
 	float fmodGyz;			// modulus of the y, z accelerometer readings
 	float frecipmodGxyz;	// reciprocal of modulus
@@ -123,13 +124,13 @@ void f3DOFTiltAndroid(float fR[][3], float fGp[])
 void f3DOFTiltWin8(float fR[][3], float fGp[])
 {
 	// the Win8 self-consistency twist occurs at 90 deg roll
-	
+
 	// local variables
 	float fmodGxyz;			// modulus of the x, y, z accelerometer readings
 	float fmodGxz;			// modulus of the x, z accelerometer readings
 	float frecipmodGxyz;	// reciprocal of modulus
 	float ftmp;				// scratch variable
-	int i;					// counter
+	int8 i;					// counter
 
 	// compute the accelerometer squared magnitudes
 	fmodGxz = fGp[X] * fGp[X] + fGp[Z] * fGp[Z];
@@ -187,7 +188,7 @@ void f3DOFTiltWin8(float fR[][3], float fGp[])
 	if (fGp[Z] < 0.0F)
 	{
 		fR[Y][Y] = -fR[Y][Y];
-	}	
+	}
 	fR[Z][Y] = fR[Y][Z] * fR[Z][Z] * ftmp;
 
 	return;
@@ -195,7 +196,7 @@ void f3DOFTiltWin8(float fR[][3], float fGp[])
 
 // Aerospace NED magnetometer 3DOF flat eCompass function computing rotation matrix fR
 void f3DOFMagnetometerMatrixNED(float fR[][3], float fBc[])
-{	
+{
 	// local variables
 	float fmodBxy;			// modulus of the x, y magnetometer readings
 
@@ -212,7 +213,7 @@ void f3DOFMagnetometerMatrixNED(float fR[][3], float fBc[])
 	// define the fixed entries in the z row and column
 	fR[Z][X] = fR[Z][Y] = fR[X][Z] = fR[Y][Z] = 0.0F;
 	fR[Z][Z] = 1.0F;
-	
+
 	// define the remaining entries
 	fR[X][X] = fR[Y][Y] = fBc[X] / fmodBxy;
 	fR[Y][X] = fBc[Y] / fmodBxy;
@@ -223,7 +224,7 @@ void f3DOFMagnetometerMatrixNED(float fR[][3], float fBc[])
 
 // Android magnetometer 3DOF flat eCompass function computing rotation matrix fR
 void f3DOFMagnetometerMatrixAndroid(float fR[][3], float fBc[])
-{	
+{
 	// local variables
 	float fmodBxy;			// modulus of the x, y magnetometer readings
 
@@ -240,7 +241,7 @@ void f3DOFMagnetometerMatrixAndroid(float fR[][3], float fBc[])
 	// define the fixed entries in the z row and column
 	fR[Z][X] = fR[Z][Y] = fR[X][Z] = fR[Y][Z] = 0.0F;
 	fR[Z][Z] = 1.0F;
-	
+
 	// define the remaining entries
 	fR[X][X] = fR[Y][Y] = fBc[Y] / fmodBxy;
 	fR[X][Y] = fBc[X] / fmodBxy;
@@ -251,7 +252,7 @@ void f3DOFMagnetometerMatrixAndroid(float fR[][3], float fBc[])
 
 // Windows 8 magnetometer 3DOF flat eCompass function computing rotation matrix fR
 void f3DOFMagnetometerMatrixWin8(float fR[][3], float fBc[])
-{	
+{
 	// call the Android function since it is identical to the Windows 8 matrix
 	f3DOFMagnetometerMatrixAndroid(fR, fBc);
 
@@ -266,7 +267,7 @@ void feCompassNED(float fR[][3], float *pfDelta, float fBc[], float fGp[])
 	float fmodBc;					// modulus of Bc
 	float fGdotBc;					// dot product of vectors G.Bc
 	float ftmp;						// scratch variable
-	int i, j;						// loop counters
+	int8 i, j;						// loop counters
 
 	// set the inclination angle to zero in case it is not computed later
 	*pfDelta = 0.0F;
@@ -327,14 +328,14 @@ void feCompassNED(float fR[][3], float *pfDelta, float fBc[], float fGp[])
 }
 
 // Android: 6DOF e-Compass function computing rotation matrix fR
-void feCompassAndroid(float fR[][3],  float *pfDelta, float fBc[], float fGp[])
+void feCompassAndroid(float fR[][3], float *pfDelta, float fBc[], float fGp[])
 {
 	// local variables
 	float fmod[3];					// column moduli
 	float fmodBc;					// modulus of Bc
 	float fGdotBc;					// dot product of vectors G.Bc
 	float ftmp;						// scratch variable
-	int i, j;						// loop counters
+	int8 i, j;						// loop counters
 
 	// set the inclination angle to zero in case it is not computed later
 	*pfDelta = 0.0F;
@@ -395,14 +396,14 @@ void feCompassAndroid(float fR[][3],  float *pfDelta, float fBc[], float fGp[])
 }
 
 // Win8: 6DOF e-Compass function computing rotation matrix fR
-void feCompassWin8(float fR[][3],  float *pfDelta, float fBc[], float fGp[])
+void feCompassWin8(float fR[][3], float *pfDelta, float fBc[], float fGp[])
 {
 	// local variables
 	float fmod[3];					// column moduli
 	float fmodBc;					// modulus of Bc
 	float fGdotBc;					// dot product of vectors G.Bc
 	float ftmp;						// scratch variable
-	int i, j;						// loop counters
+	int8 i, j;						// loop counters
 
 	// set the inclination angle to zero in case it is not computed later
 	*pfDelta = 0.0F;
@@ -464,7 +465,7 @@ void feCompassWin8(float fR[][3],  float *pfDelta, float fBc[], float fGp[])
 
 // extract the NED angles in degrees from the NED rotation matrix
 void fNEDAnglesDegFromRotationMatrix(float R[][3], float *pfPhiDeg, float *pfTheDeg, float *pfPsiDeg,
-		float *pfRhoDeg, float *pfChiDeg)
+	float *pfRhoDeg, float *pfChiDeg)
 {
 	// calculate the pitch angle -90.0 <= Theta <= 90.0 deg
 	*pfTheDeg = fasin_deg(-R[X][Z]);
@@ -518,7 +519,7 @@ void fNEDAnglesDegFromRotationMatrix(float R[][3], float *pfPhiDeg, float *pfThe
 
 // extract the Android angles in degrees from the Android rotation matrix
 void fAndroidAnglesDegFromRotationMatrix(float R[][3], float *pfPhiDeg, float *pfTheDeg, float *pfPsiDeg,
-		float *pfRhoDeg, float *pfChiDeg)
+	float *pfRhoDeg, float *pfChiDeg)
 {
 	// calculate the roll angle -90.0 <= Phi <= 90.0 deg
 	*pfPhiDeg = fasin_deg(R[X][Z]);
@@ -573,7 +574,7 @@ void fAndroidAnglesDegFromRotationMatrix(float R[][3], float *pfPhiDeg, float *p
 
 // extract the Windows 8 angles in degrees from the Windows 8 rotation matrix
 void fWin8AnglesDegFromRotationMatrix(float R[][3], float *pfPhiDeg, float *pfTheDeg, float *pfPsiDeg,
-		float *pfRhoDeg, float *pfChiDeg)
+	float *pfRhoDeg, float *pfChiDeg)
 {
 	// calculate the roll angle -90.0 <= Phi <= 90.0 deg
 	if (R[Z][Z] == 0.0F)
@@ -685,7 +686,7 @@ void fQuaternionFromRotationVectorDeg(struct fquaternion *pq, const float rvecde
 		// use MacLaurin series up to and including third order
 		sinhalfeta = fetarad * (0.5F - ONEOVER48 * fetarad2);
 	}
-	else if  (fetarad2 <= 0.06F)
+	else if (fetarad2 <= 0.06F)
 	{
 		// use MacLaurin series up to and including fifth order
 		// angles under sqrt(0.06)=0.245 rad is 14.0 deg and 2807 deg/s (=1623deg/s in 3 axes) at 200Hz and 703 deg/s at 50Hz
@@ -872,7 +873,7 @@ void fRotationVectorDegFromRotationMatrix(float R[][3], float rvecdeg[])
 		if ((R[Y][Z] - R[Z][Y]) < 0.0F) rvecdeg[X] = -rvecdeg[X];
 		if ((R[Z][X] - R[X][Z]) < 0.0F) rvecdeg[Y] = -rvecdeg[Y];
 		if ((R[X][Y] - R[Y][X]) < 0.0F) rvecdeg[Z] = -rvecdeg[Z];
-		
+
 	} // end of 180 deg case
 
 	return;
@@ -896,7 +897,7 @@ void fRotationVectorDegFromQuaternion(struct fquaternion *pq, float rvecdeg[])
 	else
 	{
 		// general case returning 0 < eta < 360 deg 
-		fetarad = 2.0F * acosf(pq->q0); 
+		fetarad = 2.0F * acosf(pq->q0);
 		fetadeg = fetarad * FRADTODEG;
 	}
 
@@ -930,7 +931,7 @@ void fRotationVectorDegFromQuaternion(struct fquaternion *pq, float rvecdeg[])
 
 // function low pass filters an orientation quaternion and computes virtual gyro rotation rate
 void fLPFOrientationQuaternion(struct fquaternion *pq, struct fquaternion *pLPq, float flpf, float fdeltat,
-		float fOmega[], int loopcounter)
+	float fOmega[], int32 loopcounter)
 {
 	// local variables
 	struct fquaternion fdeltaq;			// delta rotation quaternion
@@ -997,7 +998,7 @@ void fLPFOrientationQuaternion(struct fquaternion *pq, struct fquaternion *pLPq,
 }
 
 // function low pass filters a scalar
-void fLPFScalar(float *pfS, float *pfLPS, float flpf, int loopcounter)
+void fLPFScalar(float *pfS, float *pfLPS, float flpf, int32 loopcounter)
 {
 	// set S[LP,n]=S[n] on first pass
 	if (loopcounter == 0)

@@ -57,6 +57,10 @@ typedef struct {
 #define MANUS_OUT_OF_RANGE 2
 #define MANUS_DISCONNECTED 3
 
+#define MANUS_GLOVE_FLAGS_RIGHTHAND  0x1
+#define MANUS_GLOVE_FLAGS_CAL_GYRO    0x2
+#define MANUS_GLOVE_FLAGS_CAL_ACCEL   0x4
+
 extern "C" {
 	/*! \brief Initialize the Manus SDK.
 	*
@@ -115,6 +119,33 @@ extern "C" {
 	*  \param quaternion The quaternion to base the gravity vector on.
 	*/
 	MANUS_API int ManusGetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* quaternion);
+
+	/*! \brief Configure the handedness of the glove.
+	*
+	*  This reconfigures the glove for a different hand.
+	*
+	*  \warning This function overwrites factory settings on the
+	*  glove, it should only be called if the user requested it.
+	*
+	*  \param glove The glove index.
+	*  \param right_hand Set the glove as a right hand.
+	*/
+	MANUS_API int ManusSetHandedness(unsigned int glove, bool right_hand);
+
+	/*! \brief Calibrate the IMU on the glove.
+	*
+	*  This will run a self-test of the IMU and recalibrate it.
+	*  The glove should be placed on a stable flat surface during
+	*  recalibration.
+	*
+	*  \warning This function overwrites factory settings on the
+	*  glove, it should only be called if the user requested it.
+	*
+	*  \param glove The glove index.
+	*  \param gyro Calibrate the gyroscope.
+	*  \param accel Calibrate the accelerometer.
+	*/
+	MANUS_API int ManusCalibrate(unsigned int glove, bool gyro = true, bool accel = true, bool fingers = true);
 }
 
 /**@}*/

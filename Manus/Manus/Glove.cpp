@@ -34,6 +34,7 @@
 
 Glove::Glove(const char* device_path)
 	: m_running(false)
+	, m_update_flags(false)
 {
 	//memset(&m_report, 0, sizeof(m_report));
 
@@ -94,21 +95,29 @@ void Glove::DeviceThread(Glove* glove)
 	if (!device)
 		return;
 
-	// Get the flags from the feature report
-	unsigned char flags[sizeof(FLAGS_REPORT) + 1];
-	flags[0] = 1; // Set feature report ID
-	int read = hid_get_feature_report(device, flags, sizeof(flags));
+	// Get the calibration data from the feature report
+	unsigned char calib[sizeof(CALIB_REPORT) + 1];
+	calib[0] = 1; // Set feature report ID
+	int read = hid_get_feature_report(device, calib, sizeof(calib));
 
 	// If the feature have been read correctly set the flags
 	// FIXME: HIDAPI returns the data starting at index 0 instead of index 1
 	if (read != -1)
-		memcpy(&glove->m_flags, flags, sizeof(FLAGS_REPORT));
+		memcpy(&glove->m_calib, calib, sizeof(CALIB_REPORT));
 
 	glove->m_running = true;
 
 	// Keep retrieving reports while the SDK is running and the device is connected
 	while (glove->m_running && device)
 	{
+		if (glove->m_update_flags)
+		{
+			glove->m_update_flags = false;
+			calib[0] = 1; // Set feature report ID
+			memcpy(calib + 1, &glove->m_calib, sizeof(CALIB_REPORT));
+			hid_send_feature_report(device, calib, sizeof(calib));
+		}
+
 		unsigned char report[sizeof(GLOVE_REPORT) + 1];
 		read = hid_read(device, report, sizeof(report));
 
@@ -125,7 +134,7 @@ void Glove::DeviceThread(Glove* glove)
 			else if (report[0] == COMPASS_REPORT_ID)
 				memcpy(&glove->m_compass, report + 1, sizeof(COMPASS_REPORT));
 
-			glove->SetState(&glove->m_report, &glove->m_compass);
+			glove->UpdateState();
 
 			glove->m_report_block.notify_all();
 		}
@@ -137,7 +146,7 @@ void Glove::DeviceThread(Glove* glove)
 	glove->m_report_block.notify_all();
 }
 
-void Glove::SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report)
+void Glove::UpdateState()
 {
 	// temp data
 	AccelSensor myAccel;
@@ -146,39 +155,50 @@ void Glove::SetState(GLOVE_REPORT *report, COMPASS_REPORT *c_report)
 	fquaternion myQuaternionOut;
 
 	m_state.PacketNumber++;
-	m_state.data.Handedness = 0;// report->flags & GLOVE_FLAGS_HANDEDNESS;
+	m_state.data.Handedness = m_calib.flags & GLOVE_FLAGS_HANDEDNESS;
 
 	// normalize acceleration data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		myAccel.fGpFast[i] = report->accel[i] / ACCEL_DIVISOR;
-		myAccel.iGp[i] = report->accel[i];
-		myAccel.iGpFast[i] = report->accel[i];
+		myAccel.fGpFast[i] = m_report.accel[i] / ACCEL_DIVISOR;
+		myAccel.iGp[i] = m_report.accel[i];
+		myAccel.iGpFast[i] = m_report.accel[i];
 	}
 
 	// normalize quaternion data
-	myQuaternion.q0 = report->quat[0] / QUAT_DIVISOR;
-	myQuaternion.q1 = report->quat[1] / QUAT_DIVISOR;
-	myQuaternion.q2 = report->quat[2] / QUAT_DIVISOR;
-	myQuaternion.q3 = report->quat[3] / QUAT_DIVISOR;
+	myQuaternion.q0 = m_report.quat[0] / QUAT_DIVISOR;
+	myQuaternion.q1 = m_report.quat[1] / QUAT_DIVISOR;
+	myQuaternion.q2 = m_report.quat[2] / QUAT_DIVISOR;
+	myQuaternion.q3 = m_report.quat[3] / QUAT_DIVISOR;
 
 	// normalize magnetometer data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		myMag.iBp[i] = c_report->compass[i];
-		myMag.fBp[i] = c_report->compass[i] / COMPASS_DIVISOR;
-		myMag.iBpFast[i] = c_report->compass[i];
-		myMag.fBcFast[i] = c_report->compass[i] / COMPASS_DIVISOR;
+		myMag.iBp[i] = m_compass.compass[i];
+		myMag.fBp[i] = m_compass.compass[i] / COMPASS_DIVISOR;
+		myMag.iBpFast[i] = m_compass.compass[i];
+		myMag.fBcFast[i] = m_compass.compass[i] / COMPASS_DIVISOR;
 		myMag.fCountsPeruT = FCOUNTSPERUT;
 		myMag.fuTPerCount = FUTPERCOUNT;
 	}
 
 	// normalize finger data
 	for (int i = 0; i < GLOVE_FINGERS; i++)
-		m_state.data.Fingers[i] = report->fingers[i] / FINGER_DIVISOR;
+		m_state.data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
 
 	// execute the magnetometer and yaw sensor fusion
-	m_sensorFusion.fusionTask(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);
+	m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);
 
 	// copy the output of the sensor fusion to m_state
 	memcpy(&(m_state.data.Quaternion), &myQuaternionOut, sizeof(GLOVE_QUATERNION));
 	memcpy(&(m_state.data.Acceleration), &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
+}
+
+uint8_t Glove::GetFlags()
+{
+	return m_calib.flags;
+}
+
+void Glove::SetFlags(uint8_t flags)
+{
+	m_calib.flags = flags;
+	m_update_flags = true;
 }

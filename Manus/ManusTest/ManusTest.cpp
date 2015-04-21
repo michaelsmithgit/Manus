@@ -27,15 +27,26 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	ManusInit();
 
+	LARGE_INTEGER freq;
+	QueryPerformanceFrequency(&freq);
+
 	while (true)
 	{
 		for (int i = 0; i < ManusGetGloveCount(); i++)
 		{
+			LARGE_INTEGER start, end, elapsed;
+			QueryPerformanceCounter(&start);
+
 			GLOVE_STATE state = { 0 };
 			if (ManusGetState(i, &state, true) == MANUS_SUCCESS)
-				printf("glove: %d - %d                                   \n", i, state.PacketNumber);
+				printf("glove: %d - %d %s\n", i, state.PacketNumber, state.data.Handedness ? "Right" : "Left");
 			else
 				printf("glove: %d\n", i);
+
+			QueryPerformanceCounter(&end);
+			elapsed.QuadPart = end.QuadPart - start.QuadPart;
+			printf("interval: %fms\n", (elapsed.QuadPart * 1000) / (double)freq.QuadPart);
+
 
 			printf("accel: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Acceleration.x, state.data.Acceleration.y, state.data.Acceleration.z);
 			//printf("mag  : x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Magnetometer.x, state.data.Magnetometer.y, state.data.Magnetometer.z);

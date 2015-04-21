@@ -41,7 +41,7 @@
 // function resets the magnetometer buffer and magnetic calibration
 void fInitMagCalibration(struct MagCalibration *pthisMagCal, struct MagneticBuffer *pthisMagBuffer)
 {
-	int j, k;   // loop counters
+	int8 j, k;   // loop counters
 
 	// initialize the calibration hard and soft iron estimate to null
 	f3x3matrixAeqI(pthisMagCal->finvW);
@@ -69,7 +69,7 @@ void fInitMagCalibration(struct MagCalibration *pthisMagCal, struct MagneticBuff
 	// for MAGBUFFSIZEX=12, the entries range in value from -373 to +373
 	for (j = 0; j < (MAGBUFFSIZEX - 1); j++)
 	{
-		pthisMagBuffer->tanarray[j] = (int) (100.0F * tanf(PI * (-0.5F + (float) (j + 1) / MAGBUFFSIZEX)));
+		pthisMagBuffer->tanarray[j] = (int16)(100.0F * tanf(PI * (-0.5F + (float)(j + 1) / MAGBUFFSIZEX)));
 	}
 
 	return;
@@ -77,19 +77,19 @@ void fInitMagCalibration(struct MagCalibration *pthisMagCal, struct MagneticBuff
 
 // function updates the magnetic measurement buffer with most recent magnetic data (typically 25Hz)
 void iUpdateMagnetometerBuffer(struct MagneticBuffer *pthisMagBuffer, struct AccelSensor *pthisAccel,
-		struct MagSensor *pthisMag, int loopcounter)
+struct MagSensor *pthisMag, int32 loopcounter)
 {
 	// local variables
-	int idelta;					// absolute vector distance
-	int i;						// counter
-	int itanj, itank;				// indexing accelerometer ratios
-	int j, k, l, m;				// counters
-	int itooclose;					// flag denoting measurement is too close to existing ones
+	int32 idelta;					// absolute vector distance
+	int32 i;						// counter
+	int16 itanj, itank;				// indexing accelerometer ratios
+	int8 j, k, l, m;				// counters
+	int8 itooclose;					// flag denoting measurement is too close to existing ones
 
 	// calculate the magnetometer buffer bins from the accelerometer tangent ratios
 	if (pthisAccel->iGp[X] == 0) return;
-	itanj = (100 * (int)pthisAccel->iGp[Y]) / ((int)pthisAccel->iGp[X]);
-	itank = (100 * (int)pthisAccel->iGp[Z]) / ((int)pthisAccel->iGp[X]);
+	itanj = (100 * (int32)pthisAccel->iGp[Y]) / ((int32)pthisAccel->iGp[X]);
+	itank = (100 * (int32)pthisAccel->iGp[Z]) / ((int32)pthisAccel->iGp[X]);
 	// map tangent ratios to bins j and k using equal angle bins: C guarantees left to right execution of the test
 	// and add an offset of MAGBUFFSIZEX bins to k to mimic atan2 on this ratio
 	// j will vary from 0 to MAGBUFFSIZEX - 1 and k from 0 to 2 * MAGBUFFSIZEX - 1
@@ -114,7 +114,7 @@ void iUpdateMagnetometerBuffer(struct MagneticBuffer *pthisMagBuffer, struct Acc
 	// case 2: the buffer is full and this bin does not have a measurement: store and retire the oldest
 	// this is the second most common option at run time
 	if ((pthisMagBuffer->iMagBufferCount == MAXMEASUREMENTS) && (pthisMagBuffer->index[j][k] == -1))
-	{		
+	{
 		// store the fast (unaveraged at typically 200Hz) integer magnetometer reading into the buffer bin j, k
 		for (i = X; i <= Z; i++)
 		{
@@ -162,7 +162,7 @@ void iUpdateMagnetometerBuffer(struct MagneticBuffer *pthisMagBuffer, struct Acc
 		(pthisMagBuffer->iMagBufferCount)++;
 		return;
 	} // end case 3
-	
+
 	// case 4: buffer is not full and this bin has a measurement: over-write if close or try to slot in
 	// elsewhere if not close to the other measurements so as to create a mesh at power up
 	if ((pthisMagBuffer->iMagBufferCount < MAXMEASUREMENTS) && (pthisMagBuffer->index[j][k] != -1))
@@ -171,7 +171,7 @@ void iUpdateMagnetometerBuffer(struct MagneticBuffer *pthisMagBuffer, struct Acc
 		idelta = 0;
 		for (i = X; i <= Z; i++)
 		{
-			idelta += abs((int)pthisMag->iBpFast[i] - (int)pthisMagBuffer->iBpFast[i][j][k]);
+			idelta += abs((int32)pthisMag->iBpFast[i] - (int32)pthisMagBuffer->iBpFast[i][j][k]);
 		}
 		// check to see if the current reading is close to this existing magnetic buffer entry
 		if (idelta < MESHDELTACOUNTS)
@@ -204,7 +204,7 @@ void iUpdateMagnetometerBuffer(struct MagneticBuffer *pthisMagBuffer, struct Acc
 						idelta = 0;
 						for (i = X; i <= Z; i++)
 						{
-							idelta += abs((int)pthisMag->iBpFast[i] - (int)pthisMagBuffer->iBpFast[i][j][k]);
+							idelta += abs((int32)pthisMag->iBpFast[i] - (int32)pthisMagBuffer->iBpFast[i][j][k]);
 						}
 						// check to see if the current reading is close to this existing magnetic buffer entry
 						if (idelta < MESHDELTACOUNTS)
@@ -248,7 +248,7 @@ void fInvertMagCal(struct MagSensor *pthisMag, struct MagCalibration *pthisMagCa
 {
 	// local  variables
 	float ftmp[3];					// temporary array
-	int i; 						// loop counter
+	int8 i; 						// loop counter
 
 	// calculate fBc and iBc for the 6DOF eCompass algorithms
 	// remove the computed hard iron offsets (uT): ftmp[]=fBp[]-V[]
@@ -260,9 +260,9 @@ void fInvertMagCal(struct MagSensor *pthisMag, struct MagCalibration *pthisMagCa
 	for (i = X; i <= Z; i++)
 	{
 		pthisMag->fBc[i] = pthisMagCal->finvW[i][X] * ftmp[X] + pthisMagCal->finvW[i][Y] * ftmp[Y] + pthisMagCal->finvW[i][Z] * ftmp[Z];
-		pthisMag->iBc[i] = (int) (pthisMag->fBc[i] * pthisMag->fCountsPeruT);
+		pthisMag->iBc[i] = (int16)(pthisMag->fBc[i] * pthisMag->fCountsPeruT);
 	}
-	
+
 	// calculate fBcFast for the Kalman filter algorithms
 	// remove the computed hard iron offsets (uT): ftmp[]=fBpFast[]-V[]
 	for (i = X; i <= Z; i++)
@@ -286,15 +286,15 @@ void fUpdateCalibration4INV(struct MagCalibration *pthisMagCal, struct MagneticB
 	float fSumBp4;							// sum of fBp2
 	float fscaling;							// set to FUTPERCOUNT * FMATRIXSCALING
 	float fE;								// error function = r^T.r
-	int iOffset[3];						// offset to remove large DC hard iron bias in matrix
-	int iCount;							// number of measurements counted
-	int i, j, k, l;						// loop counters
-	
+	int16 iOffset[3];						// offset to remove large DC hard iron bias in matrix
+	int16 iCount;							// number of measurements counted
+	int8 i, j, k, l;						// loop counters
+
 	// working arrays for 4x4 matrix inversion
 	float *pfRows[4];
-	int iColInd[4];
-	int iRowInd[4];
-	int iPivot[4];
+	int8 iColInd[4];
+	int8 iRowInd[4];
+	int8 iPivot[4];
 
 	// compute fscaling to reduce multiplications later
 	fscaling = pthisMag->fuTPerCount / DEFAULTB;
@@ -336,7 +336,7 @@ void fUpdateCalibration4INV(struct MagCalibration *pthisMagCal, struct MagneticB
 				// store scaled and offset fBp[XYZ] in fvecA[0-2] and fBp[XYZ]^2 in fvecA[3-5]
 				for (l = X; l <= Z; l++)
 				{
-					pthisMagCal->fvecA[l] = (float)((int)pthisMagBuffer->iBpFast[l][j][k] - (int)iOffset[l]) * fscaling;
+					pthisMagCal->fvecA[l] = (float)((int32)pthisMagBuffer->iBpFast[l][j][k] - (int32)iOffset[l]) * fscaling;
 					pthisMagCal->fvecA[l + 3] = pthisMagCal->fvecA[l] * pthisMagCal->fvecA[l];
 				}
 
@@ -373,7 +373,7 @@ void fUpdateCalibration4INV(struct MagCalibration *pthisMagCal, struct MagneticB
 	}
 
 	// set the last element of the measurement matrix to the number of buffer elements used
-	pthisMagCal->fmatA[3][3] = (float) iCount;
+	pthisMagCal->fmatA[3][3] = (float)iCount;
 
 	// store the number of measurements accumulated (defensive programming, should never be needed)
 	pthisMagBuffer->iMagBufferCount = iCount;
@@ -401,8 +401,8 @@ void fUpdateCalibration4INV(struct MagCalibration *pthisMagCal, struct MagneticB
 		for (k = 0; k < 4; k++)
 		{
 			pthisMagCal->fvecA[i] += pthisMagCal->fmatB[i][k] * pthisMagCal->fvecB[k];
-		} 
-	} 
+		}
+	}
 
 	// calculate P = r^T.r = Y^T.Y - 2 * beta^T.(X^T.Y) + beta^T.(X^T.X).beta
 	// = fSumBp4 - 2 * fvecA^T.fvecB + fvecA^T.fmatA.fvecA
@@ -421,8 +421,8 @@ void fUpdateCalibration4INV(struct MagCalibration *pthisMagCal, struct MagneticB
 		for (k = 0; k < 4; k++)
 		{
 			pthisMagCal->fvecB[i] += pthisMagCal->fmatA[i][k] * pthisMagCal->fvecA[k];
-		} 
-	} 
+		}
+	}
 
 	// complete calculation of P by adding beta^T.(X^T.X).beta = fvecA^T * fvecB
 	for (i = 0; i < 4; i++)
@@ -438,11 +438,11 @@ void fUpdateCalibration4INV(struct MagCalibration *pthisMagCal, struct MagneticB
 
 	// compute the scaled geomagnetic field strength B (in uT but scaled by FMATRIXSCALING)
 	pthisMagCal->ftrB = sqrtf(pthisMagCal->fvecA[3] + pthisMagCal->ftrV[X] * pthisMagCal->ftrV[X] +
-			pthisMagCal->ftrV[Y] * pthisMagCal->ftrV[Y] + pthisMagCal->ftrV[Z] * pthisMagCal->ftrV[Z]);
+		pthisMagCal->ftrV[Y] * pthisMagCal->ftrV[Y] + pthisMagCal->ftrV[Z] * pthisMagCal->ftrV[Z]);
 
 	// calculate the trial fit error (percent) normalized to number of measurements and scaled geomagnetic field strength
-	pthisMagCal->ftrFitErrorpc = sqrtf(fE / (float) pthisMagBuffer->iMagBufferCount) * 100.0F /
-			(2.0F * pthisMagCal->ftrB * pthisMagCal->ftrB);
+	pthisMagCal->ftrFitErrorpc = sqrtf(fE / (float)pthisMagBuffer->iMagBufferCount) * 100.0F /
+		(2.0F * pthisMagCal->ftrB * pthisMagCal->ftrB);
 
 	// correct the hard iron estimate for FMATRIXSCALING and the offsets applied (result in uT)
 	for (l = X; l <= Z; l++)
@@ -463,9 +463,9 @@ void fUpdateCalibration7EIG(struct MagCalibration *pthisMagCal, struct MagneticB
 	float det;								// matrix determinant
 	float fscaling;							// set to FUTPERCOUNT * FMATRIXSCALING
 	float ftmp;								// scratch variable
-	int iOffset[3];						// offset to remove large DC hard iron bias
-	int iCount;							// number of measurements counted
-	int i, j, k, l, m, n;					// loop counters
+	int16 iOffset[3];						// offset to remove large DC hard iron bias
+	int16 iCount;							// number of measurements counted
+	int8 i, j, k, l, m, n;					// loop counters
 
 	// compute fscaling to reduce multiplications later
 	fscaling = pthisMag->fuTPerCount / DEFAULTB;
@@ -502,7 +502,7 @@ void fUpdateCalibration7EIG(struct MagCalibration *pthisMagCal, struct MagneticB
 				// apply the offset and scaling and store in fvecA
 				for (l = X; l <= Z; l++)
 				{
-					pthisMagCal->fvecA[l + 3] = (float)((int)pthisMagBuffer->iBpFast[l][j][k] - (int)iOffset[l]) * fscaling;
+					pthisMagCal->fvecA[l + 3] = (float)((int32)pthisMagBuffer->iBpFast[l][j][k] - (int32)iOffset[l]) * fscaling;
 					pthisMagCal->fvecA[l] = pthisMagCal->fvecA[l + 3] * pthisMagCal->fvecA[l + 3];
 				}
 
@@ -530,7 +530,7 @@ void fUpdateCalibration7EIG(struct MagCalibration *pthisMagCal, struct MagneticB
 	}
 
 	// finally set the last element fmatA[6][6] to the number of measurements
-	pthisMagCal->fmatA[6][6] = (float) iCount;
+	pthisMagCal->fmatA[6][6] = (float)iCount;
 
 	// store the number of measurements accumulated (defensive programming, should never be needed)
 	pthisMagBuffer->iMagBufferCount = iCount;
@@ -584,7 +584,7 @@ void fUpdateCalibration7EIG(struct MagCalibration *pthisMagCal, struct MagneticB
 	}
 
 	// calculate the trial normalized fit error as a percentage
-	pthisMagCal->ftrFitErrorpc = 50.0F * sqrtf(fabs(pthisMagCal->fvecA[j]) / (float) pthisMagBuffer->iMagBufferCount) / fabs(ftmp);
+	pthisMagCal->ftrFitErrorpc = 50.0F * sqrtf(fabs(pthisMagCal->fvecA[j]) / (float)pthisMagBuffer->iMagBufferCount) / fabs(ftmp);
 
 	// normalize the ellipsoid matrix A to unit determinant
 	f3x3matrixAeqAxScalar(pthisMagCal->fA, powf(det, -(ONETHIRD)));
@@ -610,9 +610,9 @@ void fUpdateCalibration10EIG(struct MagCalibration *pthisMagCal, struct Magnetic
 	float det;								// matrix determinant
 	float fscaling;							// set to FUTPERCOUNT * FMATRIXSCALING
 	float ftmp;								// scratch variable
-	int iOffset[3];						// offset to remove large DC hard iron bias in matrix
-	int iCount;							// number of measurements counted
-	int i, j, k, l, m, n;					// loop counters
+	int16 iOffset[3];						// offset to remove large DC hard iron bias in matrix
+	int16 iCount;							// number of measurements counted
+	int8 i, j, k, l, m, n;					// loop counters
 
 	// compute fscaling to reduce multiplications later
 	fscaling = pthisMag->fuTPerCount / DEFAULTB;
@@ -649,7 +649,7 @@ void fUpdateCalibration10EIG(struct MagCalibration *pthisMagCal, struct Magnetic
 				// apply the fixed offset and scaling and enter into fvecA[6-8]
 				for (l = X; l <= Z; l++)
 				{
-					pthisMagCal->fvecA[l + 6] = (float)((int)pthisMagBuffer->iBpFast[l][j][k] - (int)iOffset[l]) * fscaling;
+					pthisMagCal->fvecA[l + 6] = (float)((int32)pthisMagBuffer->iBpFast[l][j][k] - (int32)iOffset[l]) * fscaling;
 				}
 
 				// compute measurement vector elements fvecA[0-5] from fvecA[6-8]
@@ -683,7 +683,7 @@ void fUpdateCalibration10EIG(struct MagCalibration *pthisMagCal, struct Magnetic
 	}
 
 	// set the last element fmatA[9][9] to the number of measurements
-	pthisMagCal->fmatA[9][9] = (float) iCount;
+	pthisMagCal->fmatA[9][9] = (float)iCount;
 
 	// store the number of measurements accumulated (defensive programming, should never be needed)
 	pthisMagBuffer->iMagBufferCount = iCount;
@@ -744,15 +744,15 @@ void fUpdateCalibration10EIG(struct MagCalibration *pthisMagCal, struct Magnetic
 
 	// compute the trial geomagnetic field strength B in bit counts times FMATRIXSCALING
 	pthisMagCal->ftrB = sqrtf(fabs(pthisMagCal->fA[0][0] * pthisMagCal->ftrV[X] * pthisMagCal->ftrV[X] +
-			2.0F * pthisMagCal->fA[0][1] * pthisMagCal->ftrV[X] * pthisMagCal->ftrV[Y] +
-			2.0F * pthisMagCal->fA[0][2] * pthisMagCal->ftrV[X] * pthisMagCal->ftrV[Z] +
-			pthisMagCal->fA[1][1] * pthisMagCal->ftrV[Y] * pthisMagCal->ftrV[Y] +
-			2.0F * pthisMagCal->fA[1][2] * pthisMagCal->ftrV[Y] * pthisMagCal->ftrV[Z] +
-			pthisMagCal->fA[2][2] * pthisMagCal->ftrV[Z] * pthisMagCal->ftrV[Z] - pthisMagCal->fmatB[9][j]));
+		2.0F * pthisMagCal->fA[0][1] * pthisMagCal->ftrV[X] * pthisMagCal->ftrV[Y] +
+		2.0F * pthisMagCal->fA[0][2] * pthisMagCal->ftrV[X] * pthisMagCal->ftrV[Z] +
+		pthisMagCal->fA[1][1] * pthisMagCal->ftrV[Y] * pthisMagCal->ftrV[Y] +
+		2.0F * pthisMagCal->fA[1][2] * pthisMagCal->ftrV[Y] * pthisMagCal->ftrV[Z] +
+		pthisMagCal->fA[2][2] * pthisMagCal->ftrV[Z] * pthisMagCal->ftrV[Z] - pthisMagCal->fmatB[9][j]));
 
 	// calculate the trial normalized fit error as a percentage
-	pthisMagCal->ftrFitErrorpc = 50.0F * sqrtf(fabs(pthisMagCal->fvecA[j]) / (float) pthisMagBuffer->iMagBufferCount) /
-			(pthisMagCal->ftrB * pthisMagCal->ftrB);
+	pthisMagCal->ftrFitErrorpc = 50.0F * sqrtf(fabs(pthisMagCal->fvecA[j]) / (float)pthisMagBuffer->iMagBufferCount) /
+		(pthisMagCal->ftrB * pthisMagCal->ftrB);
 
 	// correct for the measurement matrix offset and scaling and get the computed hard iron offset in uT
 	for (l = X; l <= Z; l++)

@@ -69,16 +69,16 @@ float facos_deg(float x)
 float fatan_deg(float x)
 {
 	float fangledeg;			// compute computed (deg)
-	int ixisnegative;			// argument x is negative
-	int ixexceeds1;			// argument x is greater than 1.0
-	int ixmapped;				// argument in range tan(15 deg) to tan(45 deg)=1.0
+	int8 ixisnegative;			// argument x is negative
+	int8 ixexceeds1;			// argument x is greater than 1.0
+	int8 ixmapped;				// argument in range tan(15 deg) to tan(45 deg)=1.0
 
 #define TAN15DEG 0.26794919243F		// tan(15 deg) = 2 - sqrt(3)
 #define TAN30DEG 0.57735026919F		// tan(30 deg) = 1/sqrt(3)
 
 	// reset all flags
 	ixisnegative = ixexceeds1 = ixmapped = 0;
-	
+
 	// test for negative argument to allow use of tan(-x)=-tan(x)
 	if (x < 0.0F)
 	{
@@ -100,7 +100,7 @@ float fatan_deg(float x)
 	// 1. maps to (sqrt(3) - 1) / (sqrt(3) + 1) = 2 - sqrt(3) = tan(15 deg)
 	if (x > TAN15DEG)
 	{
-		x = (x - TAN30DEG)/(1.0F + TAN30DEG * x);
+		x = (x - TAN30DEG) / (1.0F + TAN30DEG * x);
 		ixmapped = 1;
 	}
 
@@ -111,7 +111,7 @@ float fatan_deg(float x)
 	if (ixmapped) fangledeg += 30.0F;
 	if (ixexceeds1) fangledeg = 90.0F - fangledeg;
 	if (ixisnegative) fangledeg = -fangledeg;
-	
+
 	return (fangledeg);
 }
 
@@ -129,7 +129,7 @@ float fatan2_deg(float y, float x)
 		// otherwise y= 0.0 and return 0 deg (invalid arguments)
 		return 0.0F;
 	}
-	
+
 	// from here onwards, x is guaranteed to be non-zero
 	// compute atan2 for quadrant 1 (0 to 90 deg) and quadrant 4 (-90 to 0 deg)
 	if (x > 0.0F) return (fatan_deg(y / x));

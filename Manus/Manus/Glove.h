@@ -28,7 +28,10 @@
 #include <inttypes.h>
 
 // flag for handedness (0 = left, 1 = right)
-#define GLOVE_FLAGS_HANDEDNESS 0x1
+#define GLOVE_FLAGS_HANDEDNESS  0x1
+#define GLOVE_FLAGS_CAL_GYRO    0x2
+#define GLOVE_FLAGS_CAL_ACCEL   0x4
+#define GLOVE_FLAGS_CAL_FINGERS 0x8
 
 #define GLOVE_AXES      3
 #define GLOVE_QUATS     4

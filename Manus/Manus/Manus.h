@@ -145,7 +145,7 @@ extern "C" {
 	*  \param gyro Calibrate the gyroscope.
 	*  \param accel Calibrate the accelerometer.
 	*/
-	MANUS_API int ManusCalibrate(unsigned int glove, bool gyro, bool accel = true);
+	MANUS_API int ManusCalibrate(unsigned int glove, bool gyro = true, bool accel = true, bool fingers = true);
 }
 
 /**@}*/

@@ -36,11 +36,6 @@
 #define MANUS_GLOVE_PAGE	    0x03
 #define MANUS_GLOVE_USAGE       0x04
 
-// flag for handedness (0 = left, 1 = right)
-#define GLOVE_FLAGS_HANDEDNESS  0x1
-#define GLOVE_FLAGS_CAL_GYRO    0x2
-#define GLOVE_FLAGS_CAL_ACCEL   0x4
-
 std::vector<Glove*> g_gloves;
 std::mutex g_gloves_mutex;
 
@@ -215,7 +210,7 @@ int ManusSetHandedness(unsigned int glove, bool right_hand)
 	return MANUS_SUCCESS;
 }
 
-int ManusCalibrate(unsigned int glove, bool gyro, bool accel)
+int ManusCalibrate(unsigned int glove, bool gyro, bool accel, bool fingers)
 {
 	// Get the glove from the list
 	Glove* elem;
@@ -229,6 +224,8 @@ int ManusCalibrate(unsigned int glove, bool gyro, bool accel)
 		flags |= GLOVE_FLAGS_CAL_GYRO;
 	if (accel)
 		flags |= GLOVE_FLAGS_CAL_ACCEL;
+	if (fingers)
+		flags |= GLOVE_FLAGS_CAL_FINGERS;
 	elem->SetFlags(flags);
 
 	return MANUS_SUCCESS;

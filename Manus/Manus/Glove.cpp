@@ -182,7 +182,13 @@ void Glove::UpdateState()
 
 	// normalize finger data
 	for (int i = 0; i < GLOVE_FINGERS; i++)
-		m_state.data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
+	{
+		// account for finger order
+		if (m_state.data.Handedness)
+			m_state.data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
+		else
+			m_state.data.Fingers[i] = m_report.fingers[GLOVE_FINGERS - (i + 1)] / FINGER_DIVISOR;
+	}
 
 	// execute the magnetometer and yaw sensor fusion
 	m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);

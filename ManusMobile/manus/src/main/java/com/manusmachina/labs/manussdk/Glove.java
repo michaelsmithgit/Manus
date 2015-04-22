@@ -229,8 +229,11 @@ public class Glove extends BluetoothGattCallback {
     public float getFinger(int i) {
         BluetoothGattCharacteristic report = mReports.get(0);
 
-        if (report.getValue() == null)
+        if (i > 4 || report.getValue() == null)
             return -1.0f;
+
+        if (getHandedness() == Handedness.LEFT_HAND)
+            i = 4 - i;
 
         return report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
     }

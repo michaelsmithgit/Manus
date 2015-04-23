@@ -24,7 +24,7 @@ import java.util.UUID;
 /**
  * Created by Armada on 14-4-2015.
  */
-public class UUID16 {
+class UUID16 {
     private static final UUID BASE = new UUID(0x1000L, 0x800000805F9B34FBL);
 
     public static UUID toUUID(byte mostSigBits, byte leastSigBits) {

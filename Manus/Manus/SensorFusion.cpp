@@ -44,7 +44,7 @@ SensorFusion::SensorFusion()
 	loopcounter = 0;
 }
 
-void SensorFusion::Fusion_Task(struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix, struct fquaternion *pthisOrientMatrixFused)
+struct fquaternion SensorFusion::Fusion_Task(struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix)
 {
 	// copy all values to the local buffer for use with fusionRun
 	thisAccel = *pthisAccel;
@@ -53,7 +53,7 @@ void SensorFusion::Fusion_Task(struct AccelSensor *pthisAccel, struct MagSensor 
 
 	Fusion_Run();
 
-	*pthisOrientMatrixFused = thisSV_9DOF_GBY_KALMAN.fqPl;
+	return thisSV_9DOF_GBY_KALMAN.fqPl;
 }
 
 void SensorFusion::Fusion_Run(void)

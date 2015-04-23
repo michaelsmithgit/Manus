@@ -26,6 +26,8 @@
 #ifndef MAGNETIC_H
 #define MAGNETIC_H
 
+#include "types.h"
+
 // magnetic calibration constants
 #define MAGBUFFSIZEX 12					// x dimension in magnetometer buffer (12x24 equals 288 elements)
 #define MAGBUFFSIZEY (2 * MAGBUFFSIZEX)	// y dimension in magnetometer buffer (12x24 equals 288 elements)

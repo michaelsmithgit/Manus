@@ -26,6 +26,8 @@
 #ifndef ORIENTATION_H
 #define ORIENTATION_H
 
+#include "types.h"
+
 // function prototypes
 void f3DOFTiltNED(float fR[][3], float fGp[]);
 void f3DOFTiltAndroid(float fR[][3], float fGp[]);

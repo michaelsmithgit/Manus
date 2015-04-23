@@ -152,7 +152,6 @@ void Glove::UpdateState()
 	AccelSensor myAccel;
 	MagSensor myMag;
 	fquaternion myQuaternion;
-	fquaternion myQuaternionOut;
 
 	m_state.PacketNumber++;
 	m_state.data.Handedness = m_calib.flags & GLOVE_FLAGS_HANDEDNESS;
@@ -191,11 +190,11 @@ void Glove::UpdateState()
 	}
 
 	// execute the magnetometer and yaw sensor fusion
-	m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion, &myQuaternionOut);
+	fquaternion fused = m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion);
 
 	// copy the output of the sensor fusion to m_state
-	memcpy(&(m_state.data.Quaternion), &myQuaternionOut, sizeof(GLOVE_QUATERNION));
-	memcpy(&(m_state.data.Acceleration), &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
+	memcpy(&m_state.data.Quaternion, &fused, sizeof(GLOVE_QUATERNION));
+	memcpy(&m_state.data.Acceleration, &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
 }
 
 uint8_t Glove::GetFlags()

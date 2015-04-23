@@ -26,6 +26,8 @@
 #ifndef APPROXIMATIONS_H
 #define APPROXIMATIONS_H
 
+#include "types.h"
+
 // function prototypes
 float fasin_deg(float x);
 float facos_deg(float x);

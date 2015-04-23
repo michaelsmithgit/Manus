@@ -23,9 +23,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "magnetic.h"
-
 #pragma once
+
+#include "types.h"
+#include "magnetic.h"
 
 // *********************************************************************************
 // COMPUTE_9DOF_GBY_KALMAN constants
@@ -185,7 +186,7 @@ class SensorFusion
 public:
 	SensorFusion();
 
-	void Fusion_Task(struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix, struct fquaternion *pthisOrientMatrixFused);
+	struct fquaternion Fusion_Task(struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix);
 private:
 	void fInit_9DOF_GBY_KALMAN(struct SV_9DOF_GBY_KALMAN *pthisSV, int16 ithisCoordSystem, int16 iSensorFS, int16 iOverSampleRatio);
 	void fRun_9DOF_GBY_KALMAN_MANUS(struct SV_9DOF_GBY_KALMAN *pthisSV, struct AccelSensor *pthisAccel, struct MagSensor *pthisMag, struct fquaternion *pthisOrientMatrix,
@@ -199,7 +200,6 @@ private:
 	struct MagneticBuffer thisMagBuffer;		// magnetometer measurement buffer
 	struct AccelSensor thisAccel;				// this accelerometer
 	struct fquaternion thisOrientMatrix;		// this gyro quaternion
-	UINT32 loopcounter;
-	UINT8 MagCal_Event_Flag;					// 'global' flags
-
+	uint32 loopcounter;
+	uint8 MagCal_Event_Flag;					// 'global' flags
 };

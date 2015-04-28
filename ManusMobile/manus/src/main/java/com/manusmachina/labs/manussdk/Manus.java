@@ -28,16 +28,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.ParcelUuid;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * \defgroup Glove Manus Glove
@@ -196,7 +189,7 @@ public class Manus extends Service {
         unregisterReceiver(mReceiver);
 
         for (Glove glove : mGloves) {
-            glove.mGatt.close();
+            glove.close();
         }
         mGloves.clear();
     }

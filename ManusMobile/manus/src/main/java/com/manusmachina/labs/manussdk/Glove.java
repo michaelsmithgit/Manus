@@ -42,16 +42,35 @@ public class Glove extends BluetoothGattCallback {
     public class Quaternion {
         public float w, x, y, z;
 
+        public Quaternion() {
+            this(0, 0, 0, 0);
+        }
+
         public Quaternion(float w, float x, float y, float z) {
             this.w = w;
             this.x = x;
             this.y = y;
             this.z = z;
         }
+
+        public Quaternion(float[] array) {
+            this.w = array[0];
+            this.x = array[1];
+            this.y = array[2];
+            this.z = array[3];
+        }
+
+        public float[] ToArray() {
+            return new float[]{ w, x, y, z };
+        }
     }
 
     public class Vector {
         public float x, y, z;
+
+        public Vector() {
+            this(0, 0, 0);
+        }
 
         public Vector(float x, float y, float z) {
             this.x = x;
@@ -59,9 +78,19 @@ public class Glove extends BluetoothGattCallback {
             this.z = z;
         }
 
+        public Vector(float[] array) {
+            this.x = array[0];
+            this.y = array[1];
+            this.z = array[2];
+        }
+
         public Vector ToDegrees()
         {
             return new Vector((float)(x * 180.0 / Math.PI), (float)(y * 180.0 / Math.PI), (float)(z * 180.0 / Math.PI));
+        }
+
+        public float[] ToArray() {
+            return new float[]{ x, y, z };
         }
     }
 
@@ -88,17 +117,44 @@ public class Glove extends BluetoothGattCallback {
     private static final int GLOVE_FLAGS_HANDEDNESS = 0x1;
 
     private byte[] mReportMap = null;
+    private Quaternion mQuat = new Quaternion();
+    private Vector mAccel = new Vector();
+    private Vector mCompass = new Vector();
     private ArrayList<BluetoothGattCharacteristic> mReports = new ArrayList<>();
 
+    protected SensorFusion mSensorFusion = null;
     protected GloveCallback mGloveCallback = null;
     protected BluetoothGatt mGatt = null;
     protected int mConnectionState = BluetoothGatt.STATE_DISCONNECTED;
 
     @Override
-    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic report) {
+        final int format = BluetoothGattCharacteristic.FORMAT_SINT16;
+
         // Only callback when the primary input report changed
-        if (mReports.indexOf(characteristic) == 0)
+        if (mReports.indexOf(report) == 0) {
+            mQuat = new Quaternion(
+                    report.getIntValue(format, 0) / QUAT_DIVISOR,
+                    report.getIntValue(format, 2) / QUAT_DIVISOR,
+                    report.getIntValue(format, 4) / QUAT_DIVISOR,
+                    report.getIntValue(format, 6) / QUAT_DIVISOR
+            );
+
+            mAccel = new Vector(
+                    report.getIntValue(format, 8) / ACCEL_DIVISOR,
+                    report.getIntValue(format, 10) / ACCEL_DIVISOR,
+                    report.getIntValue(format, 12) / ACCEL_DIVISOR
+            );
             mGloveCallback.OnChanged(this);
+        } else {
+            mCompass = new Vector(
+                    report.getIntValue(format, 0) / COMPASS_DIVISOR,
+                    report.getIntValue(format, 2) / COMPASS_DIVISOR,
+                    report.getIntValue(format, 4) / COMPASS_DIVISOR
+            );
+            float[] fused = mSensorFusion.fusion(mAccel.ToArray(), mCompass.ToArray(), mQuat.ToArray());
+            mQuat = new Quaternion(fused);
+        }
     }
 
     @Override
@@ -162,7 +218,7 @@ public class Glove extends BluetoothGattCallback {
                 mGatt.readCharacteristic(mReports.get(2));
             } else {
                 mGloveCallback.OnDetected(this, false);
-                mGatt.close();
+                close();
             }
         }
     }
@@ -170,6 +226,12 @@ public class Glove extends BluetoothGattCallback {
     protected Glove(Context con, BluetoothDevice dev, GloveCallback callback) {
         mGatt = dev.connectGatt(con, true, this);
         mGloveCallback = callback;
+        mSensorFusion = new SensorFusion();
+    }
+
+    protected void close() {
+        mGatt.close();
+        mSensorFusion.close();
     }
 
     public boolean isConnected() {
@@ -189,41 +251,12 @@ public class Glove extends BluetoothGattCallback {
             return Handedness.RIGHT_HAND;
     }
 
-    /*! \brief Get the state of a glove.
-    *
-    *  \param glove The glove index.
-    *  \param state Output variable to receive the state.
-    *  \param blocking Wait until the glove returns a value.
-    *
-    *  \return True if the glove is connected, False if it is not.
-    */
     public Quaternion getQuaternion() {
-        BluetoothGattCharacteristic report = mReports.get(0);
-        int format = BluetoothGattCharacteristic.FORMAT_SINT16;
-
-        if (report.getValue() == null)
-            return null;
-
-        return new Quaternion(
-                report.getIntValue(format, 0) / QUAT_DIVISOR,
-                report.getIntValue(format, 2) / QUAT_DIVISOR,
-                report.getIntValue(format, 4) / QUAT_DIVISOR,
-                report.getIntValue(format, 6) / QUAT_DIVISOR
-        );
+        return mQuat;
     }
 
     public Vector getAcceleration() {
-        BluetoothGattCharacteristic report = mReports.get(0);
-        int format = BluetoothGattCharacteristic.FORMAT_SINT16;
-
-        if (report.getValue() == null)
-            return null;
-
-        return new Vector(
-                report.getIntValue(format, 8) / ACCEL_DIVISOR,
-                report.getIntValue(format, 10) / ACCEL_DIVISOR,
-                report.getIntValue(format, 12) / ACCEL_DIVISOR
-        );
+        return mAccel;
     }
 
     public float getFinger(int i) {

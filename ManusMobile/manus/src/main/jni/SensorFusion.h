@@ -25,6 +25,7 @@
 
 #pragma once
 
+#include <jni.h>
 #include "types.h"
 #include "magnetic.h"
 
@@ -211,3 +212,9 @@ private:
 	uint8 MagCal_Event_Flag;					// 'global' flags
 
 };
+
+extern "C" {
+    JNIEXPORT jlong JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_init(JNIEnv* env, jobject obj);
+    JNIEXPORT void JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_close(JNIEnv* env, jobject obj);
+    JNIEXPORT jfloatArray JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_fusion(JNIEnv* env, jobject obj, jfloatArray accel, jfloatArray mag, jfloatArray quat);
+}

@@ -51,15 +51,15 @@ Glove::~Glove()
 	delete m_device_path;
 }
 
-bool Glove::GetState(GLOVE_STATE* state, bool blocking)
+bool Glove::GetState(GLOVE_STATE* state, unsigned int timeout)
 {
 	// Wait until the thread is done writing a packet
 	std::unique_lock<std::mutex> lk(m_report_mutex);
 
 	// Optionally wait until the next package is sent
-	if (blocking)
+	if (timeout > 0)
 	{
-		m_report_block.wait(lk);
+		m_report_block.wait_for(lk, std::chrono::milliseconds(timeout));
 		if (!m_running)
 		{
 			lk.unlock();

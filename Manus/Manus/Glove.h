@@ -90,7 +90,7 @@ public:
 	void Disconnect();
 	bool IsRunning() const { return m_running; }
 	const char* GetDevicePath() const { return m_device_path; }
-	bool GetState(GLOVE_STATE* state, bool blocking);
+	bool GetState(GLOVE_STATE* state, unsigned int timeout);
 	uint8_t GetFlags();
 	void SetFlags(uint8_t flags);
 

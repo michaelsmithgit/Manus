@@ -38,7 +38,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			QueryPerformanceCounter(&start);
 
 			GLOVE_STATE state = { 0 };
-			if (ManusGetState(i, &state, true) == MANUS_SUCCESS)
+			if (ManusGetState(i, &state, 1000) == MANUS_SUCCESS)
 				printf("glove: %d - %d %s\n", i, state.PacketNumber, state.data.Handedness ? "Right" : "Left");
 			else
 				printf("glove: %d\n", i);

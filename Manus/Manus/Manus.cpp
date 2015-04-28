@@ -132,7 +132,7 @@ int ManusGetGloveCount()
 	return (int)g_gloves.size();
 }
 
-int ManusGetState(unsigned int glove, GLOVE_STATE* state, bool blocking)
+int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int blocking)
 {
 	// Get the glove from the list
 	Glove* elem;

@@ -20,11 +20,11 @@
             android:text="Yaw"
             android:id="@+id/textView" />
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
+        <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/yaw"
+            android:indeterminate="false"
             android:max="360" />
 
         <TextView
@@ -34,8 +34,7 @@
             android:text="Pitch"
             android:id="@+id/textView2" />
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
+        <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/pitch"
@@ -48,13 +47,11 @@
             android:text="Roll"
             android:id="@+id/textView3" />
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
+        <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/roll"
-            android:max="360"
-            android:indeterminate="false" />
+            android:max="360" />
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -63,5 +60,6 @@
             android:id="@+id/handedness"
             android:checked="false"
             android:enabled="false" />
+
     </LinearLayout>
 </RelativeLayout>

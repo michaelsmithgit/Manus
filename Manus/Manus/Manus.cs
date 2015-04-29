@@ -77,7 +77,7 @@ namespace ManusMachina
             get
             {
                 switch (index)
-                { 
+                {
                     case 0: return this.x;
                     case 1: return this.y;
                     case 2: return this.z;
@@ -164,10 +164,10 @@ namespace ManusMachina
         *
         *  \param glove The glove index.
         *  \param state Output variable to receive the state.
-        *  \param blocking Wait until the glove returns a value.
+        *  \param timeout Milliseconds to wait until the glove returns a value.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetState(uint glove, out GLOVE_STATE state, bool blocking = false);
+        public static extern int ManusGetState(uint glove, out GLOVE_STATE state, uint timeout = 0);
 
         /*! \brief Convert a Quaternion to Euler angles.
         *
@@ -201,32 +201,33 @@ namespace ManusMachina
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ManusGetGravity(out GLOVE_VECTOR gravity, ref GLOVE_QUATERNION quaternion);
 
-	    /*! \brief Configure the handedness of the glove.
-	    *
-	    *  This reconfigures the glove for a different hand.
-	    *
-	    *  \warning This function overwrites factory settings on the
-	    *  glove, it should only be called if the user requested it.
-	    *
-	    *  \param glove The glove index.
-	    *  \param right_hand Set the glove as a right hand.
-	    */
+        /*! \brief Configure the handedness of the glove.
+        *
+        *  This reconfigures the glove for a different hand.
+        *
+        *  \warning This function overwrites factory settings on the
+        *  glove, it should only be called if the user requested it.
+        *
+        *  \param glove The glove index.
+        *  \param right_hand Set the glove as a right hand.
+        */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ManusSetHandedness(uint glove, bool right_hand);
 
-	    /*! \brief Calibrate the IMU on the glove.
-	    *
-	    *  This will run a self-test of the IMU and recalibrate it.
-	    *  The glove should be placed on a stable flat surface during
-	    *  recalibration.
-	    *
-	    *  \warning This function overwrites factory settings on the
-	    *  glove, it should only be called if the user requested it.
-	    *
-	    *  \param glove The glove index.
-	    *  \param gyro Calibrate the gyroscope.
-	    *  \param accel Calibrate the accelerometer.
-	    */
+        /*! \brief Calibrate the IMU on the glove.
+        *
+        *  This will run a self-test of the IMU and recalibrate it.
+        *  The glove should be placed on a stable flat surface during
+        *  recalibration.
+        *
+        *  \warning This function overwrites factory settings on the
+        *  glove, it should only be called if the user requested it.
+        *
+        *  \param glove The glove index.
+        *  \param gyro Calibrate the gyroscope.
+        *  \param accel Calibrate the accelerometer.
+        *  \param fingers Calibrate the finger flex sensors.
+        */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int ManusCalibrate(uint glove, bool gyro = true, bool accel = true, bool fingers = true);
     }

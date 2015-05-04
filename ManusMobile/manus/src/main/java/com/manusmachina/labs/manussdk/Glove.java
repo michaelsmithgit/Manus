@@ -130,9 +130,10 @@ public class Glove extends BluetoothGattCallback {
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic report) {
         final int format = BluetoothGattCharacteristic.FORMAT_SINT16;
+        int reportId = mReports.indexOf(report);
 
         // Only callback when the primary input report changed
-        if (mReports.indexOf(report) == 0) {
+        if (reportId == 0) {
             mQuat = new Quaternion(
                     report.getIntValue(format, 0) / QUAT_DIVISOR,
                     report.getIntValue(format, 2) / QUAT_DIVISOR,
@@ -145,16 +146,21 @@ public class Glove extends BluetoothGattCallback {
                     report.getIntValue(format, 10) / ACCEL_DIVISOR,
                     report.getIntValue(format, 12) / ACCEL_DIVISOR
             );
-            mGloveCallback.OnChanged(this);
-        } else {
+        } else if (reportId == 1) {
             mCompass = new Vector(
                     report.getIntValue(format, 0) / COMPASS_DIVISOR,
                     report.getIntValue(format, 2) / COMPASS_DIVISOR,
                     report.getIntValue(format, 4) / COMPASS_DIVISOR
             );
+        }
+
+        if (mSensorFusion != null) {
             float[] fused = mSensorFusion.fusion(mAccel.ToArray(), mCompass.ToArray(), mQuat.ToArray());
             mQuat = new Quaternion(fused);
         }
+
+        if (reportId == 0)
+            mGloveCallback.OnChanged(this);
     }
 
     @Override
@@ -226,7 +232,13 @@ public class Glove extends BluetoothGattCallback {
     protected Glove(Context con, BluetoothDevice dev, GloveCallback callback) {
         mGatt = dev.connectGatt(con, true, this);
         mGloveCallback = callback;
-        mSensorFusion = new SensorFusion();
+
+        try {
+            mSensorFusion = new SensorFusion();
+        } catch (UnsatisfiedLinkError e) {
+            mSensorFusion = null;
+            e.printStackTrace();
+        }
     }
 
     protected void close() {

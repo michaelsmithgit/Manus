@@ -51,6 +51,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
     private long timestamp = System.currentTimeMillis();
     private ManusTestActivity mScope = this;
     private Manus.GloveBinder mBinder = null;
+    private ArrayAdapter<String> mArray = null;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -68,6 +69,12 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         }
     };
 
+    private void updateArray() {
+        mArray.clear();
+        for (int i = 0; i < mBinder.getGloveCount(); i++)
+            mArray.add("Glove " + i);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,18 +89,17 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
+        // Create an array for navigation,
+        mArray = new ArrayAdapter<String>(
+                actionBar.getThemedContext(),
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1);
+        updateArray();
+
         // Set up the dropdown list navigation in the action bar.
         actionBar.setListNavigationCallbacks(
                 // Specify a SpinnerAdapter to populate the dropdown list.
-                new ArrayAdapter<String>(
-                        actionBar.getThemedContext(),
-                        android.R.layout.simple_list_item_1,
-                        android.R.id.text1,
-                        new String[]{
-                                getString(R.string.title_section1),
-                                getString(R.string.title_section2),
-                                getString(R.string.title_section3),
-                        }),
+                mArray,
                 this);
     }
 
@@ -148,7 +154,10 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
 
     @Override
     public void OnGloveChanged(int index, Glove glove) {
-        if (index > 0)
+        if (index > mArray.getCount() - 1)
+            updateArray();
+
+        if (index != getSupportActionBar().getSelectedNavigationIndex())
             return;
 
         Glove.Quaternion quat = glove.getQuaternion();

@@ -16,5 +16,5 @@ class SensorFusion implements Closeable {
     private native long init();
     public native void close();
 
-    public native float[] fusion(float[] accel, float[] mag, float[] quat);
+    public native float[] fusion(short[] accel, short[] mag, float[] quat);
 }

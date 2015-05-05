@@ -118,8 +118,8 @@ public class Glove extends BluetoothGattCallback {
 
     private byte[] mReportMap = null;
     private Quaternion mQuat = new Quaternion();
-    private Vector mAccel = new Vector();
-    private Vector mCompass = new Vector();
+    private short[] mAccel = new short[] { 0, 0, 0 };
+    private short[] mCompass = new short[] { 0, 0, 0 };
     private ArrayList<BluetoothGattCharacteristic> mReports = new ArrayList<>();
 
     protected SensorFusion mSensorFusion = null;
@@ -141,21 +141,21 @@ public class Glove extends BluetoothGattCallback {
                     report.getIntValue(format, 6) / QUAT_DIVISOR
             );
 
-            mAccel = new Vector(
-                    report.getIntValue(format, 8) / ACCEL_DIVISOR,
-                    report.getIntValue(format, 10) / ACCEL_DIVISOR,
-                    report.getIntValue(format, 12) / ACCEL_DIVISOR
-            );
+            mAccel = new short[] {
+                    report.getIntValue(format, 8).shortValue(),
+                    report.getIntValue(format, 10).shortValue(),
+                    report.getIntValue(format, 12).shortValue()
+            };
         } else if (reportId == 1) {
-            mCompass = new Vector(
-                    report.getIntValue(format, 0) / COMPASS_DIVISOR,
-                    report.getIntValue(format, 2) / COMPASS_DIVISOR,
-                    report.getIntValue(format, 4) / COMPASS_DIVISOR
-            );
+            mCompass = new short[]{
+                    report.getIntValue(format, 0).shortValue(),
+                    report.getIntValue(format, 2).shortValue(),
+                    report.getIntValue(format, 4).shortValue()
+            };
         }
 
         if (mSensorFusion != null) {
-            float[] fused = mSensorFusion.fusion(mAccel.ToArray(), mCompass.ToArray(), mQuat.ToArray());
+            float[] fused = mSensorFusion.fusion(mAccel, mCompass, mQuat.ToArray());
             mQuat = new Quaternion(fused);
         }
 
@@ -268,7 +268,11 @@ public class Glove extends BluetoothGattCallback {
     }
 
     public Vector getAcceleration() {
-        return mAccel;
+        return new Vector(
+                mAccel[0] / ACCEL_DIVISOR,
+                mAccel[1] / ACCEL_DIVISOR,
+                mAccel[2] / ACCEL_DIVISOR
+        );
     }
 
     public float getFinger(int i) {

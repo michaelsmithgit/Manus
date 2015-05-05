@@ -30,6 +30,14 @@
 #include "math.h"
 #include "approximations.h"
 
+#define ACCEL_DIVISOR 16384.0f
+#define COMPASS_DIVISOR 32.0f
+// magnetometer conversion values
+#define FUTPERCOUNT 0.3f;
+#define FCOUNTSPERUT 3.333f;
+// accelerometer converion values
+#define FGPERCOUNT 0.00006103515; // 2 / (2^15)
+
 JNIEXPORT jlong JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_init(JNIEnv* env, jobject obj)
 {
     return (jlong)new SensorFusion();
@@ -45,28 +53,44 @@ JNIEXPORT void JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_close(JN
     env->SetLongField(obj, fid, 0);
 }
 
-JNIEXPORT jfloatArray JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_fusion(JNIEnv* env, jobject obj, jfloatArray accel, jfloatArray mag, jfloatArray quat)
+JNIEXPORT jfloatArray JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_fusion(JNIEnv* env, jobject obj, jshortArray jaccel, jshortArray jcompass, jfloatArray jquat)
 {
     // Get the SensorFusion object
     jclass cls = env->GetObjectClass(obj);
     jfieldID fid = env->GetFieldID(cls, "objectPtr", "J");
     SensorFusion* f = (SensorFusion*)env->GetLongField(obj, fid);
 
-	jfloat* myAccel = env->GetFloatArrayElements(accel, 0);
-	jfloat* myMag = env->GetFloatArrayElements(mag, 0);
-	jfloat* myQuat = env->GetFloatArrayElements(quat, 0);
+	jshort* accel = env->GetShortArrayElements(jaccel, 0);
+	jshort* compass = env->GetShortArrayElements(jcompass, 0);
+	jfloat* quat = env->GetFloatArrayElements(jquat, 0);
 
-    struct fquaternion myResult = f->Fusion_Task((struct AccelSensor*)myAccel, (struct MagSensor*)myMag, (struct fquaternion*)myQuat);
+	AccelSensor myAccel;
+	MagSensor myMag;
+
+	// normalize data
+	for (int i = 0; i < 3; i++) {
+		myAccel.fGpFast[i] = accel[i] / ACCEL_DIVISOR;
+		myAccel.iGp[i] = accel[i];
+		myAccel.iGpFast[i] = accel[i];
+		myMag.iBp[i] = compass[i];
+		myMag.fBp[i] = compass[i] / COMPASS_DIVISOR;
+		myMag.iBpFast[i] = compass[i];
+		myMag.fBcFast[i] = compass[i] / COMPASS_DIVISOR;
+	}
+    myMag.fCountsPeruT = FCOUNTSPERUT;
+    myMag.fuTPerCount = FUTPERCOUNT;
+
+    struct fquaternion myResult = f->Fusion_Task(&myAccel, &myMag, (struct fquaternion*)quat);
 
 	jfloatArray result;
-    result = env->NewFloatArray(3);
+    result = env->NewFloatArray(4);
     if (result == NULL) {
         return NULL; /* out of memory error thrown */
     }
 
-    env->ReleaseFloatArrayElements(accel, myAccel, 0);
-    env->ReleaseFloatArrayElements(mag, myMag, 0);
-    env->ReleaseFloatArrayElements(quat, myQuat, 0);
+    env->ReleaseShortArrayElements(jaccel, accel, 0);
+    env->ReleaseShortArrayElements(jcompass, compass, 0);
+    env->ReleaseFloatArrayElements(jquat, quat, 0);
     env->SetFloatArrayRegion(result, 0, 4, (jfloat*)&myResult);
     return result;
 }

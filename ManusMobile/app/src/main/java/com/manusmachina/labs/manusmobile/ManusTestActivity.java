@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 import com.manusmachina.labs.manussdk.*;
 
@@ -47,6 +48,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
      */
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
+    private long timestamp = System.currentTimeMillis();
     private ManusTestActivity mScope = this;
     private Manus.GloveBinder mBinder = null;
 
@@ -153,15 +155,19 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         Glove.Vector euler = glove.getEuler(quat);
         Glove.Vector degrees = euler.ToDegrees();
 
-        ProgressBar yaw = (ProgressBar)findViewById(R.id.yaw);
-        ProgressBar pitch = (ProgressBar)findViewById(R.id.pitch);
-        ProgressBar roll = (ProgressBar)findViewById(R.id.roll);
+        SeekBar yaw = (SeekBar)findViewById(R.id.yaw);
+        SeekBar pitch = (SeekBar)findViewById(R.id.pitch);
+        SeekBar roll = (SeekBar)findViewById(R.id.roll);
         CheckBox handedness = (CheckBox)findViewById(R.id.handedness);
+        SeekBar interval = (SeekBar)findViewById(R.id.interval);
 
         roll.setProgress((int)degrees.x + 180);
         pitch.setProgress((int)degrees.y + 90);
         yaw.setProgress((int)degrees.z + 180);
         handedness.setChecked(glove.getHandedness() == Glove.Handedness.RIGHT_HAND);
+        interval.setProgress((int)(System.currentTimeMillis() - timestamp));
+
+        timestamp = System.currentTimeMillis();
     }
 
     /**

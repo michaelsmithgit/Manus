@@ -61,5 +61,11 @@
             android:checked="false"
             android:enabled="false" />
 
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/interval"
+            android:max="100" />
+
     </LinearLayout>
 </RelativeLayout>

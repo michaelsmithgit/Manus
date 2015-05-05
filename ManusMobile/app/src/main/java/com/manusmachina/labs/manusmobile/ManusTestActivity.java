@@ -35,7 +35,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.manusmachina.labs.manussdk.*;
@@ -52,6 +51,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
     private ManusTestActivity mScope = this;
     private Manus.GloveBinder mBinder = null;
     private ArrayAdapter<String> mArray = null;
+    private int mSelectedGlove = 0;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -93,8 +93,8 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         mArray = new ArrayAdapter<String>(
                 actionBar.getThemedContext(),
                 android.R.layout.simple_list_item_1,
-                android.R.id.text1);
-        updateArray();
+                android.R.id.text1,
+                new String[] { "Glove 0" });
 
         // Set up the dropdown list navigation in the action bar.
         actionBar.setListNavigationCallbacks(
@@ -146,9 +146,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given dropdown item is selected, show its contents in the
         // container view.
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        mSelectedGlove = position;
         return true;
     }
 
@@ -157,7 +155,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         if (index > mArray.getCount() - 1)
             updateArray();
 
-        if (index != getSupportActionBar().getSelectedNavigationIndex())
+        if (index != mSelectedGlove)
             return;
 
         Glove.Quaternion quat = glove.getQuaternion();
@@ -207,7 +205,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_manus_test, container, false);
+            View rootView = inflater.inflate(R.layout.activity_manus_test, container, false);
             return rootView;
         }
     }

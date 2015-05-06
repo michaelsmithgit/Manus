@@ -69,12 +69,6 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         }
     };
 
-    private void updateArray() {
-        mArray.clear();
-        for (int i = 0; i < mBinder.getGloveCount(); i++)
-            mArray.add("Glove " + i);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +88,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
                 actionBar.getThemedContext(),
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1,
-                new String[] { "Glove 0" });
+                new String[] { "Glove 0", "Glove 1" });
 
         // Set up the dropdown list navigation in the action bar.
         actionBar.setListNavigationCallbacks(
@@ -152,9 +146,6 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
 
     @Override
     public void OnGloveChanged(int index, Glove glove) {
-        if (index > mArray.getCount() - 1)
-            updateArray();
-
         if (index != mSelectedGlove)
             return;
 

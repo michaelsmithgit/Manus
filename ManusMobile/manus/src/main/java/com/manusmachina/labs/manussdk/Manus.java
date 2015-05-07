@@ -30,6 +30,7 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,6 +49,9 @@ public class Manus extends Service {
 
     // List of detected gloves
     private List<Glove> mGloves = new ArrayList<>();
+
+    // Device connection iterator
+    private Iterator<BluetoothDevice> mConnectIt = null;
 
     // List of event listeners
     private ArrayList<OnGloveChangedListener> mOnGloveChangedListeners = new ArrayList<>();
@@ -85,10 +89,8 @@ public class Manus extends Service {
 
                 // Connect to all bonded devices
                 if (state == BluetoothAdapter.STATE_ON && mAdapter != null) {
-                    // Connect to all bonded devices
-                    for (BluetoothDevice dev : mAdapter.getBondedDevices()) {
-                        connect(dev);
-                    }
+                    mConnectIt = mAdapter.getBondedDevices().iterator();
+                    connect(mConnectIt.next());
                 }
             }
         }
@@ -101,6 +103,10 @@ public class Manus extends Service {
                 mGloves.add(glove);
             else
                 mPendingGloves.remove(glove);
+
+            if (mConnectIt.hasNext()) {
+                connect(mConnectIt.next());
+            }
         }
 
         @Override
@@ -172,9 +178,8 @@ public class Manus extends Service {
 
         // Connect to all bonded devices
         if (mAdapter != null) {
-            for (BluetoothDevice dev : mAdapter.getBondedDevices()) {
-                connect(dev);
-            }
+            mConnectIt = mAdapter.getBondedDevices().iterator();
+            connect(mConnectIt.next());
         }
 
         // Register for broadcasts

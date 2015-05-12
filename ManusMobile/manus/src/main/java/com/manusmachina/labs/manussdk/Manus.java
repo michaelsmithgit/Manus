@@ -179,7 +179,8 @@ public class Manus extends Service {
         // Connect to all bonded devices
         if (mAdapter != null) {
             mConnectIt = mAdapter.getBondedDevices().iterator();
-            connect(mConnectIt.next());
+            if (mConnectIt.hasNext())
+                connect(mConnectIt.next());
         }
 
         // Register for broadcasts

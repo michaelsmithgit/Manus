@@ -18,10 +18,10 @@
  */
 
 #include "stdafx.h"
+#include "Glove.h"
 #include "WinDevices.h"
 
 #include <dbt.h>
-#include <Hidsdi.h>
 
 WinDevices::WinDevices()
 {
@@ -59,7 +59,7 @@ DWORD WINAPI WinDevices::DeviceThread(LPVOID param)
 	memset(&notify_filter, 0, sizeof(notify_filter));
 	notify_filter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
 	notify_filter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
-	HidD_GetHidGuid(&notify_filter.dbcc_classguid);
+	notify_filter.dbcc_classguid = GUID_MANUS_GLOVE_SERVICE;
 	device_notify = RegisterDeviceNotification(hWnd, &notify_filter, DEVICE_NOTIFY_WINDOW_HANDLE);
 
 	// Get all messages for the window that belongs to this thread.
@@ -85,15 +85,8 @@ LRESULT CALLBACK WinDevices::WinProcCallback(HWND hWnd, UINT message, WPARAM wPa
 	if (message == WM_DEVICECHANGE && wParam == DBT_DEVICEARRIVAL) {
 		PDEV_BROADCAST_DEVICEINTERFACE broadcast = (PDEV_BROADCAST_DEVICEINTERFACE)lParam;
 
-		// Convert the device string to a lower case ASCII device path
-		size_t len = wcslen(broadcast->dbcc_name);
-		char* device_path = new char[len + 1];
-		for (size_t i = 0; i < len; i++)
-			device_path[i] = tolower(wctob(broadcast->dbcc_name[i]));
-		device_path[len] = '\0'; // Don't forget the terminator
-
 		if (devices->m_connected)
-			devices->m_connected(device_path);
+			devices->m_connected(broadcast->dbcc_name);
 		return TRUE;
 	}
 	else

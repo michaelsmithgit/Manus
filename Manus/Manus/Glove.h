@@ -22,7 +22,6 @@
 #include "Manus.h"
 #include "SensorFusion.h"
 
-#include <thread>
 #include <condition_variable>
 #include <mutex>
 #include <inttypes.h>
@@ -37,8 +36,13 @@
 #define GLOVE_QUATS     4
 #define GLOVE_FINGERS   5
 
-#define GLOVE_REPORT_ID     1
-#define COMPASS_REPORT_ID   2
+#define BLE_UUID_MANUS_GLOVE_SERVICE    0x0001
+#define BLE_UUID_MANUS_GLOVE_REPORT     0x0002
+#define BLE_UUID_MANUS_GLOVE_COMPASS    0x0003
+#define BLE_UUID_MANUS_GLOVE_CALIB      0x0004
+
+// {1bc50001-0200-eca1-e411-20fac04afa8f}
+static const GUID GUID_MANUS_GLOVE_SERVICE = { 0x1bc50001, 0x0200, 0xeca1, { 0xe4, 0x11, 0x20, 0xfa, 0xc0, 0x4a, 0xfa, 0x8f } };
 
 #pragma pack(push, 1) // exact fit - no padding
 typedef struct
@@ -61,12 +65,10 @@ typedef struct
 } CALIB_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 
-
-
 class Glove
 {
 private:
-	bool m_running;
+	bool m_connected;
 	bool m_update_flags;
 
 	GLOVE_STATE m_state;
@@ -75,27 +77,34 @@ private:
 	COMPASS_REPORT m_compass;
 	CALIB_REPORT m_calib;
 
-	char* m_device_path;
+	wchar_t* m_device_path;
 	SensorFusion m_sensorFusion;
 
-	std::thread m_thread;
+	HANDLE m_service_handle;
+	PBTH_LE_GATT_CHARACTERISTIC m_characteristics;
+	BLUETOOTH_GATT_EVENT_HANDLE m_event_handle;
+	PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION m_value_changed_event;
+
 	std::mutex m_report_mutex;
 	std::condition_variable m_report_block;
 
 public:
-	Glove(const char* device_path);
+	Glove(const wchar_t* device_path);
 	~Glove();
 
 	void Connect();
 	void Disconnect();
-	bool IsRunning() const { return m_running; }
-	const char* GetDevicePath() const { return m_device_path; }
+	bool IsConnected() const { return m_connected; }
+	const wchar_t* GetDevicePath() const { return m_device_path; }
 	bool GetState(GLOVE_STATE* state, unsigned int timeout);
 	uint8_t GetFlags();
 	void SetFlags(uint8_t flags);
 
 private:
-	static void DeviceThread(Glove* glove);
+	static void OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* event_out, void* context);
+	bool ReadCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* dest, size_t length);
+	bool ConfigureCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, bool notify, bool indicate);
+
 	static void QuatToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q);
 	void UpdateState();
 };

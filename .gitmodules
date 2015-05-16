@@ -1,3 +1,0 @@
-[submodule "Manus/hidapi/source"]
-	path = Manus/hidapi/source
-	url = https://github.com/Armada651/hidapi.git

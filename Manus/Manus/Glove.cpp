@@ -19,7 +19,6 @@
 
 #include "stdafx.h"
 #include "Glove.h"
-#include "hidapi.h"
 
 #define ACCEL_DIVISOR 16384.0f
 #define QUAT_DIVISOR 16384.0f
@@ -32,15 +31,19 @@
 #define FGPERCOUNT 0.00006103515; // 2 / (2^15)
 
 
-Glove::Glove(const char* device_path)
-	: m_running(false)
+Glove::Glove(const wchar_t* device_path)
+	: m_connected(false)
 	, m_update_flags(false)
+	, m_service_handle(INVALID_HANDLE_VALUE)
+	, m_characteristics(nullptr)
+	, m_event_handle(INVALID_HANDLE_VALUE)
+	, m_value_changed_event(nullptr)
 {
 	//memset(&m_report, 0, sizeof(m_report));
 
-	size_t len = strlen(device_path) + 1;
-	m_device_path = new char[len];
-	memcpy(m_device_path, device_path, len * sizeof(char));
+	size_t len = wcslen(device_path) + 1;
+	m_device_path = new wchar_t[len];
+	memcpy(m_device_path, device_path, len * sizeof(wchar_t));
 
 	Connect();
 }
@@ -60,7 +63,7 @@ bool Glove::GetState(GLOVE_STATE* state, unsigned int timeout)
 	if (timeout > 0)
 	{
 		m_report_block.wait_for(lk, std::chrono::milliseconds(timeout));
-		if (!m_running)
+		if (!m_connected)
 		{
 			lk.unlock();
 			return false;
@@ -76,73 +79,182 @@ bool Glove::GetState(GLOVE_STATE* state, unsigned int timeout)
 
 void Glove::Connect()
 {
-	Disconnect();
-	m_thread = std::thread(DeviceThread, this);
+	if (IsConnected())
+		Disconnect();
+
+	// Open the device using CreateFile().
+	m_service_handle = CreateFile(m_device_path,
+		FILE_GENERIC_READ | FILE_GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+		nullptr, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, nullptr);
+
+	if (m_service_handle == INVALID_HANDLE_VALUE)
+		return;
+
+	// Query the required size for the structures.
+	USHORT required_size = 0;
+	BluetoothGATTGetCharacteristics(m_service_handle, nullptr, 0, nullptr,
+		&required_size, BLUETOOTH_GATT_FLAG_NONE);
+
+	// HRESULT will never be S_OK here, so just check the size.
+	if (required_size == 0)
+		return;
+
+	// Allocate the characteristic structures.
+	m_characteristics = (PBTH_LE_GATT_CHARACTERISTIC)
+		malloc(required_size * sizeof(BTH_LE_GATT_CHARACTERISTIC));
+
+	// Get the characteristics offered by this service.
+	USHORT actual_size = 0;
+	HRESULT hr = BluetoothGATTGetCharacteristics(m_service_handle, nullptr, required_size, m_characteristics,
+		&actual_size, BLUETOOTH_GATT_FLAG_NONE);
+
+	if (SUCCEEDED(hr))
+	{
+		// Configure the characteristics.
+		for (int i = 0; i < actual_size; i++)
+		{
+			if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_REPORT)
+			{
+				ConfigureCharacteristic(&m_characteristics[i], true, false);
+			}
+			else if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_COMPASS)
+			{
+				ConfigureCharacteristic(&m_characteristics[i], true, false);
+			}
+			else if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_CALIB)
+			{
+				ReadCharacteristic(&m_characteristics[i], &m_calib, sizeof(CALIB_REPORT));
+			}
+		}
+
+		// Allocate the value changed structures.
+		m_value_changed_event = (PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION)
+			malloc(sizeof(PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION) + 2 * sizeof(BTH_LE_GATT_CHARACTERISTIC));
+
+		// Register for event callbacks on the characteristics.
+		m_value_changed_event->NumCharacteristics = 2;
+		memcpy(&m_value_changed_event->Characteristics, m_characteristics, 2 * sizeof(BTH_LE_GATT_CHARACTERISTIC));
+		HRESULT hr = BluetoothGATTRegisterEvent(m_service_handle, CharacteristicValueChangedEvent, m_value_changed_event,
+			Glove::OnCharacteristicChanged, this, &m_event_handle, BLUETOOTH_GATT_FLAG_NONE);
+
+		m_connected = SUCCEEDED(hr);
+	}
+}
+
+bool Glove::ReadCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* dest, size_t length)
+{
+	// Query the required size for the structure.
+	USHORT required_size = 0;
+	BluetoothGATTGetCharacteristicValue(m_service_handle, characteristic, 0, nullptr,
+		&required_size, BLUETOOTH_GATT_FLAG_NONE);
+
+	// HRESULT will never be S_OK here, so just check the size.
+	if (required_size == 0)
+		return false;
+
+	// Allocate the characteristic value structure.
+	PBTH_LE_GATT_CHARACTERISTIC_VALUE value = (PBTH_LE_GATT_CHARACTERISTIC_VALUE)malloc(required_size);
+
+	// Read the characteristic value.
+	USHORT actual_size = 0;
+	HRESULT hr = BluetoothGATTGetCharacteristicValue(m_service_handle, characteristic, required_size, value,
+		&actual_size, BLUETOOTH_GATT_FLAG_NONE);
+
+	// Ensure there is enough room in the buffer.
+	if (SUCCEEDED(hr) && length >= value->DataSize)
+		memcpy(dest, &value->Data, value->DataSize);
+
+	free(value);
+	return SUCCEEDED(hr);
+}
+
+bool Glove::ConfigureCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, bool notify, bool indicate)
+{
+	// Query the required size for the structure.
+	USHORT required_size = 0;
+	BluetoothGATTGetDescriptors(m_service_handle, characteristic, 0, nullptr,
+		&required_size, BLUETOOTH_GATT_FLAG_NONE);
+
+	// HRESULT will never be S_OK here, so just check the size.
+	if (required_size == 0)
+		return false;
+
+	// Allocate the descriptor structures.
+	PBTH_LE_GATT_DESCRIPTOR descriptors = (PBTH_LE_GATT_DESCRIPTOR)
+		malloc(required_size * sizeof(BTH_LE_GATT_DESCRIPTOR));
+
+	// Get the descriptors offered by this characteristic.
+	USHORT actual_size = 0;
+	HRESULT hr = BluetoothGATTGetDescriptors(m_service_handle, characteristic, required_size, descriptors,
+		&actual_size, BLUETOOTH_GATT_FLAG_NONE);
+	if (SUCCEEDED(hr))
+	{
+		for (int i = 0; i < actual_size; i++)
+		{
+			// Look for the client configuration.
+			if (descriptors[i].DescriptorType == ClientCharacteristicConfiguration)
+			{
+				// Configure this characteristic.
+				BTH_LE_GATT_DESCRIPTOR_VALUE value;
+				memset(&value, 0, sizeof(value));
+				value.DescriptorType = ClientCharacteristicConfiguration;
+				value.ClientCharacteristicConfiguration.IsSubscribeToNotification = notify;
+				value.ClientCharacteristicConfiguration.IsSubscribeToIndication = indicate;
+
+				HRESULT hr = BluetoothGATTSetDescriptorValue(m_service_handle, &descriptors[i], &value, BLUETOOTH_GATT_FLAG_NONE);
+
+				return SUCCEEDED(hr);
+			}
+		}
+	}
+
+	return false;
 }
 
 void Glove::Disconnect()
 {
-	// Instruct the device thread to stop and
-	// wait for it to shut down.
-	m_running = false;
-	if (m_thread.joinable())
-		m_thread.join();
+	m_connected = false;
+
+	if (m_event_handle != INVALID_HANDLE_VALUE)
+		BluetoothGATTUnregisterEvent(m_event_handle, BLUETOOTH_GATT_FLAG_NONE);
+	m_event_handle = INVALID_HANDLE_VALUE;
+
+	if (m_value_changed_event != nullptr)
+		free(m_value_changed_event);
+	m_value_changed_event = nullptr;
+
+	if (m_service_handle != INVALID_HANDLE_VALUE)
+		CloseHandle(m_service_handle);
+	m_service_handle = INVALID_HANDLE_VALUE;
+
+	if (m_characteristics != nullptr)
+		free(m_characteristics);
+	m_characteristics = nullptr;
 }
 
-void Glove::DeviceThread(Glove* glove)
+void Glove::OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* event_out, void* context)
 {
-	hid_device* device = hid_open_path(glove->m_device_path);
-	if (!device)
-		return;
+	Glove* glove = (Glove*)context;
 
-	// Get the calibration data from the feature report
-	unsigned char calib[sizeof(CALIB_REPORT) + 1];
-	calib[0] = 1; // Set feature report ID
-	int read = hid_get_feature_report(device, calib, sizeof(calib));
+	// Normally we would get this parameter from event_out, but it looks like it is an invalid pointer.
+	// However it seems the event struct we allocated is being kept up-to-date, so we'll just use that.
+	PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION changed_event =
+		(PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION)glove->m_value_changed_event;
 
-	// If the feature have been read correctly set the flags
-	// FIXME: HIDAPI returns the data starting at index 0 instead of index 1
-	if (read != -1)
-		memcpy(&glove->m_calib, calib, sizeof(CALIB_REPORT));
+	std::lock_guard<std::mutex> lk(glove->m_report_mutex);
 
-	glove->m_running = true;
-
-	// Keep retrieving reports while the SDK is running and the device is connected
-	while (glove->m_running && device)
+	// Read all characteristics we're monitoring.
+	for (int i = 0; i < changed_event->NumCharacteristics; i++)
 	{
-		if (glove->m_update_flags)
-		{
-			glove->m_update_flags = false;
-			calib[0] = 1; // Set feature report ID
-			memcpy(calib + 1, &glove->m_calib, sizeof(CALIB_REPORT));
-			hid_send_feature_report(device, calib, sizeof(calib));
-		}
+		PBTH_LE_GATT_CHARACTERISTIC characteristic = &changed_event->Characteristics[i];
 
-		unsigned char report[sizeof(GLOVE_REPORT) + 1];
-		read = hid_read(device, report, sizeof(report));
-
-		if (read == -1)
-			break;
-		
-		// Set the new data report and notify all blocked callers
-		// TODO: Check if the bytes read matches the report size
-		{
-			std::lock_guard<std::mutex> lk(glove->m_report_mutex);
-
-			if (report[0] == GLOVE_REPORT_ID)
-				memcpy(&glove->m_report, report + 1, sizeof(GLOVE_REPORT));
-			else if (report[0] == COMPASS_REPORT_ID)
-				memcpy(&glove->m_compass, report + 1, sizeof(COMPASS_REPORT));
-
-			glove->UpdateState();
-
-			glove->m_report_block.notify_all();
-		}
+		if (characteristic->CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_REPORT)
+			glove->ReadCharacteristic(characteristic, &glove->m_report, sizeof(GLOVE_REPORT));
+		else if (characteristic->CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_COMPASS)
+			glove->ReadCharacteristic(characteristic, &glove->m_compass, sizeof(COMPASS_REPORT));
 	}
 
-	hid_close(device);
-
-	glove->m_running = false;
+	glove->UpdateState();
 	glove->m_report_block.notify_all();
 }
 
@@ -204,6 +316,7 @@ uint8_t Glove::GetFlags()
 
 void Glove::SetFlags(uint8_t flags)
 {
+	// TODO: Write these flags to the glove.
 	m_calib.flags = flags;
 	m_update_flags = true;
 }

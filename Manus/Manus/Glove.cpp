@@ -33,8 +33,8 @@
 
 Glove::Glove(const wchar_t* device_path)
 	: m_connected(false)
-	, m_update_flags(false)
 	, m_service_handle(INVALID_HANDLE_VALUE)
+	, m_num_characteristics(0)
 	, m_characteristics(nullptr)
 	, m_event_handle(INVALID_HANDLE_VALUE)
 	, m_value_changed_event(nullptr)
@@ -104,14 +104,13 @@ void Glove::Connect()
 		malloc(required_size * sizeof(BTH_LE_GATT_CHARACTERISTIC));
 
 	// Get the characteristics offered by this service.
-	USHORT actual_size = 0;
 	HRESULT hr = BluetoothGATTGetCharacteristics(m_service_handle, nullptr, required_size, m_characteristics,
-		&actual_size, BLUETOOTH_GATT_FLAG_NONE);
+		&m_num_characteristics, BLUETOOTH_GATT_FLAG_NONE);
 
 	if (SUCCEEDED(hr))
 	{
 		// Configure the characteristics.
-		for (int i = 0; i < actual_size; i++)
+		for (int i = 0; i < m_num_characteristics; i++)
 		{
 			if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_REPORT)
 			{
@@ -163,6 +162,25 @@ bool Glove::ReadCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void*
 	// Ensure there is enough room in the buffer.
 	if (SUCCEEDED(hr) && length >= value->DataSize)
 		memcpy(dest, &value->Data, value->DataSize);
+
+	free(value);
+	return SUCCEEDED(hr);
+}
+
+bool Glove::WriteCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* src, size_t length)
+{
+	// Allocate the characteristic value structure.
+	PBTH_LE_GATT_CHARACTERISTIC_VALUE value = (PBTH_LE_GATT_CHARACTERISTIC_VALUE)
+		malloc(length + sizeof(PBTH_LE_GATT_CHARACTERISTIC_VALUE));
+
+	// Initialize the value structure.
+	value->DataSize = length;
+	memcpy(value->Data, src, length);
+
+	// Write the characteristic value.
+	USHORT actual_size = 0;
+	HRESULT hr = BluetoothGATTSetCharacteristicValue(m_service_handle, characteristic, value,
+		0, BLUETOOTH_GATT_FLAG_NONE);
 
 	free(value);
 	return SUCCEEDED(hr);
@@ -316,7 +334,11 @@ uint8_t Glove::GetFlags()
 
 void Glove::SetFlags(uint8_t flags)
 {
-	// TODO: Write these flags to the glove.
 	m_calib.flags = flags;
-	m_update_flags = true;
+
+	for (int i = 0; i < m_num_characteristics; i++)
+	{
+		if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_CALIB)
+			WriteCharacteristic(&m_characteristics[i], &m_calib, sizeof(CALIB_REPORT));
+	}
 }

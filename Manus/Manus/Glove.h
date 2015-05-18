@@ -69,7 +69,6 @@ class Glove
 {
 private:
 	bool m_connected;
-	bool m_update_flags;
 
 	GLOVE_STATE m_state;
 	unsigned int m_packets;
@@ -81,6 +80,7 @@ private:
 	SensorFusion m_sensorFusion;
 
 	HANDLE m_service_handle;
+	USHORT m_num_characteristics;
 	PBTH_LE_GATT_CHARACTERISTIC m_characteristics;
 	BLUETOOTH_GATT_EVENT_HANDLE m_event_handle;
 	PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION m_value_changed_event;
@@ -103,6 +103,7 @@ public:
 private:
 	static void OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* event_out, void* context);
 	bool ReadCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* dest, size_t length);
+	bool WriteCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* src, size_t length);
 	bool ConfigureCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, bool notify, bool indicate);
 
 	static void QuatToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q);

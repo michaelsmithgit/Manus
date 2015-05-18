@@ -25,15 +25,26 @@ import java.util.UUID;
  * Created by Armada on 14-4-2015.
  */
 class UUID16 {
-    private static final UUID BASE = new UUID(0x1000L, 0x800000805F9B34FBL);
+    private static final UUID BLE_BASE = new UUID(0x1000L, 0x800000805F9B34FBL);
+    private static final UUID MANUS_BASE = new UUID(0x1BC500000200ECA1L, 0xE41120FAC04AFA8FL);
 
-    public static UUID toUUID(byte mostSigBits, byte leastSigBits) {
+    public static UUID BLEToUUID(byte mostSigBits, byte leastSigBits) {
         long sigBits = (mostSigBits << 8) | leastSigBits;
-        return new UUID(BASE.getMostSignificantBits() | (sigBits << 32), BASE.getLeastSignificantBits());
+        return new UUID(BLE_BASE.getMostSignificantBits() | (sigBits << 32), BLE_BASE.getLeastSignificantBits());
     }
 
-    public static UUID toUUID(int mostSigBits, int leastSigBits) {
+    public static UUID BLEToUUID(int mostSigBits, int leastSigBits) {
         // Because Java doesn't allow you to declare literals as bytes.
-        return toUUID((byte) mostSigBits, (byte) leastSigBits);
+        return BLEToUUID((byte) mostSigBits, (byte) leastSigBits);
+    }
+
+    public static UUID ManusToUUID(byte mostSigBits, byte leastSigBits) {
+        long sigBits = (mostSigBits << 8) | leastSigBits;
+        return new UUID(MANUS_BASE.getMostSignificantBits() | (sigBits << 32), MANUS_BASE.getLeastSignificantBits());
+    }
+
+    public static UUID ManusToUUID(int mostSigBits, int leastSigBits) {
+        // Because Java doesn't allow you to declare literals as bytes.
+        return ManusToUUID((byte) mostSigBits, (byte) leastSigBits);
     }
 }

@@ -28,6 +28,7 @@ import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -94,33 +95,29 @@ public class Glove extends BluetoothGattCallback {
         }
     }
 
-    private static final UUID HID_SERVICE       = UUID16.toUUID(0x18, 0x12);
-    private static final UUID HID_INFORMATION   = UUID16.toUUID(0x2A, 0x4A);
-    private static final UUID HID_REPORT_MAP    = UUID16.toUUID(0x2A, 0x4B);
-    private static final UUID HID_CONTROL_POINT = UUID16.toUUID(0x2A, 0x4C);
-    private static final UUID HID_REPORT        = UUID16.toUUID(0x2A, 0x4D);
+    private static final UUID MANUS_GLOVE_SERVICE   = UUID16.ManusToUUID(0x00, 0x01);
+    private static final UUID MANUS_GLOVE_REPORT    = UUID16.ManusToUUID(0x00, 0x02);
+    private static final UUID MANUS_GLOVE_COMPASS   = UUID16.ManusToUUID(0x00, 0x03);
+    private static final UUID MANUS_GLOVE_CALIB     = UUID16.ManusToUUID(0x00, 0x04);
 
-    private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID16.toUUID(0x29, 0x02);
+    private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID16.BLEToUUID(0x29, 0x02);
 
     private static final float ACCEL_DIVISOR    = 16384.0f;
     private static final float QUAT_DIVISOR     = 16384.0f;
     private static final float COMPASS_DIVISOR  = 32.0f;
     private static final float FINGER_DIVISOR   = 255.0f;
 
-    // TODO: Acquire Manus VID/PID
-    protected static final int VENDOR_ID      = 0x0;
-    protected static final int PRODUCT_ID     = 0x0;
-    protected static final byte GLOVE_PAGE    = 0x03;
-    protected static final byte GLOVE_USAGE   = 0x04;
+    protected static final int VENDOR_ID      = 0x0220;
+    protected static final int PRODUCT_ID     = 0x0001;
 
     // flag for handedness (0 = left, 1 = right)
     private static final int GLOVE_FLAGS_HANDEDNESS = 0x1;
 
-    private byte[] mReportMap = null;
+    private byte mFlags = 0;
     private Quaternion mQuat = new Quaternion();
     private short[] mAccel = new short[] { 0, 0, 0 };
     private short[] mCompass = new short[] { 0, 0, 0 };
-    private ArrayList<BluetoothGattCharacteristic> mReports = new ArrayList<>();
+    private byte[] mFingers = new byte[] { 0, 0, 0, 0, 0 };
 
     protected SensorFusion mSensorFusion = null;
     protected GloveCallback mGloveCallback = null;
@@ -130,10 +127,9 @@ public class Glove extends BluetoothGattCallback {
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic report) {
         final int format = BluetoothGattCharacteristic.FORMAT_SINT16;
-        int reportId = mReports.indexOf(report);
 
         // Only callback when the primary input report changed
-        if (reportId == 0) {
+        if (report.getUuid().equals(MANUS_GLOVE_REPORT)) {
             mQuat = new Quaternion(
                     report.getIntValue(format, 0) / QUAT_DIVISOR,
                     report.getIntValue(format, 2) / QUAT_DIVISOR,
@@ -146,7 +142,9 @@ public class Glove extends BluetoothGattCallback {
                     report.getIntValue(format, 10).shortValue(),
                     report.getIntValue(format, 12).shortValue()
             };
-        } else if (reportId == 1) {
+
+            mFingers = Arrays.copyOfRange(report.getValue(), 14, 19);
+        } else if (report.getUuid().equals(MANUS_GLOVE_COMPASS)) {
             mCompass = new short[]{
                     report.getIntValue(format, 0).shortValue(),
                     report.getIntValue(format, 2).shortValue(),
@@ -159,7 +157,7 @@ public class Glove extends BluetoothGattCallback {
             mQuat = new Quaternion(fused);
         }
 
-        if (reportId == 0)
+        if (report.getUuid().equals(MANUS_GLOVE_REPORT))
             mGloveCallback.OnChanged(this);
     }
 
@@ -180,16 +178,10 @@ public class Glove extends BluetoothGattCallback {
 
         if (status == BluetoothGatt.GATT_SUCCESS) {
             // Get the HID Service if it exists
-            BluetoothGattService service = gatt.getService(HID_SERVICE);
+            BluetoothGattService service = gatt.getService(MANUS_GLOVE_SERVICE);
             if (service != null) {
-                // Get the HID Report Map if there is one
-                BluetoothGattCharacteristic reportChar = service.getCharacteristic(HID_REPORT_MAP);
-                if (reportChar != null) {
-                    gatt.readCharacteristic(reportChar);
-                }
-
                 for (BluetoothGattCharacteristic report : service.getCharacteristics()) {
-                    if (report.getUuid().equals(HID_REPORT)) {
+                    if (report.getUuid().equals(MANUS_GLOVE_REPORT) || report.getUuid().equals(MANUS_GLOVE_COMPASS)) {
                         // Enable notification if the report supports it
                         if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
                             // Enable the notification on the client
@@ -201,8 +193,9 @@ public class Glove extends BluetoothGattCallback {
                                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                                 gatt.writeDescriptor(descriptor);
                             }
+                        } else if (report.getUuid().equals(MANUS_GLOVE_CALIB)) {
+                            gatt.readCharacteristic(report);
                         }
-                        mReports.add(report);
                     }
                 }
             }
@@ -213,19 +206,8 @@ public class Glove extends BluetoothGattCallback {
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         super.onCharacteristicRead(gatt, characteristic, status);
 
-        if (characteristic.getUuid().equals(HID_REPORT_MAP)) {
-            mReportMap = characteristic.getValue();
-
-            // Detect if this device is really a glove
-            if (mReportMap[1] == GLOVE_PAGE && mReportMap[3] == GLOVE_USAGE) {
-                mGloveCallback.OnDetected(this, true);
-
-                // Only when we have the report map it's safe to read the feature report
-                mGatt.readCharacteristic(mReports.get(2));
-            } else {
-                mGloveCallback.OnDetected(this, false);
-                close();
-            }
+        if (status == BluetoothGatt.GATT_SUCCESS && characteristic.getUuid().equals(MANUS_GLOVE_CALIB)) {
+            mFlags = characteristic.getValue()[0];
         }
     }
 
@@ -251,13 +233,7 @@ public class Glove extends BluetoothGattCallback {
     }
 
     public Handedness getHandedness() {
-        byte[] value = mReports.get(2).getValue();
-        if (value == null)
-            return null;
-
-        byte flags = value[0];
-
-        if ((flags & GLOVE_FLAGS_HANDEDNESS) == 0)
+        if ((mFlags & GLOVE_FLAGS_HANDEDNESS) == 0)
             return Handedness.LEFT_HAND;
         else
             return Handedness.RIGHT_HAND;
@@ -276,15 +252,10 @@ public class Glove extends BluetoothGattCallback {
     }
 
     public float getFinger(int i) {
-        BluetoothGattCharacteristic report = mReports.get(0);
-
-        if (i > 4 || report.getValue() == null)
+        if (i > 4)
             return -1.0f;
 
-        if (getHandedness() == Handedness.LEFT_HAND)
-            i = 4 - i;
-
-        return report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
+        return mFingers[i];
     }
 
     /*! \brief Convert a Quaternion to Euler angles.

@@ -143,8 +143,10 @@ public class Glove extends BluetoothGattCallback {
                     report.getIntValue(format, 12).shortValue()
             };
 
-            for (int i = 0; i < 5; i++)
-                mFingers[i] = report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
+            for (int i = 0; i < 5; i++) {
+                int finger = (mFlags & GLOVE_FLAGS_HANDEDNESS) != 0 ? i : 4 - i;
+                mFingers[finger] = report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
+            }
         } else if (report.getUuid().equals(MANUS_GLOVE_COMPASS)) {
             mCompass = new short[]{
                     report.getIntValue(format, 0).shortValue(),

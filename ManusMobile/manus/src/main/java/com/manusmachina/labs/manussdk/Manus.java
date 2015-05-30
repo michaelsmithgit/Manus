@@ -47,9 +47,6 @@ public class Manus extends Service {
     // List of detected gloves
     private List<Glove> mGloves = new ArrayList<>();
 
-    // Device connection iterator
-    private Iterator<BluetoothDevice> mConnectIt = null;
-
     // List of event listeners
     private ArrayList<OnGloveChangedListener> mOnGloveChangedListeners = new ArrayList<>();
 
@@ -85,8 +82,8 @@ public class Manus extends Service {
 
                 // Connect to all bonded devices
                 if (state == BluetoothAdapter.STATE_ON && mAdapter != null) {
-                    mConnectIt = mAdapter.getBondedDevices().iterator();
-                    connect(mConnectIt.next());
+                    for (BluetoothDevice device : mAdapter.getBondedDevices())
+                        connect(device);
                 }
             }
         }
@@ -162,9 +159,8 @@ public class Manus extends Service {
 
         // Connect to all bonded devices
         if (mAdapter != null) {
-            mConnectIt = mAdapter.getBondedDevices().iterator();
-            if (mConnectIt.hasNext())
-                connect(mConnectIt.next());
+            for (BluetoothDevice device : mAdapter.getBondedDevices())
+                connect(device);
         }
 
         // Register for broadcasts

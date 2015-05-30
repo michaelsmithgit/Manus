@@ -177,7 +177,7 @@ public class Glove extends BluetoothGattCallback {
         super.onServicesDiscovered(gatt, status);
 
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            // Get the HID Service if it exists
+            // Get the Glove Service if it exists
             BluetoothGattService service = gatt.getService(MANUS_GLOVE_SERVICE);
             if (service != null) {
                 for (BluetoothGattCharacteristic report : service.getCharacteristics()) {

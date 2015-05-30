@@ -194,9 +194,9 @@ public class Glove extends BluetoothGattCallback {
                                 descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                                 gatt.writeDescriptor(descriptor);
                             }
-                        } else if (report.getUuid().equals(MANUS_GLOVE_CALIB)) {
-                            gatt.readCharacteristic(report);
                         }
+                    } else if (report.getUuid().equals(MANUS_GLOVE_CALIB)) {
+                        gatt.readCharacteristic(report);
                     }
                 }
             }

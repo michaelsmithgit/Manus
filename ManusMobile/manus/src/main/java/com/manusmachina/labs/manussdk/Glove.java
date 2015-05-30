@@ -171,9 +171,17 @@ public class Glove extends BluetoothGattCallback {
         super.onConnectionStateChange(gatt, status, newState);
         mConnectionState = newState;
 
-        if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED &&
-                gatt.getServices().isEmpty()) {
-            gatt.discoverServices();
+        if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothGatt.STATE_CONNECTED) {
+            if (gatt.getServices().isEmpty()) {
+                gatt.discoverServices();
+            } else {
+                BluetoothGattService service = gatt.getService(MANUS_GLOVE_SERVICE);
+                if (service != null) {
+                    mConnectIt = service.getCharacteristics().iterator();
+                    if (mConnectIt.hasNext())
+                        gatt.readCharacteristic(mConnectIt.next());
+                }
+            }
         }
     }
 

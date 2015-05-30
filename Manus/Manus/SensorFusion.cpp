@@ -30,6 +30,7 @@
 #include "magnetic.h"
 #include "math.h"
 #include "approximations.h"
+#include <stdio.h>
 
 SensorFusion::SensorFusion()
 {
@@ -76,32 +77,28 @@ void SensorFusion::Fusion_Run(void)
 
 	// 6DOF and 9DOF: decide whether to initiate a magnetic calibration
 	// check no magnetic calibration is in progress
-	if (!thisMagCal.iCalInProgress)
+	// do the first 4 element calibration immediately there are a minimum of MINMEASUREMENTS4CAL
+	initiatemagcal = (!thisMagCal.iMagCalHasRun && (thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL));
+
+	// otherwise initiate a calibration at intervals depending on the number of measurements available
+	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL) &&
+		(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS7CAL) &&
+		!(loopcounter % INTERVAL4CAL));
+	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS7CAL) &&
+		(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS10CAL) &&
+		!(loopcounter % INTERVAL7CAL));
+	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS10CAL) &&
+		!(loopcounter % INTERVAL10CAL));
+
+	// initiate the magnetic calibration if any of the conditions are met
+	if (initiatemagcal)
 	{
-		// do the first 4 element calibration immediately there are a minimum of MINMEASUREMENTS4CAL
-		initiatemagcal = (!thisMagCal.iMagCalHasRun && (thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL));
 
-		// otherwise initiate a calibration at intervals depending on the number of measurements available
-		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL) &&
-			(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS7CAL) &&
-			!(loopcounter % INTERVAL4CAL));
-		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS7CAL) &&
-			(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS10CAL) &&
-			!(loopcounter % INTERVAL7CAL));
-		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS10CAL) &&
-			!(loopcounter % INTERVAL10CAL));
-
-		// initiate the magnetic calibration if any of the conditions are met
-		if (initiatemagcal)
-		{
-			// set the flags denoting that a calibration is in progress
-			thisMagCal.iCalInProgress = 1;
-			thisMagCal.iMagCalHasRun = 1;
-
-			// enable the magnetic calibration task to run
-			MagCal_Event_Flag = 1;
-		} // end of test whether to call calibration functions
-	} // end of test that no calibration is already in progress
+		// enable the magnetic calibration task to run
+		MagCal_Run(&thisMagCal, &thisMagBuffer);
+		// set the flags denoting that a calibration has been run
+		thisMagCal.iMagCalHasRun = 1;
+	} // end of test whether to call calibration functions
 
 	// increment the loopcounter (used for time stamping magnetic data)
 	loopcounter++;
@@ -586,7 +583,7 @@ void SensorFusion::fRun_9DOF_GBY_KALMAN_MANUS(struct SV_9DOF_GBY_KALMAN *pthisSV
 	// set the magnetic jamming flag if there is a significant magnetic error power after calibration
 	ftmp = pthisSV->fdErrSePl[X] * pthisSV->fdErrSePl[X] + pthisSV->fdErrSePl[Y] * pthisSV->fdErrSePl[Y] +
 		pthisSV->fdErrSePl[Z] * pthisSV->fdErrSePl[Z];
-	iMagJamming = (pthisMagCal->iValidMagCal) && (ftmp > pthisMagCal->fFourBsq);
+	iMagJamming = !(pthisMagCal->iValidMagCal) && (ftmp > pthisMagCal->fFourBsq);
 
 	// add the remaining magnetic error terms if there is calibration and no magnetic jamming
 	if (pthisMagCal->iValidMagCal && !iMagJamming)

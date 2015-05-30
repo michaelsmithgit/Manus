@@ -255,7 +255,7 @@ public class Glove extends BluetoothGattCallback {
         if (i > 4)
             return -1.0f;
 
-        return mFingers[i];
+        return mFingers[i] / FINGER_DIVISOR;
     }
 
     /*! \brief Convert a Quaternion to Euler angles.

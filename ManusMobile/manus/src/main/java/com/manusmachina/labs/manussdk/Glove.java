@@ -117,7 +117,7 @@ public class Glove extends BluetoothGattCallback {
     private Quaternion mQuat = new Quaternion();
     private short[] mAccel = new short[] { 0, 0, 0 };
     private short[] mCompass = new short[] { 0, 0, 0 };
-    private byte[] mFingers = new byte[] { 0, 0, 0, 0, 0 };
+    private float[] mFingers = new float[] { 0, 0, 0, 0, 0 };
 
     protected SensorFusion mSensorFusion = null;
     protected GloveCallback mGloveCallback = null;
@@ -143,7 +143,8 @@ public class Glove extends BluetoothGattCallback {
                     report.getIntValue(format, 12).shortValue()
             };
 
-            mFingers = Arrays.copyOfRange(report.getValue(), 14, 19);
+            for (int i = 0; i < 5; i++)
+                mFingers[i] = report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
         } else if (report.getUuid().equals(MANUS_GLOVE_COMPASS)) {
             mCompass = new short[]{
                     report.getIntValue(format, 0).shortValue(),
@@ -251,11 +252,8 @@ public class Glove extends BluetoothGattCallback {
         );
     }
 
-    public float getFinger(int i) {
-        if (i > 4)
-            return -1.0f;
-
-        return mFingers[i] / FINGER_DIVISOR;
+    public float[] getFingers() {
+        return mFingers;
     }
 
     /*! \brief Convert a Quaternion to Euler angles.

@@ -199,8 +199,9 @@ public class Glove extends BluetoothGattCallback {
                         gatt.readCharacteristic(report);
                     }
                 }
+            } else {
+                mGloveCallback.OnGloveConnected(this, false);
             }
-            mGloveCallback.OnGloveConnected(this, service != null);
         }
     }
 
@@ -210,6 +211,7 @@ public class Glove extends BluetoothGattCallback {
 
         if (status == BluetoothGatt.GATT_SUCCESS && characteristic.getUuid().equals(MANUS_GLOVE_CALIB)) {
             mFlags = characteristic.getValue()[0];
+            mGloveCallback.OnGloveConnected(this, true);
         }
     }
 

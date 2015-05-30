@@ -31,6 +31,7 @@ import android.os.IBinder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -43,6 +44,9 @@ public class Manus extends Service {
 
     // The bluetooth adapter
     private BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
+
+    // List of pending gloves
+    private List<Glove> mPendingGloves = new LinkedList<>();
 
     // List of detected gloves
     private List<Glove> mGloves = new ArrayList<>();
@@ -63,7 +67,7 @@ public class Manus extends Service {
             }
         }
 
-        mGloves.add(new Glove(this, dev, mGloveCallback));
+        mPendingGloves.add(new Glove(this, dev, mGloveCallback));
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -93,6 +97,20 @@ public class Manus extends Service {
     };
 
     private GloveCallback mGloveCallback = new GloveCallback() {
+        @Override
+        public void OnGloveConnected(Glove glove, boolean serviceFound) {
+            if (serviceFound) {
+                mGloves.add(glove);
+            } else {
+                glove.close();
+            }
+
+            mPendingGloves.remove(glove);
+
+            if (mConnectIt.hasNext())
+                connect(mConnectIt.next());
+        }
+
         @Override
         public void OnChanged(Glove glove) {
             int index = mGloves.indexOf(glove);

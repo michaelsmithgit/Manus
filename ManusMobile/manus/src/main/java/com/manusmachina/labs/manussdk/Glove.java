@@ -200,6 +200,7 @@ public class Glove extends BluetoothGattCallback {
                     }
                 }
             }
+            mGloveCallback.OnGloveConnected(this, service != null);
         }
     }
 

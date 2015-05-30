@@ -29,6 +29,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -122,6 +123,7 @@ public class Glove extends BluetoothGattCallback {
     protected SensorFusion mSensorFusion = null;
     protected GloveCallback mGloveCallback = null;
     protected BluetoothGatt mGatt = null;
+    protected Iterator<BluetoothGattCharacteristic> mConnectIt = null;
     protected int mConnectionState = BluetoothGatt.STATE_DISCONNECTED;
 
     @Override
@@ -183,24 +185,9 @@ public class Glove extends BluetoothGattCallback {
             // Get the HID Service if it exists
             BluetoothGattService service = gatt.getService(MANUS_GLOVE_SERVICE);
             if (service != null) {
-                for (BluetoothGattCharacteristic report : service.getCharacteristics()) {
-                    if (report.getUuid().equals(MANUS_GLOVE_REPORT) || report.getUuid().equals(MANUS_GLOVE_COMPASS)) {
-                        // Enable notification if the report supports it
-                        if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
-                            // Enable the notification on the client
-                            gatt.setCharacteristicNotification(report, true);
-
-                            // Enable the notification on the server
-                            BluetoothGattDescriptor descriptor = report.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
-                            if (descriptor != null) {
-                                descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                gatt.writeDescriptor(descriptor);
-                            }
-                        }
-                    } else if (report.getUuid().equals(MANUS_GLOVE_CALIB)) {
-                        gatt.readCharacteristic(report);
-                    }
-                }
+                mConnectIt = service.getCharacteristics().iterator();
+                if (mConnectIt.hasNext())
+                    gatt.readCharacteristic(mConnectIt.next());
             } else {
                 mGloveCallback.OnGloveConnected(this, false);
             }
@@ -208,12 +195,38 @@ public class Glove extends BluetoothGattCallback {
     }
 
     @Override
-    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-        super.onCharacteristicRead(gatt, characteristic, status);
+    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+        super.onDescriptorWrite(gatt, descriptor, status);
 
-        if (status == BluetoothGatt.GATT_SUCCESS && characteristic.getUuid().equals(MANUS_GLOVE_CALIB)) {
-            mFlags = characteristic.getValue()[0];
-            mGloveCallback.OnGloveConnected(this, true);
+        if (mConnectIt.hasNext())
+            gatt.readCharacteristic(mConnectIt.next());
+    }
+
+    @Override
+    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic report, int status) {
+        super.onCharacteristicRead(gatt, report, status);
+
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            if (report.getUuid().equals(MANUS_GLOVE_REPORT) || report.getUuid().equals(MANUS_GLOVE_COMPASS)) {
+                // Enable notification if the report supports it
+                if ((report.getProperties() & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) {
+                    // Enable the notification on the client
+                    gatt.setCharacteristicNotification(report, true);
+
+                    // Enable the notification on the server
+                    BluetoothGattDescriptor descriptor = report.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
+                    if (descriptor != null) {
+                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                        gatt.writeDescriptor(descriptor);
+                    }
+                }
+            } else if (report.getUuid().equals(MANUS_GLOVE_CALIB)) {
+                mFlags = report.getValue()[0];
+                mGloveCallback.OnGloveConnected(this, true);
+
+                if (mConnectIt.hasNext())
+                    gatt.readCharacteristic(mConnectIt.next());
+            }
         }
     }
 

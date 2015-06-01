@@ -302,10 +302,8 @@ void Glove::UpdateState()
 
 	// normalize magnetometer data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		//myMag.iBp[i] = m_compass.compass[i];
 		myMag.fBp[i] = m_compass.compass[i] / COMPASS_DIVISOR;
 		myMag.iBpFast[i] = m_compass.compass[i];
-		//myMag.fBcFast[i] = m_compass.compass[i] / COMPASS_DIVISOR;
 		myMag.fCountsPeruT = FCOUNTSPERUT;
 		myMag.fuTPerCount = FUTPERCOUNT;
 	}

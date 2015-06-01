@@ -28,7 +28,7 @@
 #define FUTPERCOUNT 0.3f; 
 #define FCOUNTSPERUT 3.333f;
 // accelerometer converion values
-#define FGPERCOUNT 0.00006103515; // 2 / (2^15)
+#define FGPERCOUNT 0.00006103515; // 1 / ACCEL_DIVISOR
 
 
 Glove::Glove(const wchar_t* device_path)
@@ -288,9 +288,10 @@ void Glove::UpdateState()
 
 	// normalize acceleration data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		myAccel.fGpFast[i] = m_report.accel[i] / ACCEL_DIVISOR;
+		myAccel.fGpFast[i] = m_report.accel[i] * FGPERCOUNT;
 		myAccel.iGp[i] = m_report.accel[i];
 		myAccel.iGpFast[i] = m_report.accel[i];
+		myAccel.fgPerCount = FGPERCOUNT;
 	}
 
 	// normalize quaternion data
@@ -301,10 +302,8 @@ void Glove::UpdateState()
 
 	// normalize magnetometer data
 	for (int i = 0; i < GLOVE_AXES; i++){
-		myMag.iBp[i] = m_compass.compass[i];
 		myMag.fBp[i] = m_compass.compass[i] / COMPASS_DIVISOR;
 		myMag.iBpFast[i] = m_compass.compass[i];
-		myMag.fBcFast[i] = m_compass.compass[i] / COMPASS_DIVISOR;
 		myMag.fCountsPeruT = FCOUNTSPERUT;
 		myMag.fuTPerCount = FUTPERCOUNT;
 	}

@@ -36,7 +36,7 @@
 #define FUTPERCOUNT 0.3f;
 #define FCOUNTSPERUT 3.333f;
 // accelerometer converion values
-#define FGPERCOUNT 0.00006103515; // 2 / (2^15)
+#define FGPERCOUNT 0.00006103515; // 1 / ACCEL_DIVISOR
 
 JNIEXPORT jlong JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_init(JNIEnv* env, jobject obj)
 {
@@ -69,14 +69,13 @@ JNIEXPORT jfloatArray JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_f
 
 	// normalize data
 	for (int i = 0; i < 3; i++) {
-		myAccel.fGpFast[i] = accel[i] / ACCEL_DIVISOR;
+		myAccel.fGpFast[i] = accel[i] * FGPERCOUNT;
 		myAccel.iGp[i] = accel[i];
 		myAccel.iGpFast[i] = accel[i];
-		myMag.iBp[i] = compass[i];
 		myMag.fBp[i] = compass[i] / COMPASS_DIVISOR;
 		myMag.iBpFast[i] = compass[i];
-		myMag.fBcFast[i] = compass[i] / COMPASS_DIVISOR;
 	}
+	myAccel.fgPerCount = FGPERCOUNT;
     myMag.fCountsPeruT = FCOUNTSPERUT;
     myMag.fuTPerCount = FUTPERCOUNT;
 
@@ -140,32 +139,28 @@ void SensorFusion::Fusion_Run(void)
 
 	// 6DOF and 9DOF: decide whether to initiate a magnetic calibration
 	// check no magnetic calibration is in progress
-	if (!thisMagCal.iCalInProgress)
+	// do the first 4 element calibration immediately there are a minimum of MINMEASUREMENTS4CAL
+	initiatemagcal = (!thisMagCal.iMagCalHasRun && (thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL));
+
+	// otherwise initiate a calibration at intervals depending on the number of measurements available
+	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL) &&
+		(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS7CAL) &&
+		!(loopcounter % INTERVAL4CAL));
+	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS7CAL) &&
+		(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS10CAL) &&
+		!(loopcounter % INTERVAL7CAL));
+	initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS10CAL) &&
+		!(loopcounter % INTERVAL10CAL));
+
+	// initiate the magnetic calibration if any of the conditions are met
+	if (initiatemagcal)
 	{
-		// do the first 4 element calibration immediately there are a minimum of MINMEASUREMENTS4CAL
-		initiatemagcal = (!thisMagCal.iMagCalHasRun && (thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL));
 
-		// otherwise initiate a calibration at intervals depending on the number of measurements available
-		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS4CAL) &&
-			(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS7CAL) &&
-			!(loopcounter % INTERVAL4CAL));
-		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS7CAL) &&
-			(thisMagBuffer.iMagBufferCount < MINMEASUREMENTS10CAL) &&
-			!(loopcounter % INTERVAL7CAL));
-		initiatemagcal |= ((thisMagBuffer.iMagBufferCount >= MINMEASUREMENTS10CAL) &&
-			!(loopcounter % INTERVAL10CAL));
-
-		// initiate the magnetic calibration if any of the conditions are met
-		if (initiatemagcal)
-		{
-			// set the flags denoting that a calibration is in progress
-			thisMagCal.iCalInProgress = 1;
-			thisMagCal.iMagCalHasRun = 1;
-
-			// enable the magnetic calibration task to run
-			MagCal_Event_Flag = 1;
-		} // end of test whether to call calibration functions
-	} // end of test that no calibration is already in progress
+		// enable the magnetic calibration task to run
+		MagCal_Run(&thisMagCal, &thisMagBuffer);
+		// set the flags denoting that a calibration has been run
+		thisMagCal.iMagCalHasRun = 1;
+	} // end of test whether to call calibration functions
 
 	// increment the loopcounter (used for time stamping magnetic data)
 	loopcounter++;

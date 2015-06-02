@@ -29,6 +29,8 @@
 #include <vector>
 #include <mutex>
 
+bool g_initialized = false;
+
 std::vector<Glove*> g_gloves;
 std::mutex g_gloves_mutex;
 
@@ -70,6 +72,9 @@ void DeviceConnected(const wchar_t* device_path)
 
 int ManusInit()
 {
+	if (g_initialized)
+		return MANUS_ERROR;
+
 	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
 	// Get a list of Manus Glove Services.
@@ -116,6 +121,8 @@ int ManusInit()
 	g_devices->SetDeviceConnected(DeviceConnected);
 #endif
 
+	g_initialized = true;
+
 	return MANUS_SUCCESS;
 }
 
@@ -129,6 +136,8 @@ int ManusExit()
 #ifdef _WIN32
 	delete g_devices;
 #endif
+
+	g_initialized = false;
 
 	return MANUS_SUCCESS;
 }

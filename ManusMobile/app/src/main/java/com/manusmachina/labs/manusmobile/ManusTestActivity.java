@@ -152,16 +152,26 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         Glove.Quaternion quat = glove.getQuaternion();
         Glove.Vector euler = glove.getEuler(quat);
         Glove.Vector degrees = euler.ToDegrees();
+        float[] fingers = glove.getFingers();
 
         SeekBar yaw = (SeekBar)findViewById(R.id.yaw);
         SeekBar pitch = (SeekBar)findViewById(R.id.pitch);
         SeekBar roll = (SeekBar)findViewById(R.id.roll);
+        SeekBar[] fingerBars = {
+                (SeekBar)findViewById(R.id.thumb),
+                (SeekBar) findViewById(R.id.index),
+                (SeekBar) findViewById(R.id.middle),
+                (SeekBar) findViewById(R.id.ring),
+                (SeekBar) findViewById(R.id.pinky)
+        };
         CheckBox handedness = (CheckBox)findViewById(R.id.handedness);
         SeekBar interval = (SeekBar)findViewById(R.id.interval);
 
         roll.setProgress((int)degrees.x + 180);
         pitch.setProgress((int)degrees.y + 90);
-        yaw.setProgress((int)degrees.z + 180);
+        yaw.setProgress((int) degrees.z + 180);
+        for (int i = 0; i < 5; i++)
+            fingerBars[i].setProgress((int)(fingers[i] * 255.0f));
         handedness.setChecked(glove.getHandedness() == Glove.Handedness.RIGHT_HAND);
         interval.setProgress((int)(System.currentTimeMillis() - timestamp));
 

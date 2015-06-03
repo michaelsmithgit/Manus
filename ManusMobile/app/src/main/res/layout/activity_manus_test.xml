@@ -53,6 +53,43 @@
             android:id="@+id/roll"
             android:max="360" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Fingers"
+            android:id="@+id/textView4" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/thumb"
+            android:max="255" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/index"
+            android:max="255" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/middle"
+            android:max="255" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ring"
+            android:max="255" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pinky"
+            android:max="255" />
+
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

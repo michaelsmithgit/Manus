@@ -46,10 +46,10 @@ public class Manus extends Service {
     private BluetoothAdapter mAdapter = BluetoothAdapter.getDefaultAdapter();
 
     // List of pending gloves
-    private List<Glove> mPendingGloves = new LinkedList<>();
+    private volatile List<Glove> mPendingGloves = new LinkedList<>();
 
     // List of detected gloves
-    private List<Glove> mGloves = new ArrayList<>();
+    private volatile List<Glove> mGloves = new ArrayList<>();
 
     // Device connection iterator
     private Iterator<BluetoothDevice> mConnectIt = null;

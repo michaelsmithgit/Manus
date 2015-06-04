@@ -45,7 +45,7 @@ public class Glove extends BluetoothGattCallback {
         public float w, x, y, z;
 
         public Quaternion() {
-            this(0, 0, 0, 0);
+            this(1, 0, 0, 0);
         }
 
         public Quaternion(float w, float x, float y, float z) {
@@ -114,11 +114,15 @@ public class Glove extends BluetoothGattCallback {
     // flag for handedness (0 = left, 1 = right)
     private static final int GLOVE_FLAGS_HANDEDNESS = 0x1;
 
-    private byte mFlags = 0;
-    private Quaternion mQuat = new Quaternion();
-    private short[] mAccel = new short[] { 0, 0, 0 };
+    // Output variables, volatile to ensure synchronisation
+    private volatile byte mFlags = 0;
+    private volatile float[] mFused = new float[] { 1, 0, 0, 0 };
+    private volatile short[] mAccel = new short[] { 0, 0, 0 };
+    private volatile float[] mFingers = new float[] { 0, 0, 0, 0, 0 };
+
+    // Sensor fusion variables, need not be volatile
+    private float[] mQuat = new float[] { 1, 0, 0, 0 };
     private short[] mCompass = new short[] { 0, 0, 0 };
-    private float[] mFingers = new float[] { 0, 0, 0, 0, 0 };
 
     protected SensorFusion mSensorFusion = null;
     protected GloveCallback mGloveCallback = null;
@@ -132,12 +136,12 @@ public class Glove extends BluetoothGattCallback {
 
         // Only callback when the primary input report changed
         if (report.getUuid().equals(MANUS_GLOVE_REPORT)) {
-            mQuat = new Quaternion(
+            mQuat = new float[] {
                     report.getIntValue(format, 0) / QUAT_DIVISOR,
                     report.getIntValue(format, 2) / QUAT_DIVISOR,
                     report.getIntValue(format, 4) / QUAT_DIVISOR,
                     report.getIntValue(format, 6) / QUAT_DIVISOR
-            );
+            };
 
             mAccel = new short[] {
                     report.getIntValue(format, 8).shortValue(),
@@ -145,10 +149,12 @@ public class Glove extends BluetoothGattCallback {
                     report.getIntValue(format, 12).shortValue()
             };
 
-            for (int i = 0; i < 5; i++) {
+            float[] fingers = new float[5];
+            for (int i = 0; i < fingers.length; i++) {
                 int finger = (mFlags & GLOVE_FLAGS_HANDEDNESS) != 0 ? i : 4 - i;
-                mFingers[finger] = report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
+                fingers[finger] = report.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, 14 + i) / FINGER_DIVISOR;
             }
+            mFingers = fingers;
         } else if (report.getUuid().equals(MANUS_GLOVE_COMPASS)) {
             mCompass = new short[]{
                     report.getIntValue(format, 0).shortValue(),
@@ -158,8 +164,7 @@ public class Glove extends BluetoothGattCallback {
         }
 
         if (mSensorFusion != null) {
-            float[] fused = mSensorFusion.fusion(mAccel, mCompass, mQuat.ToArray());
-            mQuat = new Quaternion(fused);
+            mFused = mSensorFusion.fusion(mAccel, mCompass, mQuat);
         }
 
         if (report.getUuid().equals(MANUS_GLOVE_REPORT))
@@ -267,7 +272,7 @@ public class Glove extends BluetoothGattCallback {
     }
 
     public Quaternion getQuaternion() {
-        return mQuat;
+        return new Quaternion(mFused);
     }
 
     public Vector getAcceleration() {

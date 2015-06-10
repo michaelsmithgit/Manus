@@ -48,6 +48,21 @@ namespace ManusMachina
                 a.w * b.y - a.x * b.y + a.y * b.w + a.z * b.x,
                 a.w * b.z + a.x * b.z - a.y * b.x + a.z * b.w);
         }
+
+        public float this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.w;
+                    case 1: return this.x;
+                    case 2: return this.y;
+                    case 3: return this.z;
+                    default: throw new InvalidOperationException();
+                }
+            }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

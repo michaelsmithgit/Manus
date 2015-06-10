@@ -30,7 +30,6 @@
 #include "magnetic.h"
 #include "math.h"
 #include "approximations.h"
-#include <stdio.h>
 
 SensorFusion::SensorFusion()
 {
@@ -583,7 +582,7 @@ void SensorFusion::fRun_9DOF_GBY_KALMAN_MANUS(struct SV_9DOF_GBY_KALMAN *pthisSV
 	// set the magnetic jamming flag if there is a significant magnetic error power after calibration
 	ftmp = pthisSV->fdErrSePl[X] * pthisSV->fdErrSePl[X] + pthisSV->fdErrSePl[Y] * pthisSV->fdErrSePl[Y] +
 		pthisSV->fdErrSePl[Z] * pthisSV->fdErrSePl[Z];
-	iMagJamming = !(pthisMagCal->iValidMagCal) && (ftmp > pthisMagCal->fFourBsq);
+	iMagJamming = (pthisMagCal->iValidMagCal) && (ftmp > pthisMagCal->fFourBsq);
 
 	// add the remaining magnetic error terms if there is calibration and no magnetic jamming
 	if (pthisMagCal->iValidMagCal && !iMagJamming)

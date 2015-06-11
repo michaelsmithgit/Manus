@@ -67,17 +67,22 @@ JNIEXPORT jfloatArray JNICALL Java_com_manusmachina_labs_manussdk_SensorFusion_f
 	AccelSensor myAccel;
 	MagSensor myMag;
 
+	// tick counts
+	myAccel.fgPerCount = FGPERCOUNT;
+	myMag.fCountsPeruT = FCOUNTSPERUT;
+	myMag.fuTPerCount = FUTPERCOUNT;
+
 	// normalize data
 	for (int i = 0; i < 3; i++) {
+		myAccel.fGp[i] = accel[i] / ACCEL_DIVISOR;
 		myAccel.fGpFast[i] = accel[i] * FGPERCOUNT;
 		myAccel.iGp[i] = accel[i];
 		myAccel.iGpFast[i] = accel[i];
 		myMag.fBp[i] = compass[i] / COMPASS_DIVISOR;
+		myMag.fBpFast[i] = compass[i] * FUTPERCOUNT;
+		myMag.iBp[i] = compass[i];
 		myMag.iBpFast[i] = compass[i];
 	}
-	myAccel.fgPerCount = FGPERCOUNT;
-    myMag.fCountsPeruT = FCOUNTSPERUT;
-    myMag.fuTPerCount = FUTPERCOUNT;
 
     struct fquaternion myResult = f->Fusion_Task(&myAccel, &myMag, (struct fquaternion*)quat);
 

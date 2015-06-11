@@ -286,12 +286,14 @@ void Glove::UpdateState()
 	m_state.PacketNumber++;
 	m_state.data.Handedness = m_calib.flags & GLOVE_FLAGS_HANDEDNESS;
 
+	myAccel.fgPerCount = FGPERCOUNT;
+
 	// normalize acceleration data
 	for (int i = 0; i < GLOVE_AXES; i++){
+		myAccel.fGp[i] = m_report.accel[i] / ACCEL_DIVISOR;
 		myAccel.fGpFast[i] = m_report.accel[i] * FGPERCOUNT;
 		myAccel.iGp[i] = m_report.accel[i];
 		myAccel.iGpFast[i] = m_report.accel[i];
-		myAccel.fgPerCount = FGPERCOUNT;
 	}
 
 	// normalize quaternion data
@@ -300,12 +302,15 @@ void Glove::UpdateState()
 	myQuaternion.q2 = m_report.quat[2] / QUAT_DIVISOR;
 	myQuaternion.q3 = m_report.quat[3] / QUAT_DIVISOR;
 
+	myMag.fCountsPeruT = FCOUNTSPERUT;
+	myMag.fuTPerCount = FUTPERCOUNT;
+
 	// normalize magnetometer data
 	for (int i = 0; i < GLOVE_AXES; i++){
 		myMag.fBp[i] = m_compass.compass[i] / COMPASS_DIVISOR;
+		myMag.fBpFast[i] = m_compass.compass[i] * FUTPERCOUNT;
+		myMag.iBp[i] = m_compass.compass[i];
 		myMag.iBpFast[i] = m_compass.compass[i];
-		myMag.fCountsPeruT = FCOUNTSPERUT;
-		myMag.fuTPerCount = FUTPERCOUNT;
 	}
 
 	// normalize finger data

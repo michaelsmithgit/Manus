@@ -165,6 +165,8 @@ public class Glove extends BluetoothGattCallback {
 
         if (mSensorFusion != null) {
             mFused = mSensorFusion.fusion(mAccel, mCompass, mQuat);
+        } else {
+            mFused = mQuat;
         }
 
         if (report.getUuid().equals(MANUS_GLOVE_REPORT))

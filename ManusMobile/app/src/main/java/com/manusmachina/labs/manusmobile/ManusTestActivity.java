@@ -99,6 +99,12 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mBinder = null;
+    }
+
+    @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // Restore the previously serialized current dropdown position.
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {

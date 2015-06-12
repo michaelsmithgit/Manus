@@ -112,7 +112,10 @@ public class Glove extends BluetoothGattCallback {
     protected static final int PRODUCT_ID     = 0x0001;
 
     // flag for handedness (0 = left, 1 = right)
-    private static final int GLOVE_FLAGS_HANDEDNESS = 0x1;
+    private static final byte GLOVE_FLAGS_HANDEDNESS     = 0x1;
+    private static final byte GLOVE_FLAGS_CAL_GYRO       = 0x2;
+    private static final byte GLOVE_FLAGS_CAL_ACCEL      = 0x4;
+    private static final byte GLOVE_FLAGS_CAL_FINGERS    = 0x8;
 
     // Output variables, volatile to ensure synchronisation
     private volatile byte mFlags = 0;
@@ -337,5 +340,57 @@ public class Glove extends BluetoothGattCallback {
                 2 * (q.w*q.x + q.y*q.z),
                 q.w*q.w - q.x*q.x - q.y*q.y + q.z*q.z
         );
+    }
+
+	/*! \brief Configure the handedness of the glove.
+	*
+	*  This reconfigures the glove for a different hand.
+	*
+	*  \warning This function overwrites factory settings on the
+	*  glove, it should only be called if the user requested it.
+	*
+	*  \param glove The glove index.
+	*  \param right_hand Set the glove as a right hand.
+	*/
+    public boolean setHandedness(boolean right_hand) {
+        final int format = BluetoothGattCharacteristic.FORMAT_UINT8;
+        BluetoothGattService service = mGatt.getService(MANUS_GLOVE_SERVICE);
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(MANUS_GLOVE_CALIB);
+
+        if (right_hand)
+            mFlags |= GLOVE_FLAGS_HANDEDNESS;
+        else
+            mFlags &= ~GLOVE_FLAGS_HANDEDNESS;
+        characteristic.setValue(mFlags, format, 0);
+        return mGatt.writeCharacteristic(characteristic);
+    }
+
+	/*! \brief Calibrate the IMU on the glove.
+	*
+	*  This will run a self-test of the IMU and recalibrate it.
+	*  The glove should be placed on a stable flat surface during
+	*  recalibration.
+	*
+	*  \warning This function overwrites factory settings on the
+	*  glove, it should only be called if the user requested it.
+	*
+	*  \param glove The glove index.
+	*  \param gyro Calibrate the gyroscope.
+	*  \param accel Calibrate the accelerometer.
+	*/
+    public boolean calibrate(boolean gyro, boolean accel, boolean fingers) {
+        final int format = BluetoothGattCharacteristic.FORMAT_UINT8;
+        BluetoothGattService service = mGatt.getService(MANUS_GLOVE_SERVICE);
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(MANUS_GLOVE_CALIB);
+
+        byte flags = mFlags;
+        if (gyro)
+            flags |= GLOVE_FLAGS_CAL_GYRO;
+        if (accel)
+            flags |= GLOVE_FLAGS_CAL_ACCEL;
+        if (fingers)
+            flags |= GLOVE_FLAGS_CAL_FINGERS;
+        characteristic.setValue(flags, format, 0);
+        return mGatt.writeCharacteristic(characteristic);
     }
 }

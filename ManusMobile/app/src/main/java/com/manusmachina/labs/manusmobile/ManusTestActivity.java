@@ -52,6 +52,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
     private Manus.GloveBinder mBinder = null;
     private ArrayAdapter<String> mArray = null;
     private int mSelectedGlove = 0;
+    private Menu mMenu = null;
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -118,6 +119,7 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_manus_test, menu);
+        mMenu = menu;
         return true;
     }
 
@@ -129,8 +131,14 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.calibrate_imu) {
+            mBinder.getGlove(mSelectedGlove).calibrate(true, true, false);
             return true;
+        } else if (id == R.id.calibrate_fingers) {
+            mBinder.getGlove(mSelectedGlove).calibrate(false, false, true);
+            return true;
+        } else if (id == R.id.calibrate_hand) {
+            mBinder.getGlove(mSelectedGlove).setHandedness(!item.isChecked());
         }
 
         return super.onOptionsItemSelected(item);
@@ -159,12 +167,11 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         SeekBar roll = (SeekBar)findViewById(R.id.roll);
         SeekBar[] fingerBars = {
                 (SeekBar)findViewById(R.id.thumb),
-                (SeekBar) findViewById(R.id.index),
-                (SeekBar) findViewById(R.id.middle),
-                (SeekBar) findViewById(R.id.ring),
-                (SeekBar) findViewById(R.id.pinky)
+                (SeekBar)findViewById(R.id.index),
+                (SeekBar)findViewById(R.id.middle),
+                (SeekBar)findViewById(R.id.ring),
+                (SeekBar)findViewById(R.id.pinky)
         };
-        CheckBox handedness = (CheckBox)findViewById(R.id.handedness);
         SeekBar interval = (SeekBar)findViewById(R.id.interval);
 
         roll.setProgress((int)degrees.x + 180);
@@ -172,8 +179,9 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
         yaw.setProgress((int) degrees.z + 180);
         for (int i = 0; i < 5; i++)
             fingerBars[i].setProgress((int)(fingers[i] * 255.0f));
-        handedness.setChecked(glove.getHandedness() == Glove.Handedness.RIGHT_HAND);
         interval.setProgress((int)(System.currentTimeMillis() - timestamp));
+
+        mMenu.findItem(R.id.calibrate_hand).setChecked(glove.getHandedness() == Glove.Handedness.RIGHT_HAND);
 
         timestamp = System.currentTimeMillis();
     }

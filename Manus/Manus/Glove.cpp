@@ -63,7 +63,7 @@ bool Glove::GetState(GLOVE_STATE* state, unsigned int timeout)
 	if (timeout > 0)
 	{
 		m_report_block.wait_for(lk, std::chrono::milliseconds(timeout));
-		if (!m_connected)
+		if (!IsConnected())
 		{
 			lk.unlock();
 			return false;
@@ -232,6 +232,9 @@ bool Glove::ConfigureCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, 
 void Glove::Disconnect()
 {
 	m_connected = false;
+	m_report_block.notify_all();
+
+	std::unique_lock<std::mutex> lk(m_report_mutex);
 
 	if (m_event_handle != INVALID_HANDLE_VALUE)
 		BluetoothGATTUnregisterEvent(m_event_handle, BLUETOOTH_GATT_FLAG_NONE);

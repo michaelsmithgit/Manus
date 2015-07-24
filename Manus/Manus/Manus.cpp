@@ -237,10 +237,16 @@ int ManusCalibrate(unsigned int glove, bool gyro, bool accel, bool fingers)
 	uint8_t flags = elem->GetFlags();
 	if (gyro)
 		flags |= GLOVE_FLAGS_CAL_GYRO;
+	else
+		flags &= ~GLOVE_FLAGS_CAL_GYRO;
 	if (accel)
 		flags |= GLOVE_FLAGS_CAL_ACCEL;
+	else
+		flags &= ~GLOVE_FLAGS_CAL_ACCEL;
 	if (fingers)
 		flags |= GLOVE_FLAGS_CAL_FINGERS;
+	else
+		flags &= ~GLOVE_FLAGS_CAL_FINGERS;
 	elem->SetFlags(flags);
 
 	return MANUS_SUCCESS;

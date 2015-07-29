@@ -120,6 +120,10 @@ void Glove::Connect()
 			{
 				ConfigureCharacteristic(&m_characteristics[i], true, false);
 			}
+			else if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_FLAGS)
+			{
+				ReadCharacteristic(&m_characteristics[i], &m_flags, sizeof(m_flags));
+			}
 			else if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_CALIB)
 			{
 				ReadCharacteristic(&m_characteristics[i], &m_calib, sizeof(CALIB_REPORT));
@@ -287,7 +291,7 @@ void Glove::UpdateState()
 	fquaternion myQuaternion;
 
 	m_state.PacketNumber++;
-	m_state.data.Handedness = m_calib.flags & GLOVE_FLAGS_HANDEDNESS;
+	m_state.data.Handedness = m_flags & GLOVE_FLAGS_HANDEDNESS;
 
 	myAccel.fgPerCount = FGPERCOUNT;
 
@@ -336,16 +340,16 @@ void Glove::UpdateState()
 
 uint8_t Glove::GetFlags()
 {
-	return m_calib.flags;
+	return m_flags;
 }
 
 void Glove::SetFlags(uint8_t flags)
 {
-	m_calib.flags = flags;
+	m_flags = flags;
 
 	for (int i = 0; i < m_num_characteristics; i++)
 	{
-		if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_CALIB)
-			WriteCharacteristic(&m_characteristics[i], &m_calib, sizeof(CALIB_REPORT));
+		if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_FLAGS)
+			WriteCharacteristic(&m_characteristics[i], &m_flags, sizeof(m_flags));
 	}
 }

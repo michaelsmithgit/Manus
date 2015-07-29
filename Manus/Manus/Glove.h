@@ -39,7 +39,8 @@
 #define BLE_UUID_MANUS_GLOVE_SERVICE    0x0001
 #define BLE_UUID_MANUS_GLOVE_REPORT     0x0002
 #define BLE_UUID_MANUS_GLOVE_COMPASS    0x0003
-#define BLE_UUID_MANUS_GLOVE_CALIB      0x0004
+#define BLE_UUID_MANUS_GLOVE_FLAGS      0x0004
+#define BLE_UUID_MANUS_GLOVE_CALIB      0x0005
 
 // {1bc50001-0200-eca1-e411-20fac04afa8f}
 static const GUID GUID_MANUS_GLOVE_SERVICE = { 0x1bc50001, 0x0200, 0xeca1, { 0xe4, 0x11, 0x20, 0xfa, 0xc0, 0x4a, 0xfa, 0x8f } };
@@ -59,9 +60,8 @@ typedef struct
 
 typedef struct
 {
-	uint8_t flags;
-	uint8_t fingers[GLOVE_FINGERS];
-	uint8_t max_fingers[GLOVE_FINGERS];
+	int16_t fingers_base[GLOVE_FINGERS];
+	int16_t fingers_range[GLOVE_FINGERS];
 } CALIB_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 
@@ -69,6 +69,7 @@ class Glove
 {
 private:
 	bool m_connected;
+	uint8_t m_flags;
 
 	GLOVE_STATE m_state;
 	unsigned int m_packets;

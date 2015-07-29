@@ -19,8 +19,10 @@
 
 package com.manusmachina.labs.manusmobile;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
@@ -142,6 +144,12 @@ public class ManusTestActivity extends ActionBarActivity implements ActionBar.On
             return true;
         } else if (id == R.id.calibrate_fingers) {
             mBinder.getGlove(mSelectedGlove).calibrate(false, false, true);
+            ProgressDialog.show(this, "Finger Calibration", "Open and close the hands to calibrate.", true, true, new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    mBinder.getGlove(mSelectedGlove).calibrate(false, false, false);
+                }
+            });
             return true;
         } else if (id == R.id.calibrate_hand) {
             mBinder.getGlove(mSelectedGlove).setHandedness(!item.isChecked());

@@ -99,7 +99,8 @@ public class Glove extends BluetoothGattCallback {
     private static final UUID MANUS_GLOVE_SERVICE   = UUID16.ManusToUUID(0x00, 0x01);
     private static final UUID MANUS_GLOVE_REPORT    = UUID16.ManusToUUID(0x00, 0x02);
     private static final UUID MANUS_GLOVE_COMPASS   = UUID16.ManusToUUID(0x00, 0x03);
-    private static final UUID MANUS_GLOVE_CALIB     = UUID16.ManusToUUID(0x00, 0x04);
+    private static final UUID MANUS_GLOVE_FLAGS     = UUID16.ManusToUUID(0x00, 0x04);
+    private static final UUID MANUS_GLOVE_CALIB     = UUID16.ManusToUUID(0x00, 0x05);
 
     private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID16.BLEToUUID(0x29, 0x02);
 
@@ -238,7 +239,7 @@ public class Glove extends BluetoothGattCallback {
                         gatt.writeDescriptor(descriptor);
                     }
                 }
-            } else if (report.getUuid().equals(MANUS_GLOVE_CALIB)) {
+            } else if (report.getUuid().equals(MANUS_GLOVE_FLAGS)) {
                 mFlags = report.getValue()[0];
                 mGloveCallback.OnGloveConnected(this, true);
 
@@ -355,12 +356,13 @@ public class Glove extends BluetoothGattCallback {
     public boolean setHandedness(boolean right_hand) {
         final int format = BluetoothGattCharacteristic.FORMAT_UINT8;
         BluetoothGattService service = mGatt.getService(MANUS_GLOVE_SERVICE);
-        BluetoothGattCharacteristic characteristic = service.getCharacteristic(MANUS_GLOVE_CALIB);
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(MANUS_GLOVE_FLAGS);
 
         if (right_hand)
             mFlags |= GLOVE_FLAGS_HANDEDNESS;
         else
             mFlags &= ~GLOVE_FLAGS_HANDEDNESS;
+
         characteristic.setValue(mFlags, format, 0);
         return mGatt.writeCharacteristic(characteristic);
     }
@@ -381,15 +383,22 @@ public class Glove extends BluetoothGattCallback {
     public boolean calibrate(boolean gyro, boolean accel, boolean fingers) {
         final int format = BluetoothGattCharacteristic.FORMAT_UINT8;
         BluetoothGattService service = mGatt.getService(MANUS_GLOVE_SERVICE);
-        BluetoothGattCharacteristic characteristic = service.getCharacteristic(MANUS_GLOVE_CALIB);
+        BluetoothGattCharacteristic characteristic = service.getCharacteristic(MANUS_GLOVE_FLAGS);
 
         byte flags = mFlags;
         if (gyro)
             flags |= GLOVE_FLAGS_CAL_GYRO;
+        else
+            flags &= ~GLOVE_FLAGS_CAL_GYRO;
         if (accel)
             flags |= GLOVE_FLAGS_CAL_ACCEL;
+        else
+            flags &= ~GLOVE_FLAGS_CAL_ACCEL;
         if (fingers)
             flags |= GLOVE_FLAGS_CAL_FINGERS;
+        else
+            flags &= ~GLOVE_FLAGS_CAL_FINGERS;
+
         characteristic.setValue(flags, format, 0);
         return mGatt.writeCharacteristic(characteristic);
     }

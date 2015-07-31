@@ -35,11 +35,33 @@ typedef struct {
 } GLOVE_VECTOR;
 
 typedef struct {
+	GLOVE_QUATERNION orientation;
+	GLOVE_VECTOR position;
+} GLOVE_POSE;
+
+typedef struct {
 	bool Handedness;
 	GLOVE_VECTOR Acceleration;
 	GLOVE_QUATERNION Quaternion;
 	float Fingers[5];
 } GLOVE_DATA;
+
+typedef struct {
+	GLOVE_POSE metacarpal, proximal,
+		distal;
+} GLOVE_THUMB;
+
+typedef struct {
+	GLOVE_POSE metacarpal, proximal,
+		intermediate, distal;
+} GLOVE_FINGER;
+
+typedef struct {
+	GLOVE_POSE palm;
+	GLOVE_THUMB thumb;
+	GLOVE_FINGER index, middle,
+		ring, pinky;
+} GLOVE_SKELETAL;
 
 typedef struct {
 	unsigned int PacketNumber;
@@ -90,6 +112,19 @@ extern "C" {
 	*  \param timeout Milliseconds to wait until the glove returns a value.
 	*/
 	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int timeout = 0);
+
+	/*! \brief Get a skeletal model for the given glove state.
+	*
+	*  The skeletal model gives the orientation and position of each bone
+	*  in the hand and fingers. The positions are in millimeters relative to
+	*  the position of the hand palm.
+	*
+	*  Since the thumb has no intermediate phalanx it has a separate structure
+	*  in the model.
+	* 
+	*  \param state The glove state to derive the skeletal model from.
+	*/
+	MANUS_API int ManusGetSkeletal(const GLOVE_STATE* state, GLOVE_SKELETAL* model);
 
 	/*! \brief Convert a Quaternion to Euler angles.
 	*

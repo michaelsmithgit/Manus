@@ -21,6 +21,7 @@
 #include "Manus.h"
 #include "Glove.h"
 #include "Devices.h"
+#include "SkeletalModel.h"
 
 #ifdef _WIN32
 #include "WinDevices.h"
@@ -35,6 +36,7 @@ std::vector<Glove*> g_gloves;
 std::mutex g_gloves_mutex;
 
 Devices* g_devices;
+SkeletalModel g_skeletal;
 
 int GetGlove(unsigned int glove, Glove** elem)
 {
@@ -73,6 +75,9 @@ void DeviceConnected(const wchar_t* device_path)
 int ManusInit()
 {
 	if (g_initialized)
+		return MANUS_ERROR;
+
+	if (!g_skeletal.InitializeScene())
 		return MANUS_ERROR;
 
 	std::lock_guard<std::mutex> lock(g_gloves_mutex);
@@ -147,7 +152,7 @@ int ManusGetGloveCount()
 	return (int)g_gloves.size();
 }
 
-int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int blocking)
+int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int timeout)
 {
 	// Get the glove from the list
 	Glove* elem;
@@ -158,7 +163,12 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int blocking)
 	if (!state)
 		return MANUS_INVALID_ARGUMENT;
 
-	return elem->GetState(state, blocking) ? MANUS_SUCCESS : MANUS_ERROR;
+	return elem->GetState(state, timeout) ? MANUS_SUCCESS : MANUS_ERROR;
+}
+
+int ManusGetSkeletal(const GLOVE_STATE* state, GLOVE_SKELETAL* model)
+{
+	return g_skeletal.Simulate(state, model);
 }
 
 int ManusGetEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q)

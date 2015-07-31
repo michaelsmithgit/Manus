@@ -57,6 +57,9 @@
     <ClInclude Include="types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SkeletalModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -86,10 +89,16 @@
     <ClCompile Include="SensorFusion.cpp">
       <Filter>sensorFusion</Filter>
     </ClCompile>
+    <ClCompile Include="SkeletalModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Manus.cs">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="HandModel.fbx">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

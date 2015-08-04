@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 namespace ManusMachina
@@ -124,6 +123,13 @@ namespace ManusMachina
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct GLOVE_POSE
+    {
+        GLOVE_QUATERNION orientation;
+        GLOVE_VECTOR position;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_DATA
     {
         public bool RightHand;
@@ -132,6 +138,29 @@ namespace ManusMachina
 
         [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 5)]
         public float[] Fingers;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct GLOVE_THUMB
+    {
+        GLOVE_POSE metacarpal, proximal,
+            distal;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct GLOVE_FINGER
+    {
+        GLOVE_POSE metacarpal, proximal,
+            intermediate, distal;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct GLOVE_SKELETAL
+    {
+        GLOVE_POSE palm;
+        GLOVE_THUMB thumb;
+        GLOVE_FINGER index, middle,
+            ring, pinky;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -156,24 +185,24 @@ namespace ManusMachina
         *  Must be called before any other function
         *  in the SDK.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusInit();
+        [DllImport("Manus.dll", EntryPoint = "ManusInit", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int Init();
 
         /*! \brief Shutdown the Manus SDK.
         *
         *  Must be called when the SDK is no longer
         *  needed.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusExit();
+        [DllImport("Manus.dll", EntryPoint = "ManusExit", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int Exit();
 
         /*! \brief Get the number of gloves.
         *
         *  Get the maximum index that can be queried
         *  for the glove state.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetGloveCount();
+        [DllImport("Manus.dll", EntryPoint = "ManusGetGloveCount", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetGloveCount();
 
         /*! \brief Get the state of a glove.
         *
@@ -181,8 +210,22 @@ namespace ManusMachina
         *  \param state Output variable to receive the state.
         *  \param timeout Milliseconds to wait until the glove returns a value.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetState(uint glove, out GLOVE_STATE state, uint timeout = 0);
+        [DllImport("Manus.dll", EntryPoint = "ManusGetState", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetState(uint glove, out GLOVE_STATE state, uint timeout = 0);
+
+        /*! \brief Get a skeletal model for the given glove state.
+        *
+        *  The skeletal model gives the orientation and position of each bone
+        *  in the hand and fingers. The positions are in millimeters relative to
+        *  the position of the hand palm.
+        *
+        *  Since the thumb has no intermediate phalanx it has a separate structure
+        *  in the model.
+        * 
+        *  \param state The glove state to derive the skeletal model from.
+        */
+        [DllImport("Manus.dll", EntryPoint = "ManusGetSkeletal", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetSkeletal(out GLOVE_STATE state, ref GLOVE_SKELETAL model);
 
         /*! \brief Convert a Quaternion to Euler angles.
         *
@@ -192,8 +235,8 @@ namespace ManusMachina
         *  \param euler Output variable to receive the Euler angles.
         *  \param quaternion The quaternion to convert.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetEuler(out GLOVE_VECTOR euler, ref GLOVE_QUATERNION quaternion);
+        [DllImport("Manus.dll", EntryPoint = "ManusGetEuler", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetEuler(out GLOVE_VECTOR euler, ref GLOVE_QUATERNION quaternion);
 
         /*! \brief Remove gravity from acceleration vector.
         *
@@ -203,8 +246,8 @@ namespace ManusMachina
         *  \param linear Output vector to receive the linear acceleration.
         *  \param acceleration The acceleration vector to convert.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetLinearAcceleration(out GLOVE_VECTOR linear, ref GLOVE_VECTOR acceleration, ref GLOVE_VECTOR gravity);
+        [DllImport("Manus.dll", EntryPoint = "ManusGetLinearAcceleration", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetLinearAcceleration(out GLOVE_VECTOR linear, ref GLOVE_VECTOR acceleration, ref GLOVE_VECTOR gravity);
 
         /*! \brief Return gravity vector from the Quaternion.
         *
@@ -213,8 +256,8 @@ namespace ManusMachina
         *  \param gravity Output vector to receive the gravity vector.
         *  \param quaternion The quaternion to base the gravity vector on.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetGravity(out GLOVE_VECTOR gravity, ref GLOVE_QUATERNION quaternion);
+        [DllImport("Manus.dll", EntryPoint = "ManusGetGravity", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int GetGravity(out GLOVE_VECTOR gravity, ref GLOVE_QUATERNION quaternion);
 
         /*! \brief Configure the handedness of the glove.
         *
@@ -226,8 +269,8 @@ namespace ManusMachina
         *  \param glove The glove index.
         *  \param right_hand Set the glove as a right hand.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusSetHandedness(uint glove, bool right_hand);
+        [DllImport("Manus.dll", EntryPoint = "ManusSetHandedness", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SetHandedness(uint glove, bool right_hand);
 
         /*! \brief Calibrate the IMU on the glove.
         *
@@ -243,7 +286,7 @@ namespace ManusMachina
         *  \param accel Calibrate the accelerometer.
         *  \param fingers Calibrate the finger flex sensors.
         */
-        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusCalibrate(uint glove, bool gyro = true, bool accel = true, bool fingers = true);
+        [DllImport("Manus.dll", EntryPoint = "ManusCalibrate", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int Calibrate(uint glove, bool gyro = true, bool accel = true, bool fingers = false);
     }
 }

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "SkeletalModel.h"
+#include "FbxMemStream.h"
+#include "resource.h"
 
 const char* s_bone_names[GLOVE_FINGERS][3] = {
 	{ "ThumbFingerBone004", "ThumbFingerBone005", "ThumbFingerBone003" },
@@ -50,14 +52,25 @@ bool SkeletalModel::InitializeScene()
 	// for almost all the classes in the SDK.
 	m_sdk_manager = FbxManager::Create();
 
-	// create an IOSettings object
+	// Create an IOSettings object.
 	FbxIOSettings* ios = FbxIOSettings::Create(m_sdk_manager, IOSROOT);
 	m_sdk_manager->SetIOSettings(ios);
 
+	// Get pointer and size to resource.
+	HRSRC hRes = FindResource(GetModuleHandle(L"Manus.dll"), MAKEINTRESOURCE(IDR_FBX1), RT_RCDATA);
+	HGLOBAL hMem = LoadResource(GetModuleHandle(L"Manus.dll"), hRes);
+	DWORD dSize = SizeofResource(GetModuleHandle(L"Manus.dll"), hRes);
+	void* pMem = LockResource(hMem);
+
 	// Create an importer and initialize the importer.
 	FbxImporter* importer = FbxImporter::Create(m_sdk_manager, "");
-	if (!importer->Initialize("..\\Manus\\HandModel.fbx", -1, m_sdk_manager->GetIOSettings()))
+	FbxMemStream mem_stream(m_sdk_manager, pMem, dSize);
+	if (!importer->Initialize(&mem_stream, nullptr, -1, m_sdk_manager->GetIOSettings()))
+	{
+		FBXSDK_printf("Call to FbxExporter::Initialize() failed.\n");
+		FBXSDK_printf("Error returned: %s\n\n", importer->GetStatus().GetErrorString());
 		return false;
+	}
 
 	// Create a new scene so it can be populated by the imported file.
 	m_scene = FbxScene::Create(m_sdk_manager, "HandModel");

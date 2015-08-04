@@ -163,11 +163,13 @@
   <ItemGroup>
     <ClInclude Include="approximations.h" />
     <ClInclude Include="Devices.h" />
+    <ClInclude Include="FbxMemStream.h" />
     <ClInclude Include="Glove.h" />
     <ClInclude Include="magnetic.h" />
     <ClInclude Include="Manus.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="orientation.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SensorFusion.h" />
     <ClInclude Include="SkeletalModel.h" />
     <ClInclude Include="stdafx.h" />
@@ -177,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="approximations.cpp" />
+    <ClCompile Include="FbxMemStream.cpp" />
     <ClCompile Include="Glove.cpp" />
     <ClCompile Include="magnetic.cpp" />
     <ClCompile Include="Manus.cpp" />
@@ -194,6 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HandModel.fbx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Manus.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

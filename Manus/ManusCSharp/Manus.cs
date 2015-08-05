@@ -125,8 +125,8 @@ namespace ManusMachina
     [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_POSE
     {
-        GLOVE_QUATERNION orientation;
-        GLOVE_VECTOR position;
+        public GLOVE_QUATERNION orientation;
+        public GLOVE_VECTOR position;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -143,23 +143,23 @@ namespace ManusMachina
     [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_THUMB
     {
-        GLOVE_POSE metacarpal, proximal,
+        public GLOVE_POSE metacarpal, proximal,
             distal;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_FINGER
     {
-        GLOVE_POSE metacarpal, proximal,
+        public GLOVE_POSE metacarpal, proximal,
             intermediate, distal;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_SKELETAL
     {
-        GLOVE_POSE palm;
-        GLOVE_THUMB thumb;
-        GLOVE_FINGER index, middle,
+        public GLOVE_POSE palm;
+        public GLOVE_THUMB thumb;
+        public GLOVE_FINGER index, middle,
             ring, pinky;
     }
 
@@ -225,7 +225,7 @@ namespace ManusMachina
         *  \param state The glove state to derive the skeletal model from.
         */
         [DllImport("Manus.dll", EntryPoint = "ManusGetSkeletal", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetSkeletal(out GLOVE_STATE state, ref GLOVE_SKELETAL model);
+        public static extern int GetSkeletal(out GLOVE_SKELETAL model, ref GLOVE_STATE state);
 
         /*! \brief Convert a Quaternion to Euler angles.
         *

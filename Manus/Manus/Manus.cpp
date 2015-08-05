@@ -166,7 +166,7 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int timeout)
 	return elem->GetState(state, timeout) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
-int ManusGetSkeletal(const GLOVE_STATE* state, GLOVE_SKELETAL* model)
+int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_STATE* state)
 {
 	return g_skeletal.Simulate(state, model);
 }

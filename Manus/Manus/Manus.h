@@ -124,7 +124,7 @@ extern "C" {
 	* 
 	*  \param state The glove state to derive the skeletal model from.
 	*/
-	MANUS_API int ManusGetSkeletal(const GLOVE_STATE* state, GLOVE_SKELETAL* model);
+	MANUS_API int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_STATE* state);
 
 	/*! \brief Convert a Quaternion to Euler angles.
 	*

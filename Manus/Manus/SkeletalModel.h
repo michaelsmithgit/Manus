@@ -29,9 +29,10 @@ private:
 	FbxManager* m_sdk_manager;
 	FbxScene* m_scene;
 	FbxNode* m_palm_node;
+	FbxNode* m_palm_bone;
 	FbxNode* m_bone_nodes[GLOVE_FINGERS][3];
 
-	GLOVE_POSE ToGlovePose(FbxAMatrix mat);
+	GLOVE_POSE ToGlovePose(FbxAMatrix mat, GLOVE_DATA data);
 
 public:
 	SkeletalModel();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Manus", "Manus\Manus.vcxproj", "{6EACBE18-ABDA-44E3-8E0F-3BE6C9781E0D}"
 EndProject
@@ -9,7 +9,7 @@ Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject", "Modeling
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManusTest", "ManusTest\ManusTest.vcxproj", "{7616BC37-FDBB-4153-AEF4-090AF007ECB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManusCSharp", "ManusCSharp\ManusCSharp.csproj", "{EAF5577B-4E2A-4A9F-B64B-94C0CE40311B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManusUnity", "ManusUnity\ManusUnity.csproj", "{EAF5577B-4E2A-4A9F-B64B-94C0CE40311B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

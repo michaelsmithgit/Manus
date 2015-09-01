@@ -20,6 +20,7 @@
 #include "stdafx.h"
 #include "Glove.h"
 
+// Sensorfusion constants
 #define ACCEL_DIVISOR 16384.0f
 #define QUAT_DIVISOR 16384.0f
 #define COMPASS_DIVISOR 32.0f
@@ -28,7 +29,7 @@
 #define FUTPERCOUNT 0.3f; 
 #define FCOUNTSPERUT 3.333f;
 // accelerometer converion values
-#define FGPERCOUNT 0.00006103515; // 1 / ACCEL_DIVISOR
+#define FGPERCOUNT 0.00006103515f; // 1 / ACCEL_DIVISOR
 
 
 Glove::Glove(const wchar_t* device_path)

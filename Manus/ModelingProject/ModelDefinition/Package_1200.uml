@@ -83,6 +83,45 @@
               </associationHasOwnedEnds>
             </relationshipOwnedElementsInternal>
           </association>
+          <association
+            Id="33407159-2ed7-40b0-9c85-8c98fd488e30"
+            isDerived="false"
+            sourceEndRoleName="Glove"
+            targetEndRoleName="ManusMath"
+            isLeaf="false"
+            isAbstract="false">
+            <classMoniker
+              Id="30d2e248-7ee8-49c4-8fcf-6f5d5c895380"
+              LastKnownName="ManusMath"
+              LastKnownLocation="Package_1200.uml" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="16daab20-b0c4-4a9c-b903-77b5c68e85a7"
+                  name="Glove"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false"
+                  isNavigableOwned="false" />
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="cddbbc39-9562-4b98-9ddd-b9af369023f3"
+                  name="ManusMath"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false" />
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+          </association>
         </targetEnds>
         <ownedAttributesInternal>
           <property
@@ -388,6 +427,102 @@
             name="MANUS_RIGHT" />
         </ownedLiterals>
       </enumeration>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="30d2e248-7ee8-49c4-8fcf-6f5d5c895380"
+        name="ManusMath"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedOperationsInternal>
+          <operation
+            Id="f02db1ee-3171-4246-a257-08c70058e368"
+            name="int ManusGetEuler"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="bec4c231-0b24-4aa3-9d8e-c0e435b658e3"
+                  name="GLOVE_VECTOR* euler"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="cf9c347c-13ed-4c71-9a8e-d94d4238dbb7"
+                  name="const GLOVE_QUATERNION* quaternion"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="a2e11191-cf2a-45f7-9445-879b2d5e673c"
+            name="int ManusGetLinearAcceleration"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="24053685-10fe-485e-ab4c-ad87fb65d162"
+                  name="GLOVE_VECTOR* linear"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="ddf551c9-0352-4e9d-80f5-02bb90d34e3a"
+                  name="const GLOVE_VECTOR* acceleration"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="3b9a88ab-d7f8-4dbd-8e6b-ba57d80a9108"
+                  name="const GLOVE_VECTOR* gravity"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="1c04c72b-1ae5-4218-8a4a-ed02e7785027"
+            name="int ManusGetGravity"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="72842fd5-e43c-44b3-9eb5-b6be14fb2007"
+                  name="GLOVE_VECTOR* gravity"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="2fc07065-fe71-4927-acbe-80b5aeb3e39d"
+                  name="const GLOVE_QUATERNION* quaternion"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
     </packageHasNamedElement>
   </packagedElements>
 </package>

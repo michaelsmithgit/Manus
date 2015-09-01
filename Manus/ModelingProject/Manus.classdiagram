@@ -112,6 +112,22 @@
                   </relationshipOwnedElementsInternal>
                   <elementDefinition Id="f9c7d72d-896b-4c30-97dd-92f4b24baa42" />
                 </association>
+                <association Id="a4f867fc-022d-4811-98dc-4c6daffce6a5" isDerived="false" sourceEndRoleName="Glove" targetEndRoleName="ManusMath" isLeaf="false" isAbstract="false">
+                  <classMoniker Id="ace8e05c-0bd9-4c6d-8acf-a4c04fd04f0c" LastKnownName="ManusMath" />
+                  <relationshipOwnedElementsInternal>
+                    <associationHasOwnedEnds>
+                      <memberEnd Id="2b1bd5f7-dbe5-4f9b-a823-1b72e2849274" name="Glove" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                        <elementDefinition Id="16daab20-b0c4-4a9c-b903-77b5c68e85a7" />
+                      </memberEnd>
+                    </associationHasOwnedEnds>
+                    <associationHasOwnedEnds>
+                      <memberEnd Id="b92a05e0-29fd-4783-8e61-4854d23f8da9" name="ManusMath" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                        <elementDefinition Id="cddbbc39-9562-4b98-9ddd-b9af369023f3" />
+                      </memberEnd>
+                    </associationHasOwnedEnds>
+                  </relationshipOwnedElementsInternal>
+                  <elementDefinition Id="33407159-2ed7-40b0-9c85-8c98fd488e30" />
+                </association>
               </targetEnds>
               <ownedAttributesInternal>
                 <property Id="b5593fa9-f066-4d18-9bcc-7fddf9528487" name="bool m_running" visibility="Private" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
@@ -269,6 +285,63 @@
                 </enumerationLiteral>
               </ownedLiterals>
             </enumeration>
+          </packageHasNamedElement>
+          <packageHasNamedElement>
+            <class Id="ace8e05c-0bd9-4c6d-8acf-a4c04fd04f0c" name="ManusMath" isAbstract="false" isLeaf="false" isActiveClass="false">
+              <elementDefinition Id="30d2e248-7ee8-49c4-8fcf-6f5d5c895380" />
+              <ownedOperationsInternal>
+                <operation Id="69593283-841c-4283-a15b-c25e0639c4e3" name="int ManusGetEuler" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+                  <elementDefinition Id="f02db1ee-3171-4246-a257-08c70058e368" />
+                  <ownedParameters>
+                    <operationHasOwnedParameters>
+                      <parameter Id="e315809f-eb50-46fc-8031-06b9b39e6af8" name="GLOVE_VECTOR* euler" direction="In" isUnique="false">
+                        <elementDefinition Id="bec4c231-0b24-4aa3-9d8e-c0e435b658e3" />
+                      </parameter>
+                    </operationHasOwnedParameters>
+                    <operationHasOwnedParameters>
+                      <parameter Id="7e395f0b-9096-441f-afc4-aef9de05cb23" name="const GLOVE_QUATERNION* quaternion" direction="In" isUnique="false">
+                        <elementDefinition Id="cf9c347c-13ed-4c71-9a8e-d94d4238dbb7" />
+                      </parameter>
+                    </operationHasOwnedParameters>
+                  </ownedParameters>
+                </operation>
+                <operation Id="2384e5d2-b08f-49c7-a9ef-5cc1211ea880" name="int ManusGetLinearAcceleration" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+                  <elementDefinition Id="a2e11191-cf2a-45f7-9445-879b2d5e673c" />
+                  <ownedParameters>
+                    <operationHasOwnedParameters>
+                      <parameter Id="0e6b0132-b8f4-4223-8ee0-84cb618201ce" name="GLOVE_VECTOR* linear" direction="In" isUnique="false">
+                        <elementDefinition Id="24053685-10fe-485e-ab4c-ad87fb65d162" />
+                      </parameter>
+                    </operationHasOwnedParameters>
+                    <operationHasOwnedParameters>
+                      <parameter Id="ec295bea-aa9b-4da9-a5d7-4412b9fe908c" name="const GLOVE_VECTOR* acceleration" direction="In" isUnique="false">
+                        <elementDefinition Id="ddf551c9-0352-4e9d-80f5-02bb90d34e3a" />
+                      </parameter>
+                    </operationHasOwnedParameters>
+                    <operationHasOwnedParameters>
+                      <parameter Id="1d69f4cd-1f90-47a7-8dab-07457f7b5f66" name="const GLOVE_VECTOR* gravity" direction="In" isUnique="false">
+                        <elementDefinition Id="3b9a88ab-d7f8-4dbd-8e6b-ba57d80a9108" />
+                      </parameter>
+                    </operationHasOwnedParameters>
+                  </ownedParameters>
+                </operation>
+                <operation Id="513c8328-a752-4aba-a54a-345ed112d50d" name="int ManusGetGravity" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+                  <elementDefinition Id="1c04c72b-1ae5-4218-8a4a-ed02e7785027" />
+                  <ownedParameters>
+                    <operationHasOwnedParameters>
+                      <parameter Id="1e406e97-af6d-41aa-868f-6302cfc3a5e6" name="GLOVE_VECTOR* gravity" direction="In" isUnique="false">
+                        <elementDefinition Id="72842fd5-e43c-44b3-9eb5-b6be14fb2007" />
+                      </parameter>
+                    </operationHasOwnedParameters>
+                    <operationHasOwnedParameters>
+                      <parameter Id="7bb46b08-1458-4d1f-bff3-f93efd6437e4" name="const GLOVE_QUATERNION* quaternion" direction="In" isUnique="false">
+                        <elementDefinition Id="2fc07065-fe71-4927-acbe-80b5aeb3e39d" />
+                      </parameter>
+                    </operationHasOwnedParameters>
+                  </ownedParameters>
+                </operation>
+              </ownedOperationsInternal>
+            </class>
           </packageHasNamedElement>
         </packagedElements>
       </package>

@@ -71,7 +71,7 @@ private:
 	bool m_connected;
 	uint8_t m_flags;
 
-	GLOVE_STATE m_state;
+	GLOVE_DATA m_data;
 	unsigned int m_packets;
 	GLOVE_REPORT m_report;
 	COMPASS_REPORT m_compass;
@@ -97,7 +97,7 @@ public:
 	void Disconnect();
 	bool IsConnected() const { return m_connected; }
 	const wchar_t* GetDevicePath() const { return m_device_path; }
-	bool GetState(GLOVE_STATE* state, unsigned int timeout);
+	bool GetState(GLOVE_DATA* data, unsigned int timeout);
 	uint8_t GetFlags();
 	void SetFlags(uint8_t flags);
 

@@ -55,7 +55,7 @@ Glove::~Glove()
 	delete m_device_path;
 }
 
-bool Glove::GetState(GLOVE_STATE* state, unsigned int timeout)
+bool Glove::GetState(GLOVE_DATA* data, unsigned int timeout)
 {
 	// Wait until the thread is done writing a packet
 	std::unique_lock<std::mutex> lk(m_report_mutex);
@@ -71,11 +71,11 @@ bool Glove::GetState(GLOVE_STATE* state, unsigned int timeout)
 		}
 	}
 	
-	*state = m_state;
+	*data = m_data;
 
 	lk.unlock();
 
-	return m_state.PacketNumber > 0;
+	return m_data.PacketNumber > 0;
 }
 
 void Glove::Connect()
@@ -291,8 +291,8 @@ void Glove::UpdateState()
 	MagSensor myMag;
 	fquaternion myQuaternion;
 
-	m_state.PacketNumber++;
-	m_state.data.Handedness = m_flags & GLOVE_FLAGS_HANDEDNESS;
+	m_data.PacketNumber++;
+	m_data.Handedness = m_flags & GLOVE_FLAGS_HANDEDNESS;
 
 	myAccel.fgPerCount = FGPERCOUNT;
 
@@ -325,18 +325,18 @@ void Glove::UpdateState()
 	for (int i = 0; i < GLOVE_FINGERS; i++)
 	{
 		// account for finger order
-		if (m_state.data.Handedness)
-			m_state.data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
+		if (m_data.Handedness)
+			m_data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
 		else
-			m_state.data.Fingers[i] = m_report.fingers[GLOVE_FINGERS - (i + 1)] / FINGER_DIVISOR;
+			m_data.Fingers[i] = m_report.fingers[GLOVE_FINGERS - (i + 1)] / FINGER_DIVISOR;
 	}
 
 	// execute the magnetometer and yaw sensor fusion
 	fquaternion fused = m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion);
 
-	// copy the output of the sensor fusion to m_state
-	memcpy(&m_state.data.Quaternion, &fused, sizeof(GLOVE_QUATERNION));
-	memcpy(&m_state.data.Acceleration, &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
+	// copy the output of the sensor fusion to m_data
+	memcpy(&m_data.Quaternion, &fused, sizeof(GLOVE_QUATERNION));
+	memcpy(&m_data.Acceleration, &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
 }
 
 uint8_t Glove::GetFlags()

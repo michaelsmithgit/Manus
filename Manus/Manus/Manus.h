@@ -44,6 +44,7 @@ typedef struct {
 	GLOVE_VECTOR Acceleration;
 	GLOVE_QUATERNION Quaternion;
 	float Fingers[5];
+	unsigned int PacketNumber;
 } GLOVE_DATA;
 
 typedef struct {
@@ -63,10 +64,11 @@ typedef struct {
 		ring, pinky;
 } GLOVE_SKELETAL;
 
-typedef struct {
-	unsigned int PacketNumber;
-	GLOVE_DATA data;
-} GLOVE_STATE;
+// Left or Right glove enum
+typedef enum GLOVE_HAND {
+	GLOVE_LEFT = 0,
+	GLOVE_RIGHT,
+};
 
 /**
 * \defgroup Glove Manus Glove
@@ -111,7 +113,7 @@ extern "C" {
 	*  \param state Output variable to receive the state.
 	*  \param timeout Milliseconds to wait until the glove returns a value.
 	*/
-	MANUS_API int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int timeout = 0);
+	MANUS_API int ManusGetState(unsigned int glove, GLOVE_DATA* state, unsigned int timeout = 0);
 
 	/*! \brief Get a skeletal model for the given glove state.
 	*
@@ -124,7 +126,7 @@ extern "C" {
 	* 
 	*  \param state The glove state to derive the skeletal model from.
 	*/
-	MANUS_API int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_STATE* state);
+	MANUS_API int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_DATA* state);
 
 	/*! \brief Convert a Quaternion to Euler angles.
 	*

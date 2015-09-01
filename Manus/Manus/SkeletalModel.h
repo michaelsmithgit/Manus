@@ -39,6 +39,5 @@ public:
 	~SkeletalModel();
 
 	bool InitializeScene();
-	bool Simulate(const GLOVE_STATE* state, GLOVE_SKELETAL* model);
+	bool Simulate(const GLOVE_DATA* state, GLOVE_SKELETAL* model);
 };
-

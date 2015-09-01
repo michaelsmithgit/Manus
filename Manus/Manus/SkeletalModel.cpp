@@ -114,7 +114,7 @@ bool SkeletalModel::InitializeScene()
 	return true;
 }
 
-bool SkeletalModel::Simulate(const GLOVE_STATE* state, GLOVE_SKELETAL* model)
+bool SkeletalModel::Simulate(const GLOVE_DATA* state, GLOVE_SKELETAL* model)
 {
 	// Get the animation evaluator for this scene
 	FbxAnimEvaluator* eval = m_scene->GetAnimationEvaluator();
@@ -122,41 +122,41 @@ bool SkeletalModel::Simulate(const GLOVE_STATE* state, GLOVE_SKELETAL* model)
 	double timeFactor = 1.66;
 
 	// Set the pose of the palm
-	model->palm = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_node, FBXSDK_TIME_INFINITE), state->data);
+	model->palm = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_node, FBXSDK_TIME_INFINITE), *state);
 
 	// Evaluate the animation for the thumb
-	normalizedAmount.SetSecondDouble(state->data.Fingers[0] * timeFactor);
-	model->thumb.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][0], normalizedAmount), state->data);
-	model->thumb.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][1], normalizedAmount), state->data);
-	model->thumb.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][2], normalizedAmount), state->data);
+	normalizedAmount.SetSecondDouble(state->Fingers[0] * timeFactor);
+	model->thumb.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][0], normalizedAmount), *state);
+	model->thumb.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][1], normalizedAmount), *state);
+	model->thumb.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][2], normalizedAmount), *state);
 
 	// Evaluate the animation for the index finger
-	normalizedAmount.SetSecondDouble(state->data.Fingers[1] * timeFactor);
-	model->index.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), state->data);
-	model->index.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][0], normalizedAmount), state->data);
-	model->index.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][1], normalizedAmount), state->data);
-	model->index.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][2], normalizedAmount), state->data);
+	normalizedAmount.SetSecondDouble(state->Fingers[1] * timeFactor);
+	model->index.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), *state);
+	model->index.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][0], normalizedAmount), *state);
+	model->index.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][1], normalizedAmount), *state);
+	model->index.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][2], normalizedAmount), *state);
 
 	// Evaluate the animation for the middle finger
-	normalizedAmount.SetSecondDouble(state->data.Fingers[2] * timeFactor);
-	model->middle.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), state->data);
-	model->middle.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][0], normalizedAmount), state->data);
-	model->middle.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][1], normalizedAmount), state->data);
-	model->middle.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][2], normalizedAmount), state->data);
+	normalizedAmount.SetSecondDouble(state->Fingers[2] * timeFactor);
+	model->middle.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), *state);
+	model->middle.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][0], normalizedAmount), *state);
+	model->middle.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][1], normalizedAmount), *state);
+	model->middle.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][2], normalizedAmount), *state);
 
 	// Evaluate the animation for the ring finger
-	normalizedAmount.SetSecondDouble(state->data.Fingers[3] * timeFactor);
-	model->ring.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), state->data);
-	model->ring.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][0], normalizedAmount), state->data);
-	model->ring.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][1], normalizedAmount), state->data);
-	model->ring.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][2], normalizedAmount), state->data);
+	normalizedAmount.SetSecondDouble(state->Fingers[3] * timeFactor);
+	model->ring.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), *state);
+	model->ring.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][0], normalizedAmount), *state);
+	model->ring.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][1], normalizedAmount), *state);
+	model->ring.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][2], normalizedAmount), *state);
 
 	// Evaluate the animation for the pink finger
-	normalizedAmount.SetSecondDouble(state->data.Fingers[4] * timeFactor);
-	model->pinky.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), state->data);
-	model->pinky.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][0], normalizedAmount), state->data);
-	model->pinky.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][1], normalizedAmount), state->data);
-	model->pinky.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][2], normalizedAmount), state->data);
+	normalizedAmount.SetSecondDouble(state->Fingers[4] * timeFactor);
+	model->pinky.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount), *state);
+	model->pinky.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][0], normalizedAmount), *state);
+	model->pinky.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][1], normalizedAmount), *state);
+	model->pinky.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][2], normalizedAmount), *state);
 
 	return true;
 }

@@ -152,7 +152,7 @@ int ManusGetGloveCount()
 	return (int)g_gloves.size();
 }
 
-int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int timeout)
+int ManusGetState(unsigned int glove, GLOVE_DATA* state, unsigned int timeout)
 {
 	// Get the glove from the list
 	Glove* elem;
@@ -166,7 +166,7 @@ int ManusGetState(unsigned int glove, GLOVE_STATE* state, unsigned int timeout)
 	return elem->GetState(state, timeout) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
-int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_STATE* state)
+int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_DATA* state)
 {
 	return g_skeletal.Simulate(state, model);
 }

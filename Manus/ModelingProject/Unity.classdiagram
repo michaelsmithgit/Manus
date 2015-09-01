@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="6187d594-f897-4b6a-9150-f7144cfd5de2" name="Unity" linkedPackageId="029d59c3-e966-4104-931b-d3bef10c9305" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="25c756cc-d9aa-4749-9b75-8c6693bcc293" name="Manus" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="6d79c089-83f5-45e0-9c43-c6f1ca945e36" />
+        <ownedOperationsInternal>
+          <operation Id="fdeb8929-548b-4e0c-af89-3ac85e5ce68c" name="GetGloveCount" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="b3bd50a0-40f5-4abc-a940-abcd9bcc3450" />
+          </operation>
+          <operation Id="8dea1d8b-14dc-41c2-9fc1-f258dbb24a0d" name="GetGlove" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="6046a914-42d8-40d8-aa1e-5cf18f131b6f" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="44c888cc-bfcb-479f-9154-d941724cc12c" name="unsigned int glove" direction="In" isUnique="false">
+                  <elementDefinition Id="77ef8e0b-d710-4287-ab75-29c52b8726e3" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="a4ac793d-5cca-43c0-926a-57e85b2912ba" name="Glove" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="098336c9-74fe-4f4c-bf4b-4d17322df827" />
+        <ownedAttributesInternal>
+          <property Id="a2fe8111-3457-43c8-84f1-fe6aea781923" name="int mGloveIndex" visibility="Private" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="c5d5707f-8f69-4d80-9eeb-f660e9afb625" />
+          </property>
+        </ownedAttributesInternal>
+        <ownedOperationsInternal>
+          <operation Id="6a2aa347-40a4-4ed4-a44f-4b60a050b65e" name="GetQuaternion" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="fb5b180a-463a-4f3d-b30c-71a5d18fa92e" />
+          </operation>
+          <operation Id="d28618de-152e-4cfb-b862-02ee9d7be064" name="GetAcceleration" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="5476d7ab-d9c7-47b5-9d7b-c6a1a2a94282" />
+          </operation>
+          <operation Id="270739b4-8872-4a06-b687-9e8e05d186c0" name="GetSkeletal" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="4a34ff9c-6ecc-4366-b7a2-7df546327b10" />
+          </operation>
+          <operation Id="bd9c07d4-74fc-4ad1-9429-8d9f51fa5477" name="GetFingers" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="10c854a3-38c9-4606-82e6-e247e8d7ecbd" />
+          </operation>
+          <operation Id="76fc0b8c-c5c8-4891-a19f-0933b17917e9" name="IsRightHand" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="cb4eb724-53fa-41d2-a325-d07ee55af75e" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="029d59c3-e966-4104-931b-d3bef10c9305" name="ModelingProject">
+    <elementDefinition Id="6612bedf-1fb8-4706-975f-249391ce456a" />
+    <profileInstances>
+      <packageHasProfileInstances Id="b7190b95-69e1-41fb-8063-f539468767dd">
+        <profileInstance Id="3e58fbc0-6bad-4721-9526-c6c0b1cdad04" name="StandardProfileL2">
+          <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+        </profileInstance>
+        <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+      </packageHasProfileInstances>
+      <packageHasProfileInstances Id="a1b43a44-5119-4858-aca5-337231fc0305">
+        <profileInstance Id="826e285b-f2b5-40da-b20c-f7434bb183d1" name="StandardProfileL3">
+          <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+        </profileInstance>
+        <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+      </packageHasProfileInstances>
+    </profileInstances>
+  </package>
+</logicalClassDesignerModel>

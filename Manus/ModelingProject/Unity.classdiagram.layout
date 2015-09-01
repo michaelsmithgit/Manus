@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Unity">
+  <logicalClassDesignerModelMoniker Id="6187d594-f897-4b6a-9150-f7144cfd5de2" />
+  <nestedChildShapes>
+    <classShape Id="29b057a7-cb09-4ca2-96a1-7b0ec52c0291" absoluteBounds="1.375, 1.875, 1.5, 1.2226562251647315" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
+      <classMoniker Id="25c756cc-d9aa-4749-9b75-8c6693bcc293" LastKnownName="Manus" />
+      <nestedChildShapes>
+        <AttributeElementListCompartment Id="b8ee233f-9ebc-4c1c-ba4a-3c10ac6fb593" absoluteBounds="1.3900000000000001, 2.2649999999999997, 1.4700000000000002, 0.2011718675494194" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <OperationElementListCompartment Id="62308271-8497-4462-b3fb-2926df95e495" absoluteBounds="1.3900000000000001, 2.4761718675494198, 1.4700000000000002, 0.52148435761531187" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="dd02b2f7-55c6-489b-a6fb-93e0f82782ea" absoluteBounds="3.125, 1.875, 1.5, 1.863281205296516" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
+      <classMoniker Id="a4ac793d-5cca-43c0-926a-57e85b2912ba" LastKnownName="Glove" />
+      <nestedChildShapes>
+        <AttributeElementListCompartment Id="179e629e-de8b-4876-ae03-cbf0177f5213" absoluteBounds="3.14, 2.265, 1.4700000000000002, 0.36132811258236563" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <OperationElementListCompartment Id="796d27d4-64b1-4011-ad9a-ff627315de17" absoluteBounds="3.14, 2.6363281125823654, 1.4700000000000002, 1.0019530927141507" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</logicalClassDesignerDiagram>

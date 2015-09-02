@@ -167,6 +167,7 @@
     <ClInclude Include="Glove.h" />
     <ClInclude Include="magnetic.h" />
     <ClInclude Include="Manus.h" />
+    <ClInclude Include="ManusMath.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="orientation.h" />
     <ClInclude Include="resource.h" />
@@ -183,6 +184,7 @@
     <ClCompile Include="Glove.cpp" />
     <ClCompile Include="magnetic.cpp" />
     <ClCompile Include="Manus.cpp" />
+    <ClCompile Include="ManusMath.cpp" />
     <ClCompile Include="matrix.cpp" />
     <ClCompile Include="orientation.cpp" />
     <ClCompile Include="SensorFusion.cpp" />

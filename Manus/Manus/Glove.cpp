@@ -19,6 +19,7 @@
 
 #include "stdafx.h"
 #include "Glove.h"
+#include "ManusMath.h"
 
 // Sensorfusion constants
 #define ACCEL_DIVISOR 16384.0f
@@ -336,7 +337,17 @@ void Glove::UpdateState()
 
 	// copy the output of the sensor fusion to m_data
 	memcpy(&m_data.Quaternion, &fused, sizeof(GLOVE_QUATERNION));
-	memcpy(&m_data.Acceleration, &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
+
+	// calculate the euler angles
+	ManusMath::GetEuler(&m_data.Euler, &m_data.Quaternion);
+
+	// calculate the linear acceleration
+	GLOVE_VECTOR gravity, nonLinearAcceleration;
+
+	ManusMath::GetGravity(&gravity, &m_data.Quaternion);
+	memcpy(&nonLinearAcceleration, &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
+	ManusMath::GetLinearAcceleration(&m_data.Acceleration, &nonLinearAcceleration, &gravity);
+
 }
 
 uint8_t Glove::GetFlags()

@@ -4,16 +4,47 @@
     <logicalClassDesignerModelHasTypes>
       <class Id="25c756cc-d9aa-4749-9b75-8c6693bcc293" name="Manus" isAbstract="false" isLeaf="false" isActiveClass="false">
         <elementDefinition Id="6d79c089-83f5-45e0-9c43-c6f1ca945e36" />
+        <targetEnds>
+          <association Id="98e142b9-e969-4e56-a79d-9f6304b0ab3b" isDerived="false" sourceEndRoleName="Manus" targetEndRoleName="Glove" isLeaf="false" isAbstract="false">
+            <classMoniker Id="a4ac793d-5cca-43c0-926a-57e85b2912ba" LastKnownName="Glove" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="fead46c9-bbc2-404f-a63c-84bdb15b398c" name="Manus" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="d72aff44-710e-42d6-9cc8-af618494c242" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="059a889d-654b-4c2e-baa9-72b6b0c33ccd" name="Glove" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="8113ed06-d2bb-4285-b838-8ee7b98a94e3" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="85bc5296-88b0-44c5-a4b5-80fa92b87ae8" />
+          </association>
+          <association Id="b518d75b-9f3a-4c48-a04d-97aa12b413e3" isDerived="false" sourceEndRoleName="Manus" targetEndRoleName="GLOVE_TYPE" isLeaf="false" isAbstract="false">
+            <enumerationMoniker Id="2a7eb758-f160-4bb6-b771-f05d92126f58" LastKnownName="GLOVE_TYPE" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="09a0701c-ad74-405b-be5d-c54cb27b4d73" name="Manus" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="198ac85c-777d-431d-8496-6b4d5b463bf8" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="43a612d1-de01-4751-8d7a-68fbb6e3fbf8" name="GLOVE_TYPE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="94e0dc25-6b02-4cf9-9387-3013d1852b69" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="8d0b3e97-53b0-42dd-bdff-e62fd62f256f" />
+          </association>
+        </targetEnds>
         <ownedOperationsInternal>
-          <operation Id="fdeb8929-548b-4e0c-af89-3ac85e5ce68c" name="GetGloveCount" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
-            <elementDefinition Id="b3bd50a0-40f5-4abc-a940-abcd9bcc3450" />
-          </operation>
           <operation Id="8dea1d8b-14dc-41c2-9fc1-f258dbb24a0d" name="GetGlove" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
             <elementDefinition Id="6046a914-42d8-40d8-aa1e-5cf18f131b6f" />
             <ownedParameters>
               <operationHasOwnedParameters>
-                <parameter Id="44c888cc-bfcb-479f-9154-d941724cc12c" name="unsigned int glove" direction="In" isUnique="false">
-                  <elementDefinition Id="77ef8e0b-d710-4287-ab75-29c52b8726e3" />
+                <parameter Id="20759c07-39ff-42b9-ab27-64b03df55db2" name="GLOVE_TYPE glove" direction="In" isUnique="false">
+                  <elementDefinition Id="b6d6e665-bc9a-44d0-be3d-ef535caf4f8a" />
                 </parameter>
               </operationHasOwnedParameters>
             </ownedParameters>
@@ -24,8 +55,14 @@
     <logicalClassDesignerModelHasTypes>
       <class Id="a4ac793d-5cca-43c0-926a-57e85b2912ba" name="Glove" isAbstract="false" isLeaf="false" isActiveClass="false">
         <elementDefinition Id="098336c9-74fe-4f4c-bf4b-4d17322df827" />
+        <suppliersInternal>
+          <interfaceRealization Id="67b60fde-570a-494e-97b2-7bc9dee3fb04">
+            <interfaceMoniker Id="6f127cb1-5caa-4396-8232-61713d25d76e" LastKnownName="GLOVE_DATA" />
+            <elementDefinition Id="e30c6e59-4ce6-46dd-a1ac-c12dbde1b6ec" />
+          </interfaceRealization>
+        </suppliersInternal>
         <ownedAttributesInternal>
-          <property Id="a2fe8111-3457-43c8-84f1-fe6aea781923" name="int mGloveIndex" visibility="Private" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+          <property Id="a2fe8111-3457-43c8-84f1-fe6aea781923" name="GLOVE_TYPE mGlove" visibility="Private" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
             <elementDefinition Id="c5d5707f-8f69-4d80-9eeb-f660e9afb625" />
           </property>
         </ownedAttributesInternal>
@@ -42,12 +79,97 @@
           <operation Id="bd9c07d4-74fc-4ad1-9429-8d9f51fa5477" name="GetFingers" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
             <elementDefinition Id="10c854a3-38c9-4606-82e6-e247e8d7ecbd" />
           </operation>
-          <operation Id="76fc0b8c-c5c8-4891-a19f-0933b17917e9" name="IsRightHand" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+          <operation Id="76fc0b8c-c5c8-4891-a19f-0933b17917e9" name="GetGloveType" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
             <elementDefinition Id="cb4eb724-53fa-41d2-a325-d07ee55af75e" />
+          </operation>
+          <operation Id="e4ee691c-9d95-460a-9ff6-28c38b061147" name="GetEuler" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="e033e3ed-968a-49d9-86ca-e6e08554acc8" />
           </operation>
         </ownedOperationsInternal>
       </class>
     </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <enumeration Id="2a7eb758-f160-4bb6-b771-f05d92126f58" name="GLOVE_TYPE" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="cd2e5d06-bfca-41e9-ad77-a4f766788dfe" />
+        <ownedLiterals>
+          <enumerationLiteral Id="55931d53-7239-4fed-abdc-51a771b5258e" name="MANUS_LEFT">
+            <elementDefinition Id="42ab7834-0d1d-437d-b6a2-b02cd31bc15a" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="a9f4f48e-19d2-48e9-a689-1291bb262461" name="MANUS_RIGHT">
+            <elementDefinition Id="663453c6-57d9-4f1a-ab12-32a2eab625bc" />
+          </enumerationLiteral>
+        </ownedLiterals>
+      </enumeration>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasPackages>
+      <package Id="bd6312a4-ec29-4073-843b-b9d9155fe4f6" name="Internal">
+        <elementDefinition Id="04cd6ff0-69df-4207-9539-7f4de0e49cb6" />
+        <packagedElements>
+          <packageHasNamedElement>
+            <Interface Id="6f127cb1-5caa-4396-8232-61713d25d76e" name="GLOVE_DATA" isAbstract="false" isLeaf="false">
+              <elementDefinition Id="d3f6b644-ac67-408a-8f6b-26124ce0d44f" />
+              <ownedAttributes>
+                <property Id="26f5e94a-a31e-4064-a111-70fe7a191418" name="float Acceleration" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="8a7eb4da-0f82-4570-aa4a-0d6283fa7d78" name="Lower" value="3">
+                      <elementDefinition Id="471d31dc-cffd-4628-8f7e-65d57d324414" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="32bb61ee-1108-4596-bcfa-e166f16219b3" name="Upper" value="3">
+                      <elementDefinition Id="91fd3413-99e9-4f5b-8443-72e656e79bdc" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="af748419-e681-4f5d-a61c-ff064a637e80" />
+                </property>
+                <property Id="20488dd6-f2f9-4aa7-888c-46d3a3348551" name="float Quaternions" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="39311bf7-dd52-46d0-8fcb-d9b4ca76cf79" name="Lower" value="4">
+                      <elementDefinition Id="d50cf105-8b39-45bb-a01c-a6dcb47a04a8" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="54473c6c-6b72-41d1-9382-b2515ff1bcc8" name="Upper" value="4">
+                      <elementDefinition Id="06ef0718-9daf-42f4-835c-10ddc9fc3dbe" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="6c5abe02-9e1f-4406-99da-ab504d2348b1" />
+                </property>
+                <property Id="caf75766-b291-4034-8029-7d30d9900a46" name="short Fingers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="d3aff2b1-396d-4b6a-89f2-e433f35c2496" name="Lower" value="5">
+                      <elementDefinition Id="6ac3d178-a1a5-4a0b-92bd-e4e38c24dc2e" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="b7050da1-266e-47ba-92dd-3424f53ceccb" name="Upper" value="5">
+                      <elementDefinition Id="2eacbf52-ae13-4c55-88b6-c1096482fee0" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="60c4dfec-d6b8-4ae8-af48-c1bdb1c05a1f" />
+                </property>
+                <property Id="602aa405-8f48-4b21-924f-c5210d5891d2" name="unsigned int PacketNumber" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="ab7cc5cb-e5d6-4286-b343-be6f1f73e0d5" />
+                </property>
+                <property Id="daacbd96-c2be-431e-a1f9-3e0dce137653" name="float Euler" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="4fbf24b1-ed7f-440f-b402-15379be99ce8" name="Lower" value="3">
+                      <elementDefinition Id="cea70eb7-17da-4000-85b8-7bb79456b1e7" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="19e11e35-032a-4369-847e-4184c50a87b7" name="Upper" value="3">
+                      <elementDefinition Id="f875ef7b-b1ff-4622-8cd1-96c3aec7ffdc" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="893453f0-f64a-46f7-bb6a-2f709a39e371" />
+                </property>
+              </ownedAttributes>
+            </Interface>
+          </packageHasNamedElement>
+        </packagedElements>
+      </package>
+    </logicalClassDesignerModelHasPackages>
   </packagedElements>
   <package Id="029d59c3-e966-4104-931b-d3bef10c9305" name="ModelingProject">
     <elementDefinition Id="6612bedf-1fb8-4706-975f-249391ce456a" />

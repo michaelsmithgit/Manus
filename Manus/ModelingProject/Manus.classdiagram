@@ -4,6 +4,12 @@
     <logicalClassDesignerModelHasTypes>
       <class Id="825c94b5-a055-4d36-a188-28a4ff81fdc6" name="Manus" isAbstract="false" isLeaf="false" isActiveClass="false">
         <elementDefinition Id="4dd15d6b-9a97-4365-9437-0c15d4638a62" />
+        <suppliersInternal>
+          <interfaceRealization Id="a434c5ec-087e-4bfb-8f62-95c3c7ff1058">
+            <interfaceMoniker Id="7279cfb4-b36d-47dd-9c10-5505573771c0" LastKnownName="GLOVE_DATA" />
+            <elementDefinition Id="e6cfc645-86c7-4416-9586-4d2556343d2d" />
+          </interfaceRealization>
+        </suppliersInternal>
         <targetEnds>
           <association Id="faa8b619-9472-40ea-853a-b724dbfc1123" isDerived="false" sourceEndRoleName="Manus" targetEndRoleName="Glove" isLeaf="false" isAbstract="false">
             <classMoniker Id="a5f95202-8d0b-4613-a63b-f0dd275018b7" LastKnownName="Glove" />
@@ -36,6 +42,22 @@
               </associationHasOwnedEnds>
             </relationshipOwnedElementsInternal>
             <elementDefinition Id="b59f209c-8ecf-45f0-8326-bffa4c07903d" />
+          </association>
+          <association Id="d1eae514-9976-4685-8f24-af424df81748" isDerived="false" sourceEndRoleName="Manus" targetEndRoleName="GLOVE_TYPE" isLeaf="false" isAbstract="false">
+            <enumerationMoniker Id="73959d65-ad01-412e-bb12-793319cee898" LastKnownName="GLOVE_TYPE" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="aa234d25-e415-4db0-8fb1-32c4aefa3dac" name="Manus" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="07850c45-c937-4850-8ae3-98d45e960dc3" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="874c5b18-034d-41eb-9219-04ddc1d1ab98" name="GLOVE_TYPE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="807e3cb6-eef8-4bd8-8b33-a96a3bd62b01" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="40a8b4ea-f852-4e31-9ab9-8f071ed0914e" />
           </association>
         </targetEnds>
         <ownedOperationsInternal>
@@ -212,130 +234,55 @@
             </class>
           </packageHasNamedElement>
           <packageHasNamedElement>
-            <Interface Id="44f27477-b0e6-4d81-9e5c-f294252ddb80" name="GLOVE_DATA" isAbstract="false" isLeaf="false">
-              <elementDefinition Id="42812a93-35bd-4041-bf5b-c5559618de06" />
-              <ownedAttributes>
-                <property Id="459b5c66-75a7-4ccd-a17f-8295e8a8096b" name="float Acceleration" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-                  <lowerValueInternal>
-                    <literalString Id="1c678485-5209-4289-a67e-2bca1d83d74a" name="Lower" value="3">
-                      <elementDefinition Id="3f9099e7-04d6-4b06-ae01-b4691b116ed3" />
-                    </literalString>
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString Id="26ac01c8-3592-455a-b355-f50dcc1b9233" name="Upper" value="3">
-                      <elementDefinition Id="30ab3363-ff4d-4c76-ba5b-b45c80d51341" />
-                    </literalString>
-                  </upperValueInternal>
-                  <elementDefinition Id="4afd369d-927d-478c-af20-16fcd440d3f4" />
-                </property>
-                <property Id="d34dd833-1523-418a-ae72-6cebd6c9a46b" name="float Quaternions" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-                  <lowerValueInternal>
-                    <literalString Id="5370bb8a-e704-4d55-a66d-df53a753e11d" name="Lower" value="4">
-                      <elementDefinition Id="c5a4e130-a9b1-40f8-b9cb-8b3d29fdcaa5" />
-                    </literalString>
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString Id="2e2679c3-9b0a-4187-b262-40b05ff7f195" name="Upper" value="4">
-                      <elementDefinition Id="3f9403f4-e30c-4e22-8070-c40cce3cac97" />
-                    </literalString>
-                  </upperValueInternal>
-                  <elementDefinition Id="933ac07e-dbb3-40b5-99f5-4a903201ec53" />
-                </property>
-                <property Id="09050de8-0781-4ace-a5a9-ae85549c8037" name="short Fingers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-                  <lowerValueInternal>
-                    <literalString Id="3924cfbc-8d4f-4050-832e-fd530376d62e" name="Lower" value="5">
-                      <elementDefinition Id="5fb38bec-d575-476d-a7fc-695ce9fc2bdb" />
-                    </literalString>
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString Id="24434d20-9204-4bcb-82d9-238597d7eb4a" name="Upper" value="5">
-                      <elementDefinition Id="6723b8c9-3ab4-4980-bbd6-7f4ea1c91722" />
-                    </literalString>
-                  </upperValueInternal>
-                  <elementDefinition Id="cdf84447-62a1-40c7-a39b-69537d6f9b26" />
-                </property>
-                <property Id="9cb302ad-2440-4eb7-a7dd-21da33a8fe43" name="unsigned int PacketNumber" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-                  <elementDefinition Id="1f2ebe91-bd66-44f1-aaa0-826335019ea9" />
-                </property>
-                <property Id="f437601e-eae5-48f9-af61-66e22c5def1a" name="float Euler" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-                  <lowerValueInternal>
-                    <literalString Id="a45c5cb1-644a-4223-80fe-6f9477f59bcd" name="Lower" value="3">
-                      <elementDefinition Id="02721156-0e2d-4bb6-a713-ab522d9effcb" />
-                    </literalString>
-                  </lowerValueInternal>
-                  <upperValueInternal>
-                    <literalString Id="b4d7b68a-0d16-4457-9033-fb383197daaf" name="Upper" value="3">
-                      <elementDefinition Id="c2696896-7528-48f1-9cab-ecfcc21c389c" />
-                    </literalString>
-                  </upperValueInternal>
-                  <elementDefinition Id="38c60583-11e2-468e-b17d-1e2a1713ce43" />
-                </property>
-              </ownedAttributes>
-            </Interface>
-          </packageHasNamedElement>
-          <packageHasNamedElement>
-            <enumeration Id="5e5d6b7e-b5db-43c8-a92c-c06be2a70476" name="GLOVE_TYPE" isAbstract="false" isLeaf="false">
-              <elementDefinition Id="2b37d65e-c4c9-40b5-9b90-9a2a81d67b1c" />
-              <ownedLiterals>
-                <enumerationLiteral Id="97e7cb76-69af-4291-8685-ee274bd70934" name="MANUS_LEFT">
-                  <elementDefinition Id="a10ea504-f660-4a69-b3cd-122a5ab43c0f" />
-                </enumerationLiteral>
-                <enumerationLiteral Id="2e68ae46-9392-4b88-bd03-ff5da4e8d777" name="MANUS_RIGHT">
-                  <elementDefinition Id="03568095-9cb8-4e37-ba8e-ca6e78051b40" />
-                </enumerationLiteral>
-              </ownedLiterals>
-            </enumeration>
-          </packageHasNamedElement>
-          <packageHasNamedElement>
             <class Id="ace8e05c-0bd9-4c6d-8acf-a4c04fd04f0c" name="ManusMath" isAbstract="false" isLeaf="false" isActiveClass="false">
               <elementDefinition Id="30d2e248-7ee8-49c4-8fcf-6f5d5c895380" />
               <ownedOperationsInternal>
-                <operation Id="69593283-841c-4283-a15b-c25e0639c4e3" name="int ManusGetEuler" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+                <operation Id="69593283-841c-4283-a15b-c25e0639c4e3" name="int GetEuler" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
                   <elementDefinition Id="f02db1ee-3171-4246-a257-08c70058e368" />
                   <ownedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="e315809f-eb50-46fc-8031-06b9b39e6af8" name="GLOVE_VECTOR* euler" direction="In" isUnique="false">
-                        <elementDefinition Id="bec4c231-0b24-4aa3-9d8e-c0e435b658e3" />
+                      <parameter Id="01617cf2-f2ac-446b-84b3-d4c64678d38d" name="GLOVE_VECTOR* euler" direction="In" isUnique="false">
+                        <elementDefinition Id="a6304171-f9be-4c86-8b37-2c9b2083c058" />
                       </parameter>
                     </operationHasOwnedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="7e395f0b-9096-441f-afc4-aef9de05cb23" name="const GLOVE_QUATERNION* quaternion" direction="In" isUnique="false">
-                        <elementDefinition Id="cf9c347c-13ed-4c71-9a8e-d94d4238dbb7" />
+                      <parameter Id="2cd2025d-0a3e-4e77-876c-4361a709b68b" name="const GLOVE_QUATERNION* quaternion" direction="In" isUnique="false">
+                        <elementDefinition Id="236dd5d3-ac6b-448b-9fcb-b0d4b5939320" />
                       </parameter>
                     </operationHasOwnedParameters>
                   </ownedParameters>
                 </operation>
-                <operation Id="2384e5d2-b08f-49c7-a9ef-5cc1211ea880" name="int ManusGetLinearAcceleration" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+                <operation Id="2384e5d2-b08f-49c7-a9ef-5cc1211ea880" name="int GetLinearAcceleration" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
                   <elementDefinition Id="a2e11191-cf2a-45f7-9445-879b2d5e673c" />
                   <ownedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="0e6b0132-b8f4-4223-8ee0-84cb618201ce" name="GLOVE_VECTOR* linear" direction="In" isUnique="false">
-                        <elementDefinition Id="24053685-10fe-485e-ab4c-ad87fb65d162" />
+                      <parameter Id="e4b3ea45-b1f8-44e3-8983-3f0bbe54e916" name="GLOVE_VECTOR* linear" direction="In" isUnique="false">
+                        <elementDefinition Id="3d070501-b88f-47a2-8830-f777777d4856" />
                       </parameter>
                     </operationHasOwnedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="ec295bea-aa9b-4da9-a5d7-4412b9fe908c" name="const GLOVE_VECTOR* acceleration" direction="In" isUnique="false">
-                        <elementDefinition Id="ddf551c9-0352-4e9d-80f5-02bb90d34e3a" />
+                      <parameter Id="2e24533f-0d92-4e23-9665-60fb373550c5" name="const GLOVE_VECTOR* acceleration" direction="In" isUnique="false">
+                        <elementDefinition Id="0c534b88-3003-4760-a360-dbb7687f1064" />
                       </parameter>
                     </operationHasOwnedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="1d69f4cd-1f90-47a7-8dab-07457f7b5f66" name="const GLOVE_VECTOR* gravity" direction="In" isUnique="false">
-                        <elementDefinition Id="3b9a88ab-d7f8-4dbd-8e6b-ba57d80a9108" />
+                      <parameter Id="3aa8d939-9294-47b4-a6db-8e218109037c" name="const GLOVE_VECTOR* gravity" direction="In" isUnique="false">
+                        <elementDefinition Id="da784c02-f393-4b52-ba56-3c115dd1c28b" />
                       </parameter>
                     </operationHasOwnedParameters>
                   </ownedParameters>
                 </operation>
-                <operation Id="513c8328-a752-4aba-a54a-345ed112d50d" name="int ManusGetGravity" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+                <operation Id="513c8328-a752-4aba-a54a-345ed112d50d" name="int GetGravity" visibility="Private" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
                   <elementDefinition Id="1c04c72b-1ae5-4218-8a4a-ed02e7785027" />
                   <ownedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="1e406e97-af6d-41aa-868f-6302cfc3a5e6" name="GLOVE_VECTOR* gravity" direction="In" isUnique="false">
-                        <elementDefinition Id="72842fd5-e43c-44b3-9eb5-b6be14fb2007" />
+                      <parameter Id="b25c6be5-9924-4eb4-b75e-4d84cf33491c" name="GLOVE_VECTOR* gravity" direction="In" isUnique="false">
+                        <elementDefinition Id="a07db8cc-a50d-4fa0-a102-70494ebb3e80" />
                       </parameter>
                     </operationHasOwnedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="7bb46b08-1458-4d1f-bff3-f93efd6437e4" name="const GLOVE_QUATERNION* quaternion" direction="In" isUnique="false">
-                        <elementDefinition Id="2fc07065-fe71-4927-acbe-80b5aeb3e39d" />
+                      <parameter Id="7d20e3bb-ea77-430d-b12f-46691070a1cd" name="const GLOVE_QUATERNION* quaternion" direction="In" isUnique="false">
+                        <elementDefinition Id="07544193-822c-46c0-afa7-0ea58c57a778" />
                       </parameter>
                     </operationHasOwnedParameters>
                   </ownedParameters>
@@ -346,6 +293,81 @@
         </packagedElements>
       </package>
     </logicalClassDesignerModelHasPackages>
+    <logicalClassDesignerModelHasTypes>
+      <enumeration Id="73959d65-ad01-412e-bb12-793319cee898" name="GLOVE_TYPE" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="5e353bc4-d78f-44ec-8ee0-e374527ac85c" />
+        <ownedLiterals>
+          <enumerationLiteral Id="2e0c30d3-1263-427a-b359-3dc5046970c1" name="MANUS_LEFT">
+            <elementDefinition Id="7e9a4e8f-6b4d-4b6d-bd92-fcf2fa6064d9" />
+          </enumerationLiteral>
+          <enumerationLiteral Id="7ebd37fd-a741-4b6d-ba39-77df77dc4b78" name="MANUS_RIGHT">
+            <elementDefinition Id="e5c01810-aedf-4f58-800d-d16d5385cb0f" />
+          </enumerationLiteral>
+        </ownedLiterals>
+      </enumeration>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="7279cfb4-b36d-47dd-9c10-5505573771c0" name="GLOVE_DATA" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="0fd4754c-ddb2-4cd9-9362-9c888774fe11" />
+        <ownedAttributes>
+          <property Id="76c278df-7a1f-44db-9752-d3e7e9f330cf" name="float Acceleration" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="b1e9a79e-5c89-4e12-a643-64af7e8b82fb" name="Lower" value="3">
+                <elementDefinition Id="4af26bd2-c097-44fe-869e-2e80c34fd47e" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="dab1982c-f1ad-4b28-aee7-c5c9cafccc12" name="Upper" value="3">
+                <elementDefinition Id="a1f75538-6f9e-42d9-8585-670046200e59" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="6dedc5aa-7238-4ebe-baed-e0112a7f0671" />
+          </property>
+          <property Id="579b4899-4d52-4c74-a677-8639111edd85" name="float Quaternions" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="3890c1a7-2b7d-4535-9feb-b4a25b9bf6ac" name="Lower" value="4">
+                <elementDefinition Id="a756d2c0-6c1e-41ca-a9f1-5de9657d2370" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="59c04e11-d6cd-472c-be19-2f2e256c3901" name="Upper" value="4">
+                <elementDefinition Id="be200e92-f9f9-4d62-a26e-ec896d488e88" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="e275936f-0fa5-4054-ad72-82ae79134315" />
+          </property>
+          <property Id="b2a817d9-a633-495f-add3-3e0c057f7184" name="short Fingers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="d983d89e-30bf-4112-8cad-9b53764a5ac1" name="Lower" value="5">
+                <elementDefinition Id="26576f0d-9d2f-40d2-805a-51440aed5e08" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="8376796f-bc7e-4503-9aa0-48dd069d83e2" name="Upper" value="5">
+                <elementDefinition Id="6737d8c9-4c2d-45c1-8f8a-f0bc49373c21" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="04f625e8-bac3-4a5b-9a7a-8fcc64fb1311" />
+          </property>
+          <property Id="bf3db6a1-d460-41c8-b64f-d8f1eba5aeb4" name="unsigned int PacketNumber" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="b3f66c9b-7050-4503-8704-868608617e09" />
+          </property>
+          <property Id="8e940173-d1de-4d4c-90cb-bc4a56b8d12f" name="float Euler" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <lowerValueInternal>
+              <literalString Id="d663ec53-aecc-42ca-a8bc-27ae55cbc675" name="Lower" value="3">
+                <elementDefinition Id="6693f631-9dea-4dd0-a51f-4d2f73ca47e9" />
+              </literalString>
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString Id="9c07bc1e-cf60-4539-b49f-bccfe7b04053" name="Upper" value="3">
+                <elementDefinition Id="1a0b79ef-4cbc-42ca-abfd-d4ab53f51f7f" />
+              </literalString>
+            </upperValueInternal>
+            <elementDefinition Id="557e8219-b2b8-4642-b041-5b490aaf8ac2" />
+          </property>
+        </ownedAttributes>
+      </Interface>
+    </logicalClassDesignerModelHasTypes>
   </packagedElements>
   <package Id="0d0339cd-7cdd-4946-8b29-704abf61a353" name="ModelingProject">
     <elementDefinition Id="6612bedf-1fb8-4706-975f-249391ce456a" />

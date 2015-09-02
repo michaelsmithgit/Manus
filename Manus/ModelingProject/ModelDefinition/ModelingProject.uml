@@ -25,6 +25,15 @@
         isAbstract="false"
         isLeaf="false"
         isActiveClass="false">
+        <suppliersInternal>
+          <interfaceRealization
+            Id="e6cfc645-86c7-4416-9586-4d2556343d2d">
+            <interfaceMoniker
+              Id="0fd4754c-ddb2-4cd9-9362-9c888774fe11"
+              LastKnownName="GLOVE_DATA"
+              LastKnownLocation="ModelingProject.uml" />
+          </interfaceRealization>
+        </suppliersInternal>
         <targetEnds>
           <association
             Id="ea85985d-8b4f-445d-b0c3-0d142eca32b6"
@@ -94,6 +103,45 @@
                 <memberEnd
                   Id="1955f61e-6699-4f1b-b572-dbbf5de665e0"
                   name="WinDevices"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false" />
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+          </association>
+          <association
+            Id="40a8b4ea-f852-4e31-9ab9-8f071ed0914e"
+            isDerived="false"
+            sourceEndRoleName="Manus"
+            targetEndRoleName="GLOVE_TYPE"
+            isLeaf="false"
+            isAbstract="false">
+            <enumerationMoniker
+              Id="5e353bc4-d78f-44ec-8ee0-e374527ac85c"
+              LastKnownName="GLOVE_TYPE"
+              LastKnownLocation="ModelingProject.uml" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="07850c45-c937-4850-8ae3-98d45e960dc3"
+                  name="Manus"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false"
+                  isNavigableOwned="false" />
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="807e3cb6-eef8-4bd8-8b33-a96a3bd62b01"
+                  name="GLOVE_TYPE"
                   isLeaf="false"
                   isStatic="false"
                   isReadOnly="false"
@@ -1170,15 +1218,87 @@
         isAbstract="false"
         isLeaf="false"
         isActiveClass="false">
-        <ownedOperationsInternal>
-          <operation
-            Id="b3bd50a0-40f5-4abc-a940-abcd9bcc3450"
-            name="GetGloveCount"
+        <targetEnds>
+          <association
+            Id="85bc5296-88b0-44c5-a4b5-80fa92b87ae8"
+            isDerived="false"
+            sourceEndRoleName="Manus"
+            targetEndRoleName="Glove"
             isLeaf="false"
-            isStatic="false"
-            isAbstract="false"
-            concurrency="Sequential"
-            isQuery="false" />
+            isAbstract="false">
+            <classMoniker
+              Id="098336c9-74fe-4f4c-bf4b-4d17322df827"
+              LastKnownName="Glove"
+              LastKnownLocation="ModelingProject.uml" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="d72aff44-710e-42d6-9cc8-af618494c242"
+                  name="Manus"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false"
+                  isNavigableOwned="false" />
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="8113ed06-d2bb-4285-b838-8ee7b98a94e3"
+                  name="Glove"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false" />
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+          </association>
+          <association
+            Id="8d0b3e97-53b0-42dd-bdff-e62fd62f256f"
+            isDerived="false"
+            sourceEndRoleName="Manus"
+            targetEndRoleName="GLOVE_TYPE"
+            isLeaf="false"
+            isAbstract="false">
+            <enumerationMoniker
+              Id="cd2e5d06-bfca-41e9-ad77-a4f766788dfe"
+              LastKnownName="GLOVE_TYPE"
+              LastKnownLocation="ModelingProject.uml" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="198ac85c-777d-431d-8496-6b4d5b463bf8"
+                  name="Manus"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false"
+                  isNavigableOwned="false" />
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="94e0dc25-6b02-4cf9-9387-3013d1852b69"
+                  name="GLOVE_TYPE"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false" />
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+          </association>
+        </targetEnds>
+        <ownedOperationsInternal>
           <operation
             Id="6046a914-42d8-40d8-aa1e-5cf18f131b6f"
             name="GetGlove"
@@ -1190,8 +1310,8 @@
             <ownedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="77ef8e0b-d710-4287-ab75-29c52b8726e3"
-                  name="unsigned int glove"
+                  Id="b6d6e665-bc9a-44d0-be3d-ef535caf4f8a"
+                  name="GLOVE_TYPE glove"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
@@ -1207,10 +1327,19 @@
         isAbstract="false"
         isLeaf="false"
         isActiveClass="false">
+        <suppliersInternal>
+          <interfaceRealization
+            Id="e30c6e59-4ce6-46dd-a1ac-c12dbde1b6ec">
+            <interfaceMoniker
+              Id="d3f6b644-ac67-408a-8f6b-26124ce0d44f"
+              LastKnownName="GLOVE_DATA"
+              LastKnownLocation="Package_1057.uml" />
+          </interfaceRealization>
+        </suppliersInternal>
         <ownedAttributesInternal>
           <property
             Id="c5d5707f-8f69-4d80-9eeb-f660e9afb625"
-            name="int mGloveIndex"
+            name="GLOVE_TYPE mGlove"
             visibility="Private"
             isLeaf="false"
             isStatic="false"
@@ -1256,7 +1385,15 @@
             isQuery="false" />
           <operation
             Id="cb4eb724-53fa-41d2-a325-d07ee55af75e"
-            name="IsRightHand"
+            name="GetGloveType"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+          <operation
+            Id="e033e3ed-968a-49d9-86ca-e6e08554acc8"
+            name="GetEuler"
             isLeaf="false"
             isStatic="false"
             isAbstract="false"
@@ -1270,6 +1407,161 @@
         Id="5e357b0b-e4cb-4b39-88db-aef37d0280a8"
         LastKnownName="Internal"
         LastKnownLocation="Package_1200.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <enumeration
+        Id="cd2e5d06-bfca-41e9-ad77-a4f766788dfe"
+        name="GLOVE_TYPE"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedLiterals>
+          <enumerationLiteral
+            Id="42ab7834-0d1d-437d-b6a2-b02cd31bc15a"
+            name="MANUS_LEFT" />
+          <enumerationLiteral
+            Id="663453c6-57d9-4f1a-ab12-32a2eab625bc"
+            name="MANUS_RIGHT" />
+        </ownedLiterals>
+      </enumeration>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <enumeration
+        Id="5e353bc4-d78f-44ec-8ee0-e374527ac85c"
+        name="GLOVE_TYPE"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedLiterals>
+          <enumerationLiteral
+            Id="7e9a4e8f-6b4d-4b6d-bd92-fcf2fa6064d9"
+            name="MANUS_LEFT" />
+          <enumerationLiteral
+            Id="e5c01810-aedf-4f58-800d-d16d5385cb0f"
+            name="MANUS_RIGHT" />
+        </ownedLiterals>
+      </enumeration>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="0fd4754c-ddb2-4cd9-9362-9c888774fe11"
+        name="GLOVE_DATA"
+        isAbstract="false"
+        isLeaf="false">
+        <ownedAttributes>
+          <property
+            Id="6dedc5aa-7238-4ebe-baed-e0112a7f0671"
+            name="float Acceleration"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="4af26bd2-c097-44fe-869e-2e80c34fd47e"
+                name="Lower"
+                value="3" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="a1f75538-6f9e-42d9-8585-670046200e59"
+                name="Upper"
+                value="3" />
+            </upperValueInternal>
+          </property>
+          <property
+            Id="e275936f-0fa5-4054-ad72-82ae79134315"
+            name="float Quaternions"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="a756d2c0-6c1e-41ca-a9f1-5de9657d2370"
+                name="Lower"
+                value="4" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="be200e92-f9f9-4d62-a26e-ec896d488e88"
+                name="Upper"
+                value="4" />
+            </upperValueInternal>
+          </property>
+          <property
+            Id="04f625e8-bac3-4a5b-9a7a-8fcc64fb1311"
+            name="short Fingers"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="26576f0d-9d2f-40d2-805a-51440aed5e08"
+                name="Lower"
+                value="5" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="6737d8c9-4c2d-45c1-8f8a-f0bc49373c21"
+                name="Upper"
+                value="5" />
+            </upperValueInternal>
+          </property>
+          <property
+            Id="b3f66c9b-7050-4503-8704-868608617e09"
+            name="unsigned int PacketNumber"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+          <property
+            Id="557e8219-b2b8-4642-b041-5b490aaf8ac2"
+            name="float Euler"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <lowerValueInternal>
+              <literalString
+                Id="6693f631-9dea-4dd0-a51f-4d2f73ca47e9"
+                name="Lower"
+                value="3" />
+            </lowerValueInternal>
+            <upperValueInternal>
+              <literalString
+                Id="1a0b79ef-4cbc-42ca-abfd-d4ab53f51f7f"
+                name="Upper"
+                value="3" />
+            </upperValueInternal>
+          </property>
+        </ownedAttributes>
+      </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="04cd6ff0-69df-4207-9539-7f4de0e49cb6"
+        LastKnownName="Internal"
+        LastKnownLocation="Package_1057.uml" />
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

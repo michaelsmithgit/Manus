@@ -438,7 +438,7 @@
         <ownedOperationsInternal>
           <operation
             Id="f02db1ee-3171-4246-a257-08c70058e368"
-            name="int ManusGetEuler"
+            name="int GetEuler"
             visibility="Private"
             isLeaf="false"
             isStatic="false"
@@ -448,14 +448,14 @@
             <ownedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="bec4c231-0b24-4aa3-9d8e-c0e435b658e3"
+                  Id="a6304171-f9be-4c86-8b37-2c9b2083c058"
                   name="GLOVE_VECTOR* euler"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="cf9c347c-13ed-4c71-9a8e-d94d4238dbb7"
+                  Id="236dd5d3-ac6b-448b-9fcb-b0d4b5939320"
                   name="const GLOVE_QUATERNION* quaternion"
                   direction="In"
                   isUnique="false" />
@@ -464,7 +464,7 @@
           </operation>
           <operation
             Id="a2e11191-cf2a-45f7-9445-879b2d5e673c"
-            name="int ManusGetLinearAcceleration"
+            name="int GetLinearAcceleration"
             visibility="Private"
             isLeaf="false"
             isStatic="false"
@@ -474,21 +474,21 @@
             <ownedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="24053685-10fe-485e-ab4c-ad87fb65d162"
+                  Id="3d070501-b88f-47a2-8830-f777777d4856"
                   name="GLOVE_VECTOR* linear"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="ddf551c9-0352-4e9d-80f5-02bb90d34e3a"
+                  Id="0c534b88-3003-4760-a360-dbb7687f1064"
                   name="const GLOVE_VECTOR* acceleration"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="3b9a88ab-d7f8-4dbd-8e6b-ba57d80a9108"
+                  Id="da784c02-f393-4b52-ba56-3c115dd1c28b"
                   name="const GLOVE_VECTOR* gravity"
                   direction="In"
                   isUnique="false" />
@@ -497,7 +497,7 @@
           </operation>
           <operation
             Id="1c04c72b-1ae5-4218-8a4a-ed02e7785027"
-            name="int ManusGetGravity"
+            name="int GetGravity"
             visibility="Private"
             isLeaf="false"
             isStatic="false"
@@ -507,14 +507,14 @@
             <ownedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="72842fd5-e43c-44b3-9eb5-b6be14fb2007"
+                  Id="a07db8cc-a50d-4fa0-a102-70494ebb3e80"
                   name="GLOVE_VECTOR* gravity"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="2fc07065-fe71-4927-acbe-80b5aeb3e39d"
+                  Id="07544193-822c-46c0-afa7-0ea58c57a778"
                   name="const GLOVE_QUATERNION* quaternion"
                   direction="In"
                   isUnique="false" />

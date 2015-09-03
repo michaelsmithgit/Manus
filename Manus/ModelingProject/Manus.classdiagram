@@ -71,13 +71,18 @@
             <elementDefinition Id="9603d7c4-6021-4cd0-a0ca-5a74be49a159" />
             <ownedParameters>
               <operationHasOwnedParameters>
-                <parameter Id="4755c5dc-76a5-40b5-9991-8326dadacd45" name="GLOVE_TYPE glove" direction="In" isUnique="false">
-                  <elementDefinition Id="e31ff7d0-5d80-489e-8e3c-60f051854ba5" />
+                <parameter Id="6b3538e9-40ae-4c1b-9d23-754708a843c2" name="GLOVE_HAND hand" direction="In" isUnique="false">
+                  <elementDefinition Id="823e004d-d031-4f02-9d3a-ca3673ab1f9e" />
                 </parameter>
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
-                <parameter Id="b2191ab9-0a5e-4740-ac72-2b6ead58dac3" name="GLOVE_DATA* data" direction="In" isUnique="false">
-                  <elementDefinition Id="723198b1-0e72-4dbf-8d1b-d6f1abf67ce6" />
+                <parameter Id="50d682c9-d4b8-4c59-8e6b-edf9eb6934f1" name="GLOVE_DATA* data" direction="In" isUnique="false">
+                  <elementDefinition Id="69b42d70-e42d-4a5d-8759-4127d436bab2" />
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="56bdab5b-5af1-4c4e-8caa-daad54fecb13" name="unsigned int timeout" direction="In" isUnique="false">
+                  <elementDefinition Id="5f0172b0-0c49-4154-a782-b2bda75a492a" />
                 </parameter>
               </operationHasOwnedParameters>
             </ownedParameters>
@@ -96,13 +101,13 @@
             <elementDefinition Id="bce0fe1c-caeb-471c-aa6a-96a79b99842d" />
             <ownedParameters>
               <operationHasOwnedParameters>
-                <parameter Id="bddf0636-7eb9-43ea-921b-566334102156" name="GLOVE_TYPE glove" direction="In" isUnique="false">
-                  <elementDefinition Id="aabd4bad-1884-441f-96c8-0c7eeaafeef3" />
+                <parameter Id="134db6f6-6376-4dee-ab9c-132726d71006" name="GLOVE_HAND hand" direction="In" isUnique="false">
+                  <elementDefinition Id="979656c5-9edb-49fe-8cda-370a924130f2" />
                 </parameter>
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
-                <parameter Id="dd64a830-f607-425d-bc1c-da7a3b0902a0" name="GLOVE_SKELETAL* model" direction="In" isUnique="false">
-                  <elementDefinition Id="43dae7d8-b5fb-40c5-8ab6-1011571e4d58" />
+                <parameter Id="53f30142-51bc-40a7-baec-85ea9794e002" name="GLOVE_SKELETAL* model" direction="In" isUnique="false">
+                  <elementDefinition Id="6265af55-0e1b-44cf-bcab-31215e9ec647" />
                 </parameter>
               </operationHasOwnedParameters>
             </ownedParameters>

@@ -56,7 +56,7 @@ Glove::~Glove()
 	delete m_device_path;
 }
 
-bool Glove::GetState(GLOVE_DATA* data, unsigned int timeout)
+bool Glove::GetData(GLOVE_DATA* data, unsigned int timeout)
 {
 	// Wait until the thread is done writing a packet
 	std::unique_lock<std::mutex> lk(m_report_mutex);
@@ -293,7 +293,6 @@ void Glove::UpdateState()
 	fquaternion myQuaternion;
 
 	m_data.PacketNumber++;
-	m_data.Handedness = m_flags & GLOVE_FLAGS_HANDEDNESS;
 
 	myAccel.fgPerCount = FGPERCOUNT;
 
@@ -326,7 +325,7 @@ void Glove::UpdateState()
 	for (int i = 0; i < GLOVE_FINGERS; i++)
 	{
 		// account for finger order
-		if (m_data.Handedness)
+		if (GetHand() == GLOVE_RIGHT)
 			m_data.Fingers[i] = m_report.fingers[i] / FINGER_DIVISOR;
 		else
 			m_data.Fingers[i] = m_report.fingers[GLOVE_FINGERS - (i + 1)] / FINGER_DIVISOR;
@@ -347,12 +346,15 @@ void Glove::UpdateState()
 	ManusMath::GetGravity(&gravity, &m_data.Quaternion);
 	memcpy(&nonLinearAcceleration, &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
 	ManusMath::GetLinearAcceleration(&m_data.Acceleration, &nonLinearAcceleration, &gravity);
-
 }
 
 uint8_t Glove::GetFlags()
 {
 	return m_flags;
+}
+
+GLOVE_HAND Glove::GetHand(){
+	return (m_flags & GLOVE_FLAGS_HANDEDNESS) ? GLOVE_LEFT : GLOVE_RIGHT;
 }
 
 void Glove::SetFlags(uint8_t flags)

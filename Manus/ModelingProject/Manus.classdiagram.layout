@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<logicalClassDesignerDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 9.125" name="Manus">
+<logicalClassDesignerDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 13.875, 9.125" name="Manus">
   <logicalClassDesignerModelMoniker Id="36a1bacd-8262-4b36-8c8e-63a4f5d8d1e8" />
   <nestedChildShapes>
-    <classShape Id="afa1fd12-71bb-4a3f-badb-9246bc4c3d4b" absoluteBounds="7, 3.375, 3.75, 1.7031249602635699" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
+    <classShape Id="afa1fd12-71bb-4a3f-badb-9246bc4c3d4b" absoluteBounds="7, 3.375, 6.625, 1.7031249602635699" hideQualifiedName="false" increaseHeight="0" customColor="181, 193, 223">
       <classMoniker Id="825c94b5-a055-4d36-a188-28a4ff81fdc6" LastKnownName="Manus" />
       <nestedChildShapes>
-        <AttributeElementListCompartment Id="6a84f498-530d-46df-a27b-41fbc3b41e15" absoluteBounds="7.015, 3.765, 3.7199999999999998, 0.2011718675494194" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
-        <OperationElementListCompartment Id="eb91f3da-b804-4073-a8b3-15573e3c9954" absoluteBounds="7.015, 3.9761718675494193, 3.7199999999999998, 1.0019530927141507" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <AttributeElementListCompartment Id="6a84f498-530d-46df-a27b-41fbc3b41e15" absoluteBounds="7.015, 3.765, 6.5950000000000006, 0.2011718675494194" name="AttributesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <OperationElementListCompartment Id="eb91f3da-b804-4073-a8b3-15573e3c9954" absoluteBounds="7.015, 3.9761718675494193, 6.5950000000000006, 1.0019530927141509" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <enumerationShape Id="64fb6013-26f7-4852-aebd-12927315ea38" absoluteBounds="7.125, 1.125, 1.5, 1.0114843576153123" hideQualifiedName="false" increaseHeight="0" customColor="161, 150, 103">
@@ -30,7 +30,7 @@
         <OperationElementListCompartment Id="9939cfbd-1e60-4fb0-a261-6f53a60fa180" absoluteBounds="9.14, 2.1519530927141508, 1.4700000000000002, 0.2011718675494194" name="OperationsCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </interfaceShape>
-    <realizationConnector edgePoints="[(8.875 : 3.375); (8.875 : 2.82812496026357); (9.875 : 2.82812496026357); (9.875 : 2.45312496026357)]" fixedFrom="NotFixed" fixedTo="NotFixed" customColor="113, 111, 110" showAsLollipop="false">
+    <realizationConnector edgePoints="[(10.3125 : 3.375); (10.3125 : 2.82812496026357); (9.875 : 2.82812496026357); (9.875 : 2.45312496026357)]" fixedFrom="NotFixed" fixedTo="NotFixed" customColor="113, 111, 110" showAsLollipop="false">
       <interfaceRealizationMoniker Id="a434c5ec-087e-4bfb-8f62-95c3c7ff1058" />
       <relativeChildShapes />
       <nodes>

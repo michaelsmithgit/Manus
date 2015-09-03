@@ -37,9 +37,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			LARGE_INTEGER start, end, elapsed;
 			QueryPerformanceCounter(&start);
 
-			GLOVE_STATE state = { 0 };
-			if (ManusGetState(i, &state, 1000) == MANUS_SUCCESS)
-				printf("glove: %d - %d %s\n", i, state.PacketNumber, state.data.Handedness ? "Right" : "Left");
+			GLOVE_DATA data = { 0 };
+			if (ManusGetData(GLOVE_RIGHT, &data, 1000) == MANUS_SUCCESS)
+				printf("glove: %d - %d %s\n", i, data.PacketNumber, "Right");
 			else
 				printf("glove: %d\n", i);
 
@@ -48,17 +48,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			printf("interval: %fms\n", (elapsed.QuadPart * 1000) / (double)freq.QuadPart);
 
 
-			printf("accel: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Acceleration.x, state.data.Acceleration.y, state.data.Acceleration.z);
+			printf("accel: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", data.Acceleration.x, data.Acceleration.y, data.Acceleration.z);
 			//printf("mag  : x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Magnetometer.x, state.data.Magnetometer.y, state.data.Magnetometer.z);
-			printf("quats: x: % 1.5f; y: % 1.5f; z: % 1.5f; w: % 1.5f \n", state.data.Quaternion.x, state.data.Quaternion.y, state.data.Quaternion.z, state.data.Quaternion.w);
+			printf("quats: x: % 1.5f; y: % 1.5f; z: % 1.5f; w: % 1.5f \n", data.Quaternion.x, data.Quaternion.y, data.Quaternion.z, data.Quaternion.w);
 
-			GLOVE_VECTOR euler = { 0 }, gravity;
-			ManusGetGravity(&gravity, &state.data.Quaternion);
-			printf("gravi: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", gravity.x, gravity.y, gravity.z);
-			ManusGetEuler(&euler, &state.data.Quaternion);
-			printf("euler: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", euler.x * (180.0 / M_PI), euler.y * (180.0 / M_PI), euler.z * (180.0 / M_PI));
+			printf("euler: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", data.Euler.x * (180.0 / M_PI), data.Euler.y * (180.0 / M_PI), data.Euler.z * (180.0 / M_PI));
 
-			printf("fingers: %f;%f;%f;%f;%f\n", state.data.Fingers[0], state.data.Fingers[1], state.data.Fingers[2], state.data.Fingers[3], state.data.Fingers[4]);
+			printf("fingers: %f;%f;%f;%f;%f\n", data.Fingers[0], data.Fingers[1], data.Fingers[2], data.Fingers[3], data.Fingers[4]);
 		}
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD());
 	}

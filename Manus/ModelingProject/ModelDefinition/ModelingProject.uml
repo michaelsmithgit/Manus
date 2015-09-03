@@ -181,15 +181,22 @@
             <ownedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="e31ff7d0-5d80-489e-8e3c-60f051854ba5"
-                  name="GLOVE_TYPE glove"
+                  Id="823e004d-d031-4f02-9d3a-ca3673ab1f9e"
+                  name="GLOVE_HAND hand"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="723198b1-0e72-4dbf-8d1b-d6f1abf67ce6"
+                  Id="69b42d70-e42d-4a5d-8759-4127d436bab2"
                   name="GLOVE_DATA* data"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="5f0172b0-0c49-4154-a782-b2bda75a492a"
+                  name="unsigned int timeout"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
@@ -224,14 +231,14 @@
             <ownedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="aabd4bad-1884-441f-96c8-0c7eeaafeef3"
-                  name="GLOVE_TYPE glove"
+                  Id="979656c5-9edb-49fe-8cda-370a924130f2"
+                  name="GLOVE_HAND hand"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="43dae7d8-b5fb-40c5-8ab6-1011571e4d58"
+                  Id="6265af55-0e1b-44cf-bcab-31215e9ec647"
                   name="GLOVE_SKELETAL* model"
                   direction="In"
                   isUnique="false" />
@@ -1327,15 +1334,6 @@
         isAbstract="false"
         isLeaf="false"
         isActiveClass="false">
-        <suppliersInternal>
-          <interfaceRealization
-            Id="e30c6e59-4ce6-46dd-a1ac-c12dbde1b6ec">
-            <interfaceMoniker
-              Id="d3f6b644-ac67-408a-8f6b-26124ce0d44f"
-              LastKnownName="GLOVE_DATA"
-              LastKnownLocation="Package_1057.uml" />
-          </interfaceRealization>
-        </suppliersInternal>
         <ownedAttributesInternal>
           <property
             Id="c5d5707f-8f69-4d80-9eeb-f660e9afb625"
@@ -1556,12 +1554,6 @@
           </property>
         </ownedAttributes>
       </Interface>
-    </packageHasNamedElement>
-    <packageHasNamedElement>
-      <packageMoniker
-        Id="04cd6ff0-69df-4207-9539-7f4de0e49cb6"
-        LastKnownName="Internal"
-        LastKnownLocation="Package_1057.uml" />
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

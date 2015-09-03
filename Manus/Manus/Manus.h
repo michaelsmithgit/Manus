@@ -40,7 +40,6 @@ typedef struct {
 } GLOVE_POSE;
 
 typedef struct {
-	bool Handedness;
 	GLOVE_VECTOR Acceleration;
 	GLOVE_VECTOR Euler;
 	GLOVE_QUATERNION Quaternion;
@@ -79,12 +78,7 @@ typedef enum GLOVE_HAND {
 #define MANUS_ERROR -1
 #define MANUS_SUCCESS 0
 #define MANUS_INVALID_ARGUMENT 1
-#define MANUS_OUT_OF_RANGE 2
-#define MANUS_DISCONNECTED 3
-
-#define MANUS_GLOVE_FLAGS_RIGHTHAND  0x1
-#define MANUS_GLOVE_FLAGS_CAL_GYRO    0x2
-#define MANUS_GLOVE_FLAGS_CAL_ACCEL   0x4
+#define MANUS_DISCONNECTED 2
 
 extern "C" {
 	/*! \brief Initialize the Manus SDK.
@@ -114,7 +108,7 @@ extern "C" {
 	*  \param state Output variable to receive the state.
 	*  \param timeout Milliseconds to wait until the glove returns a value.
 	*/
-	MANUS_API int ManusGetState(unsigned int glove, GLOVE_DATA* state, unsigned int timeout = 0);
+	MANUS_API int ManusGetData(GLOVE_HAND hand, GLOVE_DATA* data, unsigned int timeout = 0);
 
 	/*! \brief Get a skeletal model for the given glove state.
 	*
@@ -139,7 +133,7 @@ extern "C" {
 	*  \param glove The glove index.
 	*  \param right_hand Set the glove as a right hand.
 	*/
-	MANUS_API int ManusSetHandedness(unsigned int glove, bool right_hand);
+	MANUS_API int ManusSetHandedness(GLOVE_HAND hand, bool right_hand);
 
 	/*! \brief Calibrate the IMU on the glove.
 	*
@@ -154,7 +148,7 @@ extern "C" {
 	*  \param gyro Calibrate the gyroscope.
 	*  \param accel Calibrate the accelerometer.
 	*/
-	MANUS_API int ManusCalibrate(unsigned int glove, bool gyro = true, bool accel = true, bool fingers = false);
+	MANUS_API int ManusCalibrate(GLOVE_HAND hand, bool gyro = true, bool accel = true, bool fingers = false);
 }
 
 /**@}*/

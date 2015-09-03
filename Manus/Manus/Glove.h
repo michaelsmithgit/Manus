@@ -97,9 +97,10 @@ public:
 	void Disconnect();
 	bool IsConnected() const { return m_connected; }
 	const wchar_t* GetDevicePath() const { return m_device_path; }
-	bool GetState(GLOVE_DATA* data, unsigned int timeout);
+	bool GetData(GLOVE_DATA* data, unsigned int timeout);
 	uint8_t GetFlags();
 	void SetFlags(uint8_t flags);
+	GLOVE_HAND GetHand();
 
 private:
 	static void OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* event_out, void* context);

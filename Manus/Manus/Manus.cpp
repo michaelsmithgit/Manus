@@ -38,19 +38,18 @@ std::mutex g_gloves_mutex;
 Devices* g_devices;
 SkeletalModel g_skeletal;
 
-int GetGlove(unsigned int glove, Glove** elem)
+int GetGlove(GLOVE_HAND hand, Glove** elem)
 {
 	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
-	if (glove >= g_gloves.size())
-		return MANUS_OUT_OF_RANGE;
+	for (int i = 0; i < g_gloves.size(); i++){
+		if (g_gloves[i]->GetHand() == hand && g_gloves[i]->IsConnected()){
+			*elem = g_gloves[i];
+			return MANUS_SUCCESS;
+		}
+	}
 
-	if (!g_gloves[glove]->IsConnected())
-		return MANUS_DISCONNECTED;
-
-	*elem = g_gloves[glove];
-
-	return MANUS_SUCCESS;
+	return MANUS_DISCONNECTED;
 }
 
 void DeviceConnected(const wchar_t* device_path)
@@ -152,30 +151,36 @@ int ManusGetGloveCount()
 	return (int)g_gloves.size();
 }
 
-int ManusGetState(unsigned int glove, GLOVE_DATA* state, unsigned int timeout)
+int ManusGetData(GLOVE_HAND hand, GLOVE_DATA* data, unsigned int timeout)
 {
 	// Get the glove from the list
 	Glove* elem;
-	int ret = GetGlove(glove, &elem);
+	int ret = GetGlove(hand, &elem);
 	if (ret != MANUS_SUCCESS)
 		return ret;
 
-	if (!state)
+	if (!data)
 		return MANUS_INVALID_ARGUMENT;
 
-	return elem->GetState(state, timeout) ? MANUS_SUCCESS : MANUS_ERROR;
+	return elem->GetData(data, timeout) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
-int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_DATA* state)
+int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model)
 {
-	return g_skeletal.Simulate(state, model);
+	GLOVE_DATA data;
+
+	int ret = ManusGetData(hand, &data);
+	if (ret != MANUS_SUCCESS)
+		return ret;
+
+	return g_skeletal.Simulate(data, model, hand);
 }
 
-int ManusSetHandedness(unsigned int glove, bool right_hand)
+int ManusSetHandedness(GLOVE_HAND hand, bool right_hand)
 {
 	// Get the glove from the list
 	Glove* elem;
-	int ret = GetGlove(glove, &elem);
+	int ret = GetGlove(hand, &elem);
 	if (ret != MANUS_SUCCESS)
 		return ret;
 
@@ -190,11 +195,11 @@ int ManusSetHandedness(unsigned int glove, bool right_hand)
 	return MANUS_SUCCESS;
 }
 
-int ManusCalibrate(unsigned int glove, bool gyro, bool accel, bool fingers)
+int ManusCalibrate(GLOVE_HAND hand, bool gyro, bool accel, bool fingers)
 {
 	// Get the glove from the list
 	Glove* elem;
-	int ret = GetGlove(glove, &elem);
+	int ret = GetGlove(hand, &elem);
 	if (ret != MANUS_SUCCESS)
 		return ret;
 

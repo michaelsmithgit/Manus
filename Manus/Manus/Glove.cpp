@@ -192,6 +192,16 @@ bool Glove::WriteCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void
 	return SUCCEEDED(hr);
 }
 
+PBTH_LE_GATT_CHARACTERISTIC Glove::GetCharacteristic(USHORT identifier){
+	for (int i = 0; i < m_num_characteristics; i++)
+	{
+		if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == identifier)
+			return &m_characteristics[i];
+	}
+
+	return nullptr;
+}
+
 bool Glove::ConfigureCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, bool notify, bool indicate)
 {
 	// Query the required size for the structure.
@@ -361,9 +371,6 @@ void Glove::SetFlags(uint8_t flags)
 {
 	m_flags = flags;
 
-	for (int i = 0; i < m_num_characteristics; i++)
-	{
-		if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_FLAGS)
-			WriteCharacteristic(&m_characteristics[i], &m_flags, sizeof(m_flags));
-	}
+	WriteCharacteristic(GetCharacteristic(BLE_UUID_MANUS_GLOVE_FLAGS), &m_flags, sizeof(m_flags));
+}
 }

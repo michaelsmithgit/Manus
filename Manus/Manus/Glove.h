@@ -106,6 +106,7 @@ private:
 	static void OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* event_out, void* context);
 	bool ReadCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* dest, size_t length);
 	bool WriteCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* src, size_t length);
+	PBTH_LE_GATT_CHARACTERISTIC Glove::GetCharacteristic(USHORT identifier);
 	bool ConfigureCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, bool notify, bool indicate);
 
 	static void QuatToEuler(GLOVE_VECTOR* v, const GLOVE_QUATERNION* q);

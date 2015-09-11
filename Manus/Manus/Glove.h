@@ -41,6 +41,7 @@
 #define BLE_UUID_MANUS_GLOVE_COMPASS    0x0003
 #define BLE_UUID_MANUS_GLOVE_FLAGS      0x0004
 #define BLE_UUID_MANUS_GLOVE_CALIB      0x0005
+#define BLE_UUID_MANUS_GLOVE_RUMBLE     0x0006
 
 // {1bc50001-0200-eca1-e411-20fac04afa8f}
 static const GUID GUID_MANUS_GLOVE_SERVICE = { 0x1bc50001, 0x0200, 0xeca1, { 0xe4, 0x11, 0x20, 0xfa, 0xc0, 0x4a, 0xfa, 0x8f } };
@@ -63,6 +64,11 @@ typedef struct
 	int16_t fingers_base[GLOVE_FINGERS];
 	int16_t fingers_range[GLOVE_FINGERS];
 } CALIB_REPORT;
+
+typedef struct
+{
+	uint16_t value;
+} RUMBLE_REPORT;
 #pragma pack(pop) //back to whatever the previous packing mode was
 
 class Glove
@@ -100,6 +106,7 @@ public:
 	bool GetData(GLOVE_DATA* data, unsigned int timeout);
 	uint8_t GetFlags();
 	void SetFlags(uint8_t flags);
+	void SetVibration(float power);
 	GLOVE_HAND GetHand();
 
 private:

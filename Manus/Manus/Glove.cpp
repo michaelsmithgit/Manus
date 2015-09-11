@@ -21,6 +21,8 @@
 #include "Glove.h"
 #include "ManusMath.h"
 
+#include <limits>
+
 // Sensorfusion constants
 #define ACCEL_DIVISOR 16384.0f
 #define QUAT_DIVISOR 16384.0f
@@ -373,4 +375,16 @@ void Glove::SetFlags(uint8_t flags)
 
 	WriteCharacteristic(GetCharacteristic(BLE_UUID_MANUS_GLOVE_FLAGS), &m_flags, sizeof(m_flags));
 }
+
+void Glove::SetVibration(float power)
+{
+	RUMBLE_REPORT report;
+
+	// clipping
+	if (power < 0.0) power = 0.0;
+	if (power > 1.0) power = 1.0;
+
+	report.value = uint16_t(power * std::numeric_limits<uint16_t>::max());
+
+	WriteCharacteristic(GetCharacteristic(BLE_UUID_MANUS_GLOVE_RUMBLE), &report, sizeof(report));
 }

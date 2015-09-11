@@ -151,6 +151,15 @@ extern "C" {
 	*  \param fingers Calibrate the fingers.
 	*/
 	MANUS_API int ManusCalibrate(GLOVE_HAND hand, bool gyro = true, bool accel = true, bool fingers = false);
+
+	/*! \brief Set the ouput power of the vibration motor.
+	*
+	*  This sets the output power of the vibration motor.
+	*
+	*  \param glove The glove index.
+	*  \param power The power of the vibration motor ranging from 0 to 1 (ex. 0.5 = 50% power).
+	*/
+	MANUS_API int ManusSetVibration(GLOVE_HAND hand, float power);
 }
 
 /**@}*/

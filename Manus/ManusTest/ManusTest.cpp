@@ -32,16 +32,26 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	while (true)
 	{
-		for (int i = 0; i < ManusGetGloveCount(); i++)
+		for (int i = 0; i < 2; i++)
 		{
+			GLOVE_HAND hand = (GLOVE_HAND)i;
 			LARGE_INTEGER start, end, elapsed;
 			QueryPerformanceCounter(&start);
 
 			GLOVE_DATA data = { 0 };
-			if (ManusGetData(GLOVE_RIGHT, &data, 1000) == MANUS_SUCCESS)
+			if (ManusGetData(hand, &data, 1000) == MANUS_SUCCESS){
 				printf("glove: %d - %d %s\n", i, data.PacketNumber, "Right");
-			else
-				printf("glove: %d\n", i);
+			}else{
+				printf("glove: %d not found \n", i);
+				continue;
+			}
+
+			if (data.PacketNumber % 1000 == 0){
+				ManusSetVibration(hand, 0);
+			}
+			else if (data.PacketNumber % 500 == 0){
+				ManusSetVibration(hand, 0.2);
+			}
 
 			QueryPerformanceCounter(&end);
 			elapsed.QuadPart = end.QuadPart - start.QuadPart;
@@ -49,7 +59,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 			printf("accel: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", data.Acceleration.x, data.Acceleration.y, data.Acceleration.z);
-			//printf("mag  : x: % 1.5f; y: % 1.5f; z: % 1.5f\n", state.data.Magnetometer.x, state.data.Magnetometer.y, state.data.Magnetometer.z);
+			
 			printf("quats: x: % 1.5f; y: % 1.5f; z: % 1.5f; w: % 1.5f \n", data.Quaternion.x, data.Quaternion.y, data.Quaternion.z, data.Quaternion.w);
 
 			printf("euler: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", data.Euler.x * (180.0 / M_PI), data.Euler.y * (180.0 / M_PI), data.Euler.z * (180.0 / M_PI));

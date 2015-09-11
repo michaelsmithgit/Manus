@@ -225,3 +225,15 @@ int ManusCalibrate(GLOVE_HAND hand, bool gyro, bool accel, bool fingers)
 
 	return MANUS_SUCCESS;
 }
+
+int ManusSetVibration(GLOVE_HAND hand, float power){
+	Glove* elem;
+	int ret = GetGlove(hand, &elem);
+	
+	if (ret != MANUS_SUCCESS)
+		return ret;
+
+	elem->SetVibration(power);
+
+	return MANUS_ERROR;
+}

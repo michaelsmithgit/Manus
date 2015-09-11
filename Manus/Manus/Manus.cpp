@@ -42,8 +42,10 @@ int GetGlove(GLOVE_HAND hand, Glove** elem)
 {
 	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
-	for (int i = 0; i < g_gloves.size(); i++){
-		if (g_gloves[i]->GetHand() == hand && g_gloves[i]->IsConnected()){
+	for (int i = 0; i < g_gloves.size(); i++)
+	{
+		if (g_gloves[i]->GetHand() == hand && g_gloves[i]->IsConnected())
+		{
 			*elem = g_gloves[i];
 			return MANUS_SUCCESS;
 		}
@@ -85,12 +87,14 @@ int ManusInit()
 	HDEVINFO device_info_set = SetupDiGetClassDevs(&GUID_MANUS_GLOVE_SERVICE, nullptr, nullptr,
 		DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
-	if (device_info_set) {
+	if (device_info_set)
+	{
 		SP_DEVICE_INTERFACE_DATA device_interface_data = { 0 };
 		device_interface_data.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
 		int device_index = 0;
 		while (SetupDiEnumDeviceInterfaces(device_info_set, nullptr, &GUID_MANUS_GLOVE_SERVICE,
-			device_index, &device_interface_data)) {
+			device_index, &device_interface_data))
+		{
 			DWORD required_size = 0;
 
 			// Query the required size for the structure.

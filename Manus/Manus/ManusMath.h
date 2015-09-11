@@ -2,9 +2,6 @@
 class ManusMath
 {
 public:
-	ManusMath();
-	~ManusMath();
-
 	/*! \brief Convert a Quaternion to Euler angles.
 	*
 	*  Returns the Quaternion as Yaw, Pitch and Roll angles
@@ -35,5 +32,6 @@ public:
 	static int GetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* quaternion);
 
 private:
+	ManusMath();
 };
 

@@ -2,12 +2,7 @@
 #include "Glove.h"
 #include "ManusMath.h"
 
-
 ManusMath::ManusMath()
-{
-}
-
-ManusMath::~ManusMath()
 {
 }
 

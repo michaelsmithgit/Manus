@@ -119,9 +119,10 @@ extern "C" {
 	*  Since the thumb has no intermediate phalanx it has a separate structure
 	*  in the model.
 	* 
+	*  \param hand The left or right hand index.
 	*  \param state The glove state to derive the skeletal model from.
 	*/
-	MANUS_API int ManusGetSkeletal(GLOVE_SKELETAL* model, const GLOVE_DATA* state);
+	MANUS_API int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model);
 
 	/*! \brief Configure the handedness of the glove.
 	*
@@ -130,7 +131,7 @@ extern "C" {
 	*  \warning This function overwrites factory settings on the
 	*  glove, it should only be called if the user requested it.
 	*
-	*  \param glove The glove index.
+	*  \param hand The left or right hand index.
 	*  \param right_hand Set the glove as a right hand.
 	*/
 	MANUS_API int ManusSetHandedness(GLOVE_HAND hand, bool right_hand);
@@ -144,9 +145,10 @@ extern "C" {
 	*  \warning This function overwrites factory settings on the
 	*  glove, it should only be called if the user requested it.
 	*
-	*  \param glove The glove index.
+	*  \param hand The left or right hand index.
 	*  \param gyro Calibrate the gyroscope.
 	*  \param accel Calibrate the accelerometer.
+	*  \param fingers Calibrate the fingers.
 	*/
 	MANUS_API int ManusCalibrate(GLOVE_HAND hand, bool gyro = true, bool accel = true, bool fingers = false);
 }

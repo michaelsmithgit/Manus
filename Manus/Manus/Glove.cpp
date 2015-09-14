@@ -177,6 +177,10 @@ bool Glove::ReadCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void*
 
 bool Glove::WriteCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void* src, size_t length)
 {
+	// Make sure the characteristic is not a nullptr
+	if (characteristic == nullptr)
+		return false;
+
 	// Allocate the characteristic value structure.
 	PBTH_LE_GATT_CHARACTERISTIC_VALUE value = (PBTH_LE_GATT_CHARACTERISTIC_VALUE)
 		malloc(length + sizeof(PBTH_LE_GATT_CHARACTERISTIC_VALUE));

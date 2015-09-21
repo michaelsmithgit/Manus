@@ -199,8 +199,8 @@
             <ownedParameters>
               <operationHasOwnedParameters>
                 <parameter
-                  Id="8117a929-f5ae-4226-987f-f06d331cb7b1"
-                  name="GLOVE_STATE* state"
+                  Id="b73ea4ec-5848-414d-8e11-502752758a7d"
+                  name="GLOVE_DATA* data"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
@@ -238,7 +238,7 @@
             isComposite="false" />
           <property
             Id="a793e876-201f-44da-a5ef-bf0bde8b72b1"
-            name="int quats"
+            name="short quats"
             isLeaf="false"
             isStatic="false"
             isReadOnly="false"
@@ -262,7 +262,7 @@
           </property>
           <property
             Id="fb45e1ab-e73f-4236-9376-99cf13db0b07"
-            name="int fingers"
+            name="short fingers"
             isLeaf="false"
             isStatic="false"
             isReadOnly="false"
@@ -284,6 +284,17 @@
                 value="5" />
             </upperValueInternal>
           </property>
+          <property
+            Id="09d48e6d-9966-47ef-8cc5-00d0afc45dd9"
+            name="short accel"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
         </ownedAttributes>
       </Interface>
     </packageHasNamedElement>

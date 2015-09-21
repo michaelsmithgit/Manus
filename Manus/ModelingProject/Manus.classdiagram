@@ -44,7 +44,7 @@
             <elementDefinition Id="b59f209c-8ecf-45f0-8326-bffa4c07903d" />
           </association>
           <association Id="d1eae514-9976-4685-8f24-af424df81748" isDerived="false" sourceEndRoleName="Manus" targetEndRoleName="GLOVE_TYPE" isLeaf="false" isAbstract="false">
-            <enumerationMoniker Id="73959d65-ad01-412e-bb12-793319cee898" LastKnownName="GLOVE_TYPE" />
+            <enumerationMoniker Id="73959d65-ad01-412e-bb12-793319cee898" LastKnownName="GLOVE_HAND" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
                 <memberEnd Id="aa234d25-e415-4db0-8fb1-32c4aefa3dac" name="Manus" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
@@ -83,16 +83,6 @@
               <operationHasOwnedParameters>
                 <parameter Id="56bdab5b-5af1-4c4e-8caa-daad54fecb13" name="unsigned int timeout" direction="In" isUnique="false">
                   <elementDefinition Id="5f0172b0-0c49-4154-a782-b2bda75a492a" />
-                </parameter>
-              </operationHasOwnedParameters>
-            </ownedParameters>
-          </operation>
-          <operation Id="a96cfd06-caa4-49c8-b465-605523da99d8" name="ManusGetGloveCount" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
-            <elementDefinition Id="ffd80da9-dc93-4de8-b4c4-db9fd3570159" />
-            <ownedParameters>
-              <operationHasOwnedParameters>
-                <parameter Id="a1689629-f718-4641-888c-046b92ed0da2" name="GLOVE_TYPE glove" direction="In" isUnique="false">
-                  <elementDefinition Id="e291d47a-6f79-4f60-b010-05e2449e348c" />
                 </parameter>
               </operationHasOwnedParameters>
             </ownedParameters>
@@ -185,8 +175,8 @@
                   <elementDefinition Id="37d72595-c8e6-42f8-9ee6-afb55f8e28f9" />
                   <ownedParameters>
                     <operationHasOwnedParameters>
-                      <parameter Id="b9a1fe0d-db22-46a8-bdff-10b061a205fe" name="GLOVE_STATE* state" direction="In" isUnique="false">
-                        <elementDefinition Id="8117a929-f5ae-4226-987f-f06d331cb7b1" />
+                      <parameter Id="75830848-f441-4f79-906f-492e890fc43b" name="GLOVE_DATA* data" direction="In" isUnique="false">
+                        <elementDefinition Id="b73ea4ec-5848-414d-8e11-502752758a7d" />
                       </parameter>
                     </operationHasOwnedParameters>
                   </ownedParameters>
@@ -204,7 +194,7 @@
                 <property Id="fe210c85-7e3d-42c2-9078-6a9de2c080c6" name="bool hand" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
                   <elementDefinition Id="93ff2aca-0d39-4dfb-9676-21cec6031379" />
                 </property>
-                <property Id="4af6babf-e1ca-4d3d-829a-e635d168e491" name="int quats" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                <property Id="4af6babf-e1ca-4d3d-829a-e635d168e491" name="short quats" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
                   <lowerValueInternal>
                     <literalString Id="7688926a-d122-4467-9976-35e77a71a10d" name="Lower" value="4">
                       <elementDefinition Id="d36da929-adc0-49c9-a717-ba57a07e83c9" />
@@ -217,7 +207,7 @@
                   </upperValueInternal>
                   <elementDefinition Id="a793e876-201f-44da-a5ef-bf0bde8b72b1" />
                 </property>
-                <property Id="a5744f68-87cc-4268-9c84-51f30cfa0206" name="int fingers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                <property Id="a5744f68-87cc-4268-9c84-51f30cfa0206" name="short fingers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
                   <lowerValueInternal>
                     <literalString Id="14b38bd1-2159-4813-8358-6d92ce48acd2" name="Lower" value="5">
                       <elementDefinition Id="6e9efa01-08dd-4410-885d-59c7b3a95f26" />
@@ -229,6 +219,9 @@
                     </literalString>
                   </upperValueInternal>
                   <elementDefinition Id="fb45e1ab-e73f-4236-9376-99cf13db0b07" />
+                </property>
+                <property Id="f9e0a853-f786-40ef-9feb-4532c543e476" name="short accel" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="09d48e6d-9966-47ef-8cc5-00d0afc45dd9" />
                 </property>
               </ownedAttributes>
             </Interface>
@@ -299,7 +292,7 @@
       </package>
     </logicalClassDesignerModelHasPackages>
     <logicalClassDesignerModelHasTypes>
-      <enumeration Id="73959d65-ad01-412e-bb12-793319cee898" name="GLOVE_TYPE" isAbstract="false" isLeaf="false">
+      <enumeration Id="73959d65-ad01-412e-bb12-793319cee898" name="GLOVE_HAND" isAbstract="false" isLeaf="false">
         <elementDefinition Id="5e353bc4-d78f-44ec-8ee0-e374527ac85c" />
         <ownedLiterals>
           <enumerationLiteral Id="2e0c30d3-1263-427a-b359-3dc5046970c1" name="MANUS_LEFT">
@@ -341,7 +334,7 @@
             </upperValueInternal>
             <elementDefinition Id="e275936f-0fa5-4054-ad72-82ae79134315" />
           </property>
-          <property Id="b2a817d9-a633-495f-add3-3e0c057f7184" name="short Fingers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+          <property Id="b2a817d9-a633-495f-add3-3e0c057f7184" name="float Fingers" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
             <lowerValueInternal>
               <literalString Id="d983d89e-30bf-4112-8cad-9b53764a5ac1" name="Lower" value="5">
                 <elementDefinition Id="26576f0d-9d2f-40d2-805a-51440aed5e08" />

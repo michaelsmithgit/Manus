@@ -122,7 +122,7 @@
             isAbstract="false">
             <enumerationMoniker
               Id="5e353bc4-d78f-44ec-8ee0-e374527ac85c"
-              LastKnownName="GLOVE_TYPE"
+              LastKnownName="GLOVE_HAND"
               LastKnownLocation="ModelingProject.uml" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -197,24 +197,6 @@
                 <parameter
                   Id="5f0172b0-0c49-4154-a782-b2bda75a492a"
                   name="unsigned int timeout"
-                  direction="In"
-                  isUnique="false" />
-              </operationHasOwnedParameters>
-            </ownedParameters>
-          </operation>
-          <operation
-            Id="ffd80da9-dc93-4de8-b4c4-db9fd3570159"
-            name="ManusGetGloveCount"
-            isLeaf="false"
-            isStatic="false"
-            isAbstract="false"
-            concurrency="Sequential"
-            isQuery="false">
-            <ownedParameters>
-              <operationHasOwnedParameters>
-                <parameter
-                  Id="e291d47a-6f79-4f60-b010-05e2449e348c"
-                  name="GLOVE_TYPE glove"
                   direction="In"
                   isUnique="false" />
               </operationHasOwnedParameters>
@@ -1334,6 +1316,47 @@
         isAbstract="false"
         isLeaf="false"
         isActiveClass="false">
+        <targetEnds>
+          <association
+            Id="a9b829a6-ecfe-4a49-805e-b9b812d289e8"
+            isDerived="false"
+            sourceEndRoleName="Glove"
+            targetEndRoleName="GLOVE_TYPE"
+            isLeaf="false"
+            isAbstract="false">
+            <enumerationMoniker
+              Id="cd2e5d06-bfca-41e9-ad77-a4f766788dfe"
+              LastKnownName="GLOVE_TYPE"
+              LastKnownLocation="ModelingProject.uml" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="f8af79fe-bb0d-4857-bab5-0946e38481c7"
+                  name="Glove"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false"
+                  isNavigableOwned="false" />
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd
+                  Id="58712b9d-92f7-4e82-9953-a2cacf9769f7"
+                  name="GLOVE_TYPE"
+                  isLeaf="false"
+                  isStatic="false"
+                  isReadOnly="false"
+                  isDerived="false"
+                  isDerivedUnion="false"
+                  aggregation="None"
+                  isComposite="false" />
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+          </association>
+        </targetEnds>
         <ownedAttributesInternal>
           <property
             Id="c5d5707f-8f69-4d80-9eeb-f660e9afb625"
@@ -1397,6 +1420,24 @@
             isAbstract="false"
             concurrency="Sequential"
             isQuery="false" />
+          <operation
+            Id="9f300628-f76b-46a4-8a1d-5f28f7e121ee"
+            name="Glove"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="e1f8e3e4-cb6c-4046-ae52-373e4d8961fe"
+                  name="GLOVE_TYPE"
+                  direction="In"
+                  isUnique="false" />
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
         </ownedOperationsInternal>
       </class>
     </packageHasNamedElement>
@@ -1425,7 +1466,7 @@
     <packageHasNamedElement>
       <enumeration
         Id="5e353bc4-d78f-44ec-8ee0-e374527ac85c"
-        name="GLOVE_TYPE"
+        name="GLOVE_HAND"
         isAbstract="false"
         isLeaf="false">
         <ownedLiterals>
@@ -1495,7 +1536,7 @@
           </property>
           <property
             Id="04f625e8-bac3-4a5b-9a7a-8fcc64fb1311"
-            name="short Fingers"
+            name="float Fingers"
             isLeaf="false"
             isStatic="false"
             isReadOnly="false"

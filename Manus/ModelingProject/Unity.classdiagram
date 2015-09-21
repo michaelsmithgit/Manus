@@ -2,65 +2,26 @@
 <logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="6187d594-f897-4b6a-9150-f7144cfd5de2" name="Unity" linkedPackageId="029d59c3-e966-4104-931b-d3bef10c9305" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
   <packagedElements>
     <logicalClassDesignerModelHasTypes>
-      <class Id="25c756cc-d9aa-4749-9b75-8c6693bcc293" name="Manus" isAbstract="false" isLeaf="false" isActiveClass="false">
-        <elementDefinition Id="6d79c089-83f5-45e0-9c43-c6f1ca945e36" />
+      <class Id="a4ac793d-5cca-43c0-926a-57e85b2912ba" name="Glove" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="098336c9-74fe-4f4c-bf4b-4d17322df827" />
         <targetEnds>
-          <association Id="98e142b9-e969-4e56-a79d-9f6304b0ab3b" isDerived="false" sourceEndRoleName="Manus" targetEndRoleName="Glove" isLeaf="false" isAbstract="false">
-            <classMoniker Id="a4ac793d-5cca-43c0-926a-57e85b2912ba" LastKnownName="Glove" />
-            <relationshipOwnedElementsInternal>
-              <associationHasOwnedEnds>
-                <memberEnd Id="fead46c9-bbc2-404f-a63c-84bdb15b398c" name="Manus" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
-                  <elementDefinition Id="d72aff44-710e-42d6-9cc8-af618494c242" />
-                </memberEnd>
-              </associationHasOwnedEnds>
-              <associationHasOwnedEnds>
-                <memberEnd Id="059a889d-654b-4c2e-baa9-72b6b0c33ccd" name="Glove" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-                  <elementDefinition Id="8113ed06-d2bb-4285-b838-8ee7b98a94e3" />
-                </memberEnd>
-              </associationHasOwnedEnds>
-            </relationshipOwnedElementsInternal>
-            <elementDefinition Id="85bc5296-88b0-44c5-a4b5-80fa92b87ae8" />
-          </association>
-          <association Id="b518d75b-9f3a-4c48-a04d-97aa12b413e3" isDerived="false" sourceEndRoleName="Manus" targetEndRoleName="GLOVE_TYPE" isLeaf="false" isAbstract="false">
+          <association Id="fdaad123-c05a-44f1-985b-d6db1d1037f0" isDerived="false" sourceEndRoleName="Glove" targetEndRoleName="GLOVE_TYPE" isLeaf="false" isAbstract="false">
             <enumerationMoniker Id="2a7eb758-f160-4bb6-b771-f05d92126f58" LastKnownName="GLOVE_TYPE" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
-                <memberEnd Id="09a0701c-ad74-405b-be5d-c54cb27b4d73" name="Manus" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
-                  <elementDefinition Id="198ac85c-777d-431d-8496-6b4d5b463bf8" />
+                <memberEnd Id="a17fe225-f714-486f-976e-981d51747845" name="Glove" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="f8af79fe-bb0d-4857-bab5-0946e38481c7" />
                 </memberEnd>
               </associationHasOwnedEnds>
               <associationHasOwnedEnds>
-                <memberEnd Id="43a612d1-de01-4751-8d7a-68fbb6e3fbf8" name="GLOVE_TYPE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-                  <elementDefinition Id="94e0dc25-6b02-4cf9-9387-3013d1852b69" />
+                <memberEnd Id="32fc38ee-6e7a-4c99-bb0c-dd3b07db92ca" name="GLOVE_TYPE" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="58712b9d-92f7-4e82-9953-a2cacf9769f7" />
                 </memberEnd>
               </associationHasOwnedEnds>
             </relationshipOwnedElementsInternal>
-            <elementDefinition Id="8d0b3e97-53b0-42dd-bdff-e62fd62f256f" />
+            <elementDefinition Id="a9b829a6-ecfe-4a49-805e-b9b812d289e8" />
           </association>
         </targetEnds>
-        <ownedOperationsInternal>
-          <operation Id="8dea1d8b-14dc-41c2-9fc1-f258dbb24a0d" name="GetGlove" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
-            <elementDefinition Id="6046a914-42d8-40d8-aa1e-5cf18f131b6f" />
-            <ownedParameters>
-              <operationHasOwnedParameters>
-                <parameter Id="20759c07-39ff-42b9-ab27-64b03df55db2" name="GLOVE_TYPE glove" direction="In" isUnique="false">
-                  <elementDefinition Id="b6d6e665-bc9a-44d0-be3d-ef535caf4f8a" />
-                </parameter>
-              </operationHasOwnedParameters>
-            </ownedParameters>
-          </operation>
-        </ownedOperationsInternal>
-      </class>
-    </logicalClassDesignerModelHasTypes>
-    <logicalClassDesignerModelHasTypes>
-      <class Id="a4ac793d-5cca-43c0-926a-57e85b2912ba" name="Glove" isAbstract="false" isLeaf="false" isActiveClass="false">
-        <elementDefinition Id="098336c9-74fe-4f4c-bf4b-4d17322df827" />
-        <suppliersInternal>
-          <interfaceRealization Id="67b60fde-570a-494e-97b2-7bc9dee3fb04">
-            <interfaceMoniker Id="6f127cb1-5caa-4396-8232-61713d25d76e" LastKnownName="GLOVE_DATA" />
-            <elementDefinition Id="e30c6e59-4ce6-46dd-a1ac-c12dbde1b6ec" />
-          </interfaceRealization>
-        </suppliersInternal>
         <ownedAttributesInternal>
           <property Id="a2fe8111-3457-43c8-84f1-fe6aea781923" name="GLOVE_TYPE mGlove" visibility="Private" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
             <elementDefinition Id="c5d5707f-8f69-4d80-9eeb-f660e9afb625" />
@@ -84,6 +45,16 @@
           </operation>
           <operation Id="e4ee691c-9d95-460a-9ff6-28c38b061147" name="GetEuler" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
             <elementDefinition Id="e033e3ed-968a-49d9-86ca-e6e08554acc8" />
+          </operation>
+          <operation Id="7cefce6a-183b-4fe3-952c-d1f601f66f1f" name="Glove" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="9f300628-f76b-46a4-8a1d-5f28f7e121ee" />
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter Id="1e5fe075-4181-42a5-9267-96d56bbf90ee" name="GLOVE_TYPE" direction="In" isUnique="false">
+                  <elementDefinition Id="e1f8e3e4-cb6c-4046-ae52-373e4d8961fe" />
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
           </operation>
         </ownedOperationsInternal>
       </class>

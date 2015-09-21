@@ -97,8 +97,8 @@ extern "C" {
 
 	/*! \brief Get the state of a glove.
 	*
-	*  \param glove The glove index.
-	*  \param state Output variable to receive the state.
+	*  \param hand The left or right hand index.
+	*  \param state Output variable to receive the data.
 	*  \param timeout Milliseconds to wait until the glove returns a value.
 	*/
 	MANUS_API int ManusGetData(GLOVE_HAND hand, GLOVE_DATA* data, unsigned int timeout = 0);
@@ -113,7 +113,7 @@ extern "C" {
 	*  in the model.
 	* 
 	*  \param hand The left or right hand index.
-	*  \param state The glove state to derive the skeletal model from.
+	*  \param model The glove skeletal model.
 	*/
 	MANUS_API int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model);
 

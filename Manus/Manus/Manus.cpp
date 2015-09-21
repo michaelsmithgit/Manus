@@ -150,11 +150,6 @@ int ManusExit()
 	return MANUS_SUCCESS;
 }
 
-int ManusGetGloveCount()
-{
-	return (int)g_gloves.size();
-}
-
 int ManusGetData(GLOVE_HAND hand, GLOVE_DATA* data, unsigned int timeout)
 {
 	// Get the glove from the list

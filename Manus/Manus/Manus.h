@@ -95,13 +95,6 @@ extern "C" {
 	*/
 	MANUS_API int ManusExit();
 
-	/*! \brief Get the number of gloves.
-	*
-	*  Get the maximum index that can be queried
-	*  for the glove state.
-	*/
-	MANUS_API int ManusGetGloveCount();
-
 	/*! \brief Get the state of a glove.
 	*
 	*  \param glove The glove index.

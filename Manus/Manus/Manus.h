@@ -115,7 +115,7 @@ extern "C" {
 	*  \param hand The left or right hand index.
 	*  \param model The glove skeletal model.
 	*/
-	MANUS_API int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model);
+	MANUS_API int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model, unsigned int timeout = 0);
 
 	/*! \brief Configure the handedness of the glove.
 	*

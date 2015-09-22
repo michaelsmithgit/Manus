@@ -164,11 +164,11 @@ int ManusGetData(GLOVE_HAND hand, GLOVE_DATA* data, unsigned int timeout)
 	return elem->GetData(data, timeout) ? MANUS_SUCCESS : MANUS_ERROR;
 }
 
-int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model)
+int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model, unsigned int timeout)
 {
 	GLOVE_DATA data;
 
-	int ret = ManusGetData(hand, &data);
+	int ret = ManusGetData(hand, &data, timeout);
 	if (ret != MANUS_SUCCESS)
 		return ret;
 

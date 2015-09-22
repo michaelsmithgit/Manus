@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using UnityEngine;
+using System.Threading;
 
 namespace ManusMachina
 {
@@ -132,12 +134,22 @@ namespace ManusMachina
     [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_DATA
     {
+        /* old GLOVE_DATA definition, mismatch with .h file
         public bool RightHand;
         public GLOVE_VECTOR Acceleration;
         public GLOVE_QUATERNION Quaternion;
 
         [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 5)]
         public float[] Fingers;
+        */
+
+        public GLOVE_VECTOR Acceleration;
+        public GLOVE_VECTOR Euler;
+        public GLOVE_QUATERNION Quaternion;
+        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 5)]
+        public float[] Fingers;
+        public uint PacketNumber;
+
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -163,15 +175,54 @@ namespace ManusMachina
             ring, pinky;
     }
 
+    /*
     [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_STATE
     {
         public uint PacketNumber;
         public GLOVE_DATA data;
     }
+    */
 #pragma warning restore 0649
 
-    public class Manus
+    public enum GLOVE_HAND
+    {
+        GLOVE_LEFT = 0,
+        GLOVE_RIGHT,
+    };
+
+    [System.Serializable]
+    public class Thumb
+    {
+        public Transform Metacarpal, Proximal, Distal;
+    }
+    [System.Serializable]
+
+    public class Finger
+    {
+        public Transform Metacarpal, Proximal, Intermediate, Distal;
+    }
+
+    
+
+    [System.Serializable]
+    public class Skeletal
+    {
+        public Transform Palm;
+        public Thumb Thumb = new Thumb();
+        public Finger Index = new Finger(), Middle = new Finger(), Ring = new Finger(), Pinky = new Finger();
+
+        public Skeletal()
+        {
+            // Workaround to create new Transform object
+            // http://forum.unity3d.com/threads/making-a-new-transform-in-code.49277/
+            Palm = new GameObject().transform;
+        }
+
+    }
+
+    [System.Serializable]
+    public class Glove
     {
         public const int ERROR = -1;
         public const int SUCCESS = 0;
@@ -179,39 +230,46 @@ namespace ManusMachina
         public const int OUT_OF_RANGE = 2;
         public const int DISCONNECTED = 3;
 
+        private GLOVE_HAND hand;
+
+        private GLOVE_DATA data = new GLOVE_DATA();
+
+        private Thread getDataThread;
+        private Mutex  getDataMutex;
+
+        private void getDataThreadFunc()
+        {
+            getDataMutex.WaitOne();
+            ManusGetData(hand, ref data, 1000);
+            getDataMutex.ReleaseMutex();
+        }
 
         /*! \brief Initialize the Manus SDK.
         *
         *  Must be called before any other function
         *  in the SDK.
         */
-        [DllImport("Manus.dll", EntryPoint = "ManusInit", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int Init();
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ManusInit();
 
         /*! \brief Shutdown the Manus SDK.
         *
         *  Must be called when the SDK is no longer
         *  needed.
         */
-        [DllImport("Manus.dll", EntryPoint = "ManusExit", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int Exit();
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ManusExit();
 
-        /*! \brief Get the number of gloves.
-        *
-        *  Get the maximum index that can be queried
-        *  for the glove state.
-        */
-        [DllImport("Manus.dll", EntryPoint = "ManusGetGloveCount", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetGloveCount();
 
         /*! \brief Get the state of a glove.
         *
-        *  \param glove The glove index.
-        *  \param state Output variable to receive the state.
+        *  \param hand The left or right hand index.
+        *  \param state Output variable to receive the data.
         *  \param timeout Milliseconds to wait until the glove returns a value.
         */
-        [DllImport("Manus.dll", EntryPoint = "ManusGetState", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetState(uint glove, out GLOVE_STATE state, uint timeout = 0);
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ManusGetData(GLOVE_HAND hand, ref GLOVE_DATA data, uint timeout = 0);
+
 
         /*! \brief Get a skeletal model for the given glove state.
         *
@@ -222,42 +280,11 @@ namespace ManusMachina
         *  Since the thumb has no intermediate phalanx it has a separate structure
         *  in the model.
         * 
-        *  \param state The glove state to derive the skeletal model from.
+        *  \param hand The left or right hand index.
+        *  \param model The glove skeletal model.
         */
-        [DllImport("Manus.dll", EntryPoint = "ManusGetSkeletal", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetSkeletal(out GLOVE_SKELETAL model, ref GLOVE_STATE state);
-
-        /*! \brief Convert a Quaternion to Euler angles.
-        *
-        *  Returns the Quaternion as Yaw, Pitch and Roll angles
-        *  relative to the Earth's gravity.
-        *
-        *  \param euler Output variable to receive the Euler angles.
-        *  \param quaternion The quaternion to convert.
-        */
-        [DllImport("Manus.dll", EntryPoint = "ManusGetEuler", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetEuler(out GLOVE_VECTOR euler, ref GLOVE_QUATERNION quaternion);
-
-        /*! \brief Remove gravity from acceleration vector.
-        *
-        *  Returns the Acceleration as a vector independent from
-        *  the Earth's gravity.
-        *
-        *  \param linear Output vector to receive the linear acceleration.
-        *  \param acceleration The acceleration vector to convert.
-        */
-        [DllImport("Manus.dll", EntryPoint = "ManusGetLinearAcceleration", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetLinearAcceleration(out GLOVE_VECTOR linear, ref GLOVE_VECTOR acceleration, ref GLOVE_VECTOR gravity);
-
-        /*! \brief Return gravity vector from the Quaternion.
-        *
-        *  Returns an estimation of the Earth's gravity vector.
-        *
-        *  \param gravity Output vector to receive the gravity vector.
-        *  \param quaternion The quaternion to base the gravity vector on.
-        */
-        [DllImport("Manus.dll", EntryPoint = "ManusGetGravity", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int GetGravity(out GLOVE_VECTOR gravity, ref GLOVE_QUATERNION quaternion);
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model);
 
         /*! \brief Configure the handedness of the glove.
         *
@@ -266,11 +293,11 @@ namespace ManusMachina
         *  \warning This function overwrites factory settings on the
         *  glove, it should only be called if the user requested it.
         *
-        *  \param glove The glove index.
+        *  \param hand The left or right hand index.
         *  \param right_hand Set the glove as a right hand.
         */
-        [DllImport("Manus.dll", EntryPoint = "ManusSetHandedness", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int SetHandedness(uint glove, bool right_hand);
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ManusSetHandedness(GLOVE_HAND hand, bool right_hand);
 
         /*! \brief Calibrate the IMU on the glove.
         *
@@ -281,12 +308,159 @@ namespace ManusMachina
         *  \warning This function overwrites factory settings on the
         *  glove, it should only be called if the user requested it.
         *
-        *  \param glove The glove index.
+        *  \param hand The left or right hand index.
         *  \param gyro Calibrate the gyroscope.
         *  \param accel Calibrate the accelerometer.
-        *  \param fingers Calibrate the finger flex sensors.
+        *  \param fingers Calibrate the fingers.
         */
-        [DllImport("Manus.dll", EntryPoint = "ManusCalibrate", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int Calibrate(uint glove, bool gyro = true, bool accel = true, bool fingers = false);
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ManusCalibrate(GLOVE_HAND hand, bool gyro = true, bool accel = true, bool fingers = false);
+
+        /*! \brief Set the ouput power of the vibration motor.
+        *
+        *  This sets the output power of the vibration motor.
+        *
+        *  \param glove The glove index.
+        *  \param power The power of the vibration motor ranging from 0 to 1 (ex. 0.5 = 50% power).
+        */
+        [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int ManusSetVibration(GLOVE_HAND hand, float power);
+
+
+        /*! \brief Convert Quaternion from Manus to Unity
+        *
+        * This converts a Quaternion from Manus to Unity format
+        *
+        * \param q GLOVE_QUATERNION Quaternion of Manus format
+        * \return Quaternion Quaternion of Unity format
+        */
+        private static Quaternion ManusToUnity(GLOVE_QUATERNION q)
+        {
+            return new Quaternion(-q.x/100.0f, q.y/100.0f, (q.z)/100.0f, (-q.w)/100.0f);
+        }
+
+        /*! \brief Convert Vector from Manus to Unity
+        *
+        * This converts a Vector from Manus to Unity format
+        *
+        * \param q GLOVE_VECTOR Vector of Manus format
+        * \return Vector3 Vector of Unity format
+        */
+        private static Vector3 ManusToUnity(GLOVE_VECTOR v)
+        {
+            return new Vector3( -v.x/100.0f, v.y/100.0f, v.z/100.0f);
+        }
+
+
+
+        /*! \brief Convert Manus Pose to Unity Transform
+        *
+        * \param unity Transform Target object
+        * \param manus GLOVE_POSE Pose to be stored in target
+        */
+        private void ManusToUnity(ref Transform unity, GLOVE_POSE manus)
+        {
+            unity.position = ManusToUnity(manus.position);
+            unity.rotation = ManusToUnity(manus.orientation);
+        }
+
+
+        /*! \brief Convert Manus Finger to Unity Finger
+        *
+        * \param unity Finger Target object
+        * \param manus GLOVE_FINGER Finger to be stored in target
+        */
+        private void ManusToUnity(ref Finger unityFinger, GLOVE_FINGER manusFinger)
+        {
+            ManusToUnity(ref unityFinger.Distal, manusFinger.distal);
+            ManusToUnity(ref unityFinger.Intermediate, manusFinger.intermediate);
+            ManusToUnity(ref unityFinger.Metacarpal, manusFinger.metacarpal);
+            ManusToUnity(ref unityFinger.Proximal, manusFinger.proximal);
+        }
+
+        /*! \brief Convert Manus Thumb to Unity Thumb
+        *
+        * \param unity Finger Target object
+        * \param manus GLOVE_THUMB Thumb to be stored in target
+        */
+        private void ManusToUnity(ref Thumb unityThumb, GLOVE_THUMB manusThumb)
+        {
+            ManusToUnity(ref unityThumb.Distal, manusThumb.distal);
+            ManusToUnity(ref unityThumb.Metacarpal, manusThumb.metacarpal);
+            ManusToUnity(ref unityThumb.Proximal, manusThumb.proximal);
+        }
+
+        /*! \brief Acceleration property ReadOnly, with conversion
+        */
+        public Vector3 Acceleration { get {
+
+                getDataMutex.WaitOne();
+                Vector3 result = ManusToUnity(data.Acceleration);
+                getDataMutex.ReleaseMutex();
+                return result;
+
+            }
+        }
+
+        /*! \brief Euler property ReadOnly, with conversion
+        */
+        public Vector3 Euler { get {
+                getDataMutex.WaitOne();
+                Vector3 result = ManusToUnity(data.Euler);
+                getDataMutex.ReleaseMutex();
+                return result;
+            }
+        }
+
+        /*! \brief Float property ReadOnly
+         */
+        public float[] Fingers { get {
+                getDataMutex.WaitOne();
+                float[] result = data.Fingers;
+                getDataMutex.ReleaseMutex();
+                return result;
+            }
+        }
+
+        public Quaternion Quaternion { get {
+                getDataMutex.WaitOne();
+                Quaternion result = ManusToUnity(data.Quaternion);
+                getDataMutex.ReleaseMutex();
+                return result;
+            }
+        }
+
+        public GLOVE_HAND GloveHand { get { return hand; } }
+
+
+       
+
+        public void UpdateSkeletal(ref Skeletal unitySkel)
+        {
+            GLOVE_SKELETAL manusSkel = new GLOVE_SKELETAL();
+            ManusGetSkeletal(hand, ref manusSkel);
+            ManusToUnity(ref unitySkel.Palm, manusSkel.palm);
+            ManusToUnity(ref unitySkel.Index, manusSkel.index);
+            ManusToUnity(ref unitySkel.Middle, manusSkel.middle);
+            ManusToUnity(ref unitySkel.Pinky, manusSkel.pinky);
+            ManusToUnity(ref unitySkel.Ring, manusSkel.ring);
+            ManusToUnity(ref unitySkel.Thumb, manusSkel.thumb);
+        }
+
+
+
+        public Glove(GLOVE_HAND gh) {
+            hand = gh;
+            Debug.Log("Calling Init");
+            ManusInit();
+            Debug.Log("First Data call");
+            getDataThreadFunc();
+            Debug.Log("Creating thread object");
+            getDataThread = new Thread(new ThreadStart(getDataThreadFunc));
+            Debug.Log("Creating mutex object");
+            getDataMutex = new Mutex(false);
+            Debug.Log("Starting thread");
+            getDataThread.Start();
+        }
     }
 }

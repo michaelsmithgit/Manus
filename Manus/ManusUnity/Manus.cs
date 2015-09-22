@@ -136,14 +136,6 @@ namespace ManusMachina
     [StructLayout(LayoutKind.Sequential)]
     public struct GLOVE_DATA
     {
-        /* old GLOVE_DATA definition, mismatch with .h file
-        public bool RightHand;
-        public GLOVE_VECTOR Acceleration;
-        public GLOVE_QUATERNION Quaternion;
-
-        [MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 5)]
-        public float[] Fingers;
-        */
 
         public GLOVE_VECTOR Acceleration;
         public GLOVE_VECTOR Euler;
@@ -194,7 +186,9 @@ namespace ManusMachina
     [System.Serializable]
     public class Thumb
     {
-        public Transform Metacarpal, Proximal, Distal;
+        public Transform Metacarpal;
+        public Transform Proximal;
+        public Transform Distal;
     }
 
 
@@ -206,7 +200,10 @@ namespace ManusMachina
     [System.Serializable]
     public class Finger
     {
-        public Transform Metacarpal, Proximal, Intermediate, Distal;
+        public Transform Metacarpal;
+        public Transform Proximal;
+        public Transform Intermediate;
+        public Transform Distal;
     }
 
     /*!
@@ -480,7 +477,7 @@ namespace ManusMachina
 
         /*! Start Data Retrieval Thread
         */
-        public void StartData()
+        public void StartDataThread()
         {
             Debug.Log("Starting thread");
             getDataThread.Start();
@@ -488,7 +485,7 @@ namespace ManusMachina
 
         /*! Stop Data Retrieval Thread
         */
-        public void StopData()
+        public void StopDataThread()
         {
             Debug.Log("Stopping thread");
             getDataThread.Abort();

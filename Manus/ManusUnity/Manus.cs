@@ -25,6 +25,8 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Threading;
 
+
+
 namespace ManusMachina
 {
 #pragma warning disable 0649 // Disable 'field never assigned' warning
@@ -175,14 +177,6 @@ namespace ManusMachina
             ring, pinky;
     }
 
-    /*
-    [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_STATE
-    {
-        public uint PacketNumber;
-        public GLOVE_DATA data;
-    }
-    */
 #pragma warning restore 0649
 
     public enum GLOVE_HAND
@@ -191,57 +185,72 @@ namespace ManusMachina
         GLOVE_RIGHT,
     };
 
+
+    /*!
+    *   \brief Thumb class
+    * 
+    *   Thumb class, to be used in Unity project
+    */
     [System.Serializable]
     public class Thumb
     {
         public Transform Metacarpal, Proximal, Distal;
     }
-    [System.Serializable]
 
+
+    /*!
+    *   \brief Finger class
+    * 
+    *   Finger class, to be used in Unity project
+    */
+    [System.Serializable]
     public class Finger
     {
         public Transform Metacarpal, Proximal, Intermediate, Distal;
     }
 
-    
-
+    /*!
+    *   \brief Skeletal class
+    * 
+    *   Skeletal class, to be used in Unity project
+    */
     [System.Serializable]
-    public class Skeletal
-    {
+    public class Skeletal {
         public Transform Palm;
         public Thumb Thumb = new Thumb();
         public Finger Index = new Finger(), Middle = new Finger(), Ring = new Finger(), Pinky = new Finger();
-
-        public Skeletal()
-        {
-            // Workaround to create new Transform object
-            // http://forum.unity3d.com/threads/making-a-new-transform-in-code.49277/
-            Palm = new GameObject().transform;
-        }
-
     }
 
+
+    /*!
+    *   \brief Glove class
+    *
+    */
     [System.Serializable]
-    public class Glove
-    {
+    public class Glove {
         public const int ERROR = -1;
         public const int SUCCESS = 0;
         public const int INVALID_ARGUMENT = 1;
         public const int OUT_OF_RANGE = 2;
         public const int DISCONNECTED = 3;
 
-        private GLOVE_HAND hand;
+        private GLOVE_HAND hand;                    /*!< Is this a right or left hand glove */
 
-        private GLOVE_DATA data = new GLOVE_DATA();
+        private GLOVE_DATA data = new GLOVE_DATA(); /*!< Glove Data Struct */
+        private Thread getDataThread;               /*!< Glove Data Thread */
+        private Mutex  getDataMutex;                /*!< Glove Data Mutex  */
 
-        private Thread getDataThread;
-        private Mutex  getDataMutex;
-
-        private void getDataThreadFunc()
-        {
-            getDataMutex.WaitOne();
-            ManusGetData(hand, ref data, 1000);
-            getDataMutex.ReleaseMutex();
+        /*! \brief Glove Data Thread Function
+        *
+        *  This function gets the data from the (C++) library,
+        *  ensuring most recent data is available in the class.
+        */
+        private void getDataThreadFunc(){
+            while (true) { // note: implement other stopping mechanism then abort() 
+                getDataMutex.WaitOne();
+                ManusGetData(hand, ref data, 1000); //note: should the timeout be configurable?
+                getDataMutex.ReleaseMutex();
+            }
         }
 
         /*! \brief Initialize the Manus SDK.
@@ -284,7 +293,7 @@ namespace ManusMachina
         *  \param model The glove skeletal model.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model);
+        private static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model, uint timeout=1000);
 
         /*! \brief Configure the handedness of the glove.
         *
@@ -331,35 +340,31 @@ namespace ManusMachina
         *
         * This converts a Quaternion from Manus to Unity format
         *
-        * \param q GLOVE_QUATERNION Quaternion of Manus format
-        * \return Quaternion Quaternion of Unity format
+        * \param q Quaternion in Manus format
+        * \return Quaternion in Unity format
         */
-        private static Quaternion ManusToUnity(GLOVE_QUATERNION q)
-        {
-            return new Quaternion(-q.x/100.0f, q.y/100.0f, (q.z)/100.0f, (-q.w)/100.0f);
+        private static Quaternion ManusToUnity(GLOVE_QUATERNION q) {
+            return new Quaternion(-q.x/100.0f, q.y/100.0f, q.z/100.0f, -q.w/100.0f);
         }
 
         /*! \brief Convert Vector from Manus to Unity
         *
         * This converts a Vector from Manus to Unity format
         *
-        * \param q GLOVE_VECTOR Vector of Manus format
-        * \return Vector3 Vector of Unity format
+        * \param q Vector in Manus format
+        * \return Vector in Unity format
         */
-        private static Vector3 ManusToUnity(GLOVE_VECTOR v)
-        {
+        private static Vector3 ManusToUnity(GLOVE_VECTOR v) {
             return new Vector3( -v.x/100.0f, v.y/100.0f, v.z/100.0f);
         }
 
 
-
         /*! \brief Convert Manus Pose to Unity Transform
         *
-        * \param unity Transform Target object
-        * \param manus GLOVE_POSE Pose to be stored in target
+        * \param unity Unity Transform Object, which will store the result
+        * \param manus GLOVE_POSE Manus Thumb Struct to be converted
         */
-        private void ManusToUnity(ref Transform unity, GLOVE_POSE manus)
-        {
+        private void ManusToUnity(ref Transform unity, GLOVE_POSE manus) {
             unity.position = ManusToUnity(manus.position);
             unity.rotation = ManusToUnity(manus.orientation);
         }
@@ -367,11 +372,10 @@ namespace ManusMachina
 
         /*! \brief Convert Manus Finger to Unity Finger
         *
-        * \param unity Finger Target object
-        * \param manus GLOVE_FINGER Finger to be stored in target
+        * \param unityFinger Unity Finger Object, which will store the result
+        * \param manusFinger GLOVE_FINGER Manus Finger Struct to be converted
         */
-        private void ManusToUnity(ref Finger unityFinger, GLOVE_FINGER manusFinger)
-        {
+        private void ManusToUnity(ref Finger unityFinger, GLOVE_FINGER manusFinger) {
             ManusToUnity(ref unityFinger.Distal, manusFinger.distal);
             ManusToUnity(ref unityFinger.Intermediate, manusFinger.intermediate);
             ManusToUnity(ref unityFinger.Metacarpal, manusFinger.metacarpal);
@@ -380,29 +384,27 @@ namespace ManusMachina
 
         /*! \brief Convert Manus Thumb to Unity Thumb
         *
-        * \param unity Finger Target object
-        * \param manus GLOVE_THUMB Thumb to be stored in target
+        * \param unityThumb Unity Thumb Object, which will store the result
+        * \param manus GLOVE_THUMB Manus Thumb Struct to be converted
         */
-        private void ManusToUnity(ref Thumb unityThumb, GLOVE_THUMB manusThumb)
-        {
+        private void ManusToUnity(ref Thumb unityThumb, GLOVE_THUMB manusThumb) {
             ManusToUnity(ref unityThumb.Distal, manusThumb.distal);
             ManusToUnity(ref unityThumb.Metacarpal, manusThumb.metacarpal);
             ManusToUnity(ref unityThumb.Proximal, manusThumb.proximal);
         }
 
-        /*! \brief Acceleration property ReadOnly, with conversion
+        /*! \brief Acceleration in Unity format
         */
         public Vector3 Acceleration { get {
-
                 getDataMutex.WaitOne();
                 Vector3 result = ManusToUnity(data.Acceleration);
                 getDataMutex.ReleaseMutex();
                 return result;
-
             }
         }
 
-        /*! \brief Euler property ReadOnly, with conversion
+
+        /*! \brief Euler vector in Unity format
         */
         public Vector3 Euler { get {
                 getDataMutex.WaitOne();
@@ -412,7 +414,7 @@ namespace ManusMachina
             }
         }
 
-        /*! \brief Float property ReadOnly
+        /*! \brief Fingers array
          */
         public float[] Fingers { get {
                 getDataMutex.WaitOne();
@@ -422,6 +424,10 @@ namespace ManusMachina
             }
         }
 
+        /*! \brief Quaternion in Unity format
+        *
+        * Returns the current Quaternion in Unity format.
+        */
         public Quaternion Quaternion { get {
                 getDataMutex.WaitOne();
                 Quaternion result = ManusToUnity(data.Quaternion);
@@ -430,15 +436,22 @@ namespace ManusMachina
             }
         }
 
+        /*! Get whether is is a right or left hand.
+        */
         public GLOVE_HAND GloveHand { get { return hand; } }
 
-
-       
-
-        public void UpdateSkeletal(ref Skeletal unitySkel)
-        {
+        /*! \brief Update Skeletal with current date
+        *
+        * Retrieves the current Skeletal from the glove and
+        * converts is from Manus to Unity format.
+        *
+        * \param unitySkel Skeletal as generated by Unity, which is to be updated.
+        */
+        public void UpdateSkeletal(ref Skeletal unitySkel){
+            Debug.Log("UpdateSkeletal");
             GLOVE_SKELETAL manusSkel = new GLOVE_SKELETAL();
             ManusGetSkeletal(hand, ref manusSkel);
+            
             ManusToUnity(ref unitySkel.Palm, manusSkel.palm);
             ManusToUnity(ref unitySkel.Index, manusSkel.index);
             ManusToUnity(ref unitySkel.Middle, manusSkel.middle);
@@ -448,19 +461,45 @@ namespace ManusMachina
         }
 
 
-
+        /*! \brief Constructor
+        *
+        * Constructor for Glove class
+        *
+        *  \param gh Left or right glove
+        */
         public Glove(GLOVE_HAND gh) {
             hand = gh;
             Debug.Log("Calling Init");
             ManusInit();
-            Debug.Log("First Data call");
-            getDataThreadFunc();
             Debug.Log("Creating thread object");
             getDataThread = new Thread(new ThreadStart(getDataThreadFunc));
             Debug.Log("Creating mutex object");
             getDataMutex = new Mutex(false);
+        }
+
+
+        /*! Start Data Retrieval Thread
+        */
+        public void StartData()
+        {
             Debug.Log("Starting thread");
             getDataThread.Start();
+        }
+
+        /*! Stop Data Retrieval Thread
+        */
+        public void StopData()
+        {
+            Debug.Log("Stopping thread");
+            getDataThread.Abort();
+        }
+
+        
+        public void Unload()
+        {
+            Debug.Log("Calling ManusExit()");
+            ManusExit();
+            
         }
     }
 }

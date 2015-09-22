@@ -114,8 +114,13 @@ bool SkeletalModel::InitializeScene()
 	return true;
 }
 
+
+
+
 bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE_HAND hand)
 {
+
+
 	// Get the animation evaluator for this scene
 	FbxAnimEvaluator* eval = m_scene->GetAnimationEvaluator();
 	FbxTime normalizedAmount;
@@ -126,6 +131,8 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 
 	// Set the pose of the palm
 	model->palm = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_node, FBXSDK_TIME_INFINITE));
+	
+	
 
 	// Evaluate the animation for the thumb
 	normalizedAmount.SetSecondDouble(data.Fingers[0] * timeFactor);

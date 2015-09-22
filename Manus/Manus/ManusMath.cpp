@@ -50,3 +50,5 @@ int ManusMath::GetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* q)
 
 	return MANUS_SUCCESS;
 }
+
+

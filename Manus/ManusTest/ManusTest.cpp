@@ -41,7 +41,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			GLOVE_DATA data = { 0 };
 			GLOVE_SKELETAL skeletal = { 0 };
 			if (ManusGetData(hand, &data, 1000) == MANUS_SUCCESS){
-				printf("glove: %d - %d %d %s\n", i, data.PacketNumber, "Right");
+				printf("glove: %d - %d %s\n", i, data.PacketNumber, "Right");
 				ManusGetSkeletal(hand, &skeletal, 1000);
 			}else{
 				printf("glove: %d not found \n", i);

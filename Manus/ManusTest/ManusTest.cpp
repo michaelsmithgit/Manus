@@ -39,8 +39,10 @@ int _tmain(int argc, _TCHAR* argv[])
 			QueryPerformanceCounter(&start);
 
 			GLOVE_DATA data = { 0 };
+			GLOVE_SKELETAL skeletal = { 0 };
 			if (ManusGetData(hand, &data, 1000) == MANUS_SUCCESS){
 				printf("glove: %d - %d %d %s\n", i, data.PacketNumber, "Right");
+				ManusGetSkeletal(hand, &skeletal, 1000);
 			}else{
 				printf("glove: %d not found \n", i);
 				continue;
@@ -53,7 +55,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			printf("accel: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", data.Acceleration.x, data.Acceleration.y, data.Acceleration.z);
 			
-			printf("quats: x: % 1.5f; y: % 1.5f; z: % 1.5f; w: % 1.5f \n", data.Quaternion.x, data.Quaternion.y, data.Quaternion.z, data.Quaternion.w);
+			printf("quats Data: x: % 1.5f; y: % 1.5f; z: % 1.5f; w: % 1.5f \n", data.Quaternion.x, data.Quaternion.y, data.Quaternion.z, data.Quaternion.w);
+			printf("quats Skel: x: % 1.5f; y: % 1.5f; z: % 1.5f; w: % 1.5f \n", skeletal.palm.orientation.x , skeletal.palm.orientation.y, skeletal.palm.orientation.z, skeletal.palm.orientation.w);
 
 			printf("euler: x: % 1.5f; y: % 1.5f; z: % 1.5f\n", data.Euler.x * (180.0 / M_PI), data.Euler.y * (180.0 / M_PI), data.Euler.z * (180.0 / M_PI));
 

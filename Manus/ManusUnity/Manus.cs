@@ -237,6 +237,8 @@ namespace ManusMachina
         private Thread getDataThread;               /*!< Glove Data Thread */
         private Mutex  getDataMutex;                /*!< Glove Data Mutex  */
 
+        private static bool initialised = false;    /*!< Is the C++ Library initialised?  */
+
         /*! \brief Glove Data Thread Function
         *
         *  This function gets the data from the (C++) library,
@@ -466,8 +468,17 @@ namespace ManusMachina
         */
         public Glove(GLOVE_HAND gh) {
             hand = gh;
-            Debug.Log("Calling Init");
-            ManusInit();
+            if (gh == GLOVE_HAND.GLOVE_LEFT)
+                Debug.Log("New Left  Glove");
+            else
+                Debug.Log("New Right Glove");
+            if (initialised) {
+                Debug.Log("C++ Library already initialised.");
+            } else { 
+                Debug.Log("C++ Library not initialised. Calling Init");
+                ManusInit();
+                initialised = true;
+            }
             Debug.Log("Creating thread object");
             getDataThread = new Thread(new ThreadStart(getDataThreadFunc));
             Debug.Log("Creating mutex object");

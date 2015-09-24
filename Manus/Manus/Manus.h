@@ -83,8 +83,8 @@ typedef enum GLOVE_HAND {
 extern "C" {
 	/*! \brief Initialize the Manus SDK.
 	*
-	*  Must be called before any other function
-	*  in the SDK.
+	*  Must be called before any other function in the SDK.
+	*  This function should only be called once.
 	*/
 	MANUS_API int ManusInit();
 
@@ -111,6 +111,8 @@ extern "C" {
 	*
 	*  Since the thumb has no intermediate phalanx it has a separate structure
 	*  in the model.
+	*
+	*  This function is thread-safe.
 	* 
 	*  \param hand The left or right hand index.
 	*  \param model The glove skeletal model.
@@ -123,6 +125,8 @@ extern "C" {
 	*
 	*  \warning This function overwrites factory settings on the
 	*  glove, it should only be called if the user requested it.
+	*
+	*  This function is thread-safe.
 	*
 	*  \param hand The left or right hand index.
 	*  \param right_hand Set the glove as a right hand.

@@ -18,7 +18,7 @@ GLOVE_POSE SkeletalModel::ToGlovePose(FbxAMatrix mat)
 	// Apply the orientation of the hand to the transformation matrix
 	FbxQuaternion orient;
 	if (temp_hand == GLOVE_RIGHT)
-		orient = FbxQuaternion(-temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, -temp_data.Quaternion.w);
+		orient = FbxQuaternion(-temp_data.Quaternion.y, temp_data.Quaternion.z, -temp_data.Quaternion.x, temp_data.Quaternion.w);
 	else
 		orient = FbxQuaternion(temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, temp_data.Quaternion.w);
 	FbxAMatrix orientMat;

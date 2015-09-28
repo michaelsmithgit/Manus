@@ -32,7 +32,7 @@ public:
 	static int GetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* quaternion);
 
 
-	
+	static GLOVE_QUATERNION QuaternionMultiply(GLOVE_QUATERNION q1, GLOVE_QUATERNION q2);
 
 private:
 	ManusMath();

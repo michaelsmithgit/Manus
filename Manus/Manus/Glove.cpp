@@ -370,7 +370,7 @@ uint8_t Glove::GetFlags()
 }
 
 GLOVE_HAND Glove::GetHand(){
-	return (m_flags & GLOVE_FLAGS_HANDEDNESS) ? GLOVE_LEFT : GLOVE_RIGHT;
+	return (m_flags & GLOVE_FLAGS_HANDEDNESS) ? GLOVE_RIGHT : GLOVE_LEFT;
 }
 
 void Glove::SetFlags(uint8_t flags)

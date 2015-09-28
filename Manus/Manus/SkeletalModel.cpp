@@ -2,6 +2,7 @@
 #include "SkeletalModel.h"
 #include "FbxMemStream.h"
 #include "resource.h"
+#include "ManusMath.h"
 
 const char* s_bone_names[GLOVE_FINGERS][3] = {
 	{ "ThumbFingerBone004", "ThumbFingerBone005", "ThumbFingerBone003" },
@@ -17,11 +18,17 @@ GLOVE_POSE SkeletalModel::ToGlovePose(FbxAMatrix mat)
 
 	// Apply the orientation of the hand to the transformation matrix
 	FbxQuaternion orient;
+
+	/*
 	if (temp_hand == GLOVE_RIGHT)
 		//orient = FbxQuaternion(-temp_data.Quaternion.y, temp_data.Quaternion.z, -temp_data.Quaternion.x, temp_data.Quaternion.w);
 		orient = FbxQuaternion(-temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, -temp_data.Quaternion.w);
 	else
 		orient = FbxQuaternion(temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, temp_data.Quaternion.w);
+	*/
+
+	orient = FbxQuaternion(temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, temp_data.Quaternion.w);
+
 	FbxAMatrix orientMat;
 	orientMat.SetQ(orient);
 	orientMat *= mat;
@@ -39,9 +46,10 @@ GLOVE_POSE SkeletalModel::ToGlovePose(FbxAMatrix mat)
 	pose.position.y = (float)trans.mData[1];
 	pose.position.z = (float)trans.mData[2];
 
+	/*
 	if (temp_hand == GLOVE_RIGHT)
 		pose.position.x *= -1.0f;
-
+	*/
 	return pose;
 }
 
@@ -131,9 +139,48 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 	temp_hand = hand;
 
 	// Set the pose of the palm
-	model->palm = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_node, FBXSDK_TIME_INFINITE));
+	//model->palm = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_node, FBXSDK_TIME_INFINITE));
 	
 	
+
+	GLOVE_QUATERNION temp_quaternion;
+	
+	// Swapping as in ToGlovePose;
+	// Should be done before rotation?
+	temp_quaternion.x = data.Quaternion.y;
+	temp_quaternion.y = data.Quaternion.z;
+	temp_quaternion.z = data.Quaternion.x;
+	temp_quaternion.w = data.Quaternion.w;
+	
+	GLOVE_QUATERNION rotation;
+
+
+	// klopt dit??? test!
+	// rotation should be based on original order (yzxw) rather then on actual order (xyzw)
+	// to make it work correctly in Unity
+
+	// rotate x 90 deg
+	rotation.x =  0.707;
+	rotation.y =  0;
+	rotation.z = 0;
+	rotation.w = 0.707;
+	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion , rotation);
+	
+	//rotate y 180 deg
+	rotation.x = 0;
+	rotation.y = 1;//0.707;
+	rotation.z = 0;
+	rotation.w = 0;// 0.707;
+	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion, rotation);
+	
+	//rotate z -180 deg
+	rotation.x = 0;;
+	rotation.y = 0;
+	rotation.z = -1;
+	rotation.w = 0;
+	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion, rotation);
+	
+	model->palm.orientation = temp_quaternion;
 
 	// Evaluate the animation for the thumb
 	normalizedAmount.SetSecondDouble(data.Fingers[0] * timeFactor);

@@ -51,4 +51,16 @@ int ManusMath::GetGravity(GLOVE_VECTOR* gravity, const GLOVE_QUATERNION* q)
 	return MANUS_SUCCESS;
 }
 
+// Taken from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/#mul
+// Copyright (c) 1998-2007 Martin John BakerThis
+// License: GPL2+
+GLOVE_QUATERNION ManusMath::QuaternionMultiply(GLOVE_QUATERNION q1, GLOVE_QUATERNION q2) {
+	GLOVE_QUATERNION result;
+	result.x = q1.x * q2.w + q1.y * q2.z - q1.z * q2.y + q1.w * q2.x;
+	result.y = -q1.x * q2.z + q1.y * q2.w + q1.z * q2.x + q1.w * q2.y;
+	result.z = q1.x * q2.y - q1.y * q2.x + q1.z * q2.w + q1.w * q2.z;
+	result.w = -q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w;
+	return result;
+}
+
 

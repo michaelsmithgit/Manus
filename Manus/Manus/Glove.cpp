@@ -34,6 +34,8 @@
 // accelerometer converion values
 #define FGPERCOUNT 0.00006103515f; // 1 / ACCEL_DIVISOR
 
+#define ENABLE_SENSORFUSION
+
 
 Glove::Glove(const wchar_t* device_path)
 	: m_connected(false)
@@ -346,12 +348,15 @@ void Glove::UpdateState()
 		else
 			m_data.Fingers[i] = m_report.fingers[GLOVE_FINGERS - (i + 1)] / FINGER_DIVISOR;
 	}
+#ifdef ENABLE_SENSORFUSION
+		// execute the magnetometer and yaw sensor fusion
+		fquaternion fused = m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion);
 
-	// execute the magnetometer and yaw sensor fusion
-	fquaternion fused = m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion);
-
-	// copy the output of the sensor fusion to m_data
-	memcpy(&m_data.Quaternion, &fused, sizeof(GLOVE_QUATERNION));
+		// copy the output of the sensor fusion to m_data
+		memcpy(&m_data.Quaternion, &fused, sizeof(GLOVE_QUATERNION));
+#else
+		memcpy(&m_data.Quaternion, &myQuaternion, sizeof(GLOVE_QUATERNION));
+#endif
 
 	// calculate the euler angles
 	ManusMath::GetEuler(&m_data.Euler, &m_data.Quaternion);

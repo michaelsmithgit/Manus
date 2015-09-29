@@ -140,6 +140,7 @@ int ManusExit()
 
 	for (Glove* glove : g_gloves)
 		delete glove;
+	g_gloves.clear();
 
 #ifdef _WIN32
 	delete g_devices;

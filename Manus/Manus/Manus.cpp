@@ -172,7 +172,10 @@ int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model, unsigned int timeou
 	if (ret != MANUS_SUCCESS)
 		return ret;
 
-	return g_skeletal.Simulate(data, model, hand);
+	if (g_skeletal.Simulate(data, model, hand))
+		return MANUS_SUCCESS;
+	else
+		return MANUS_ERROR;
 }
 
 int ManusSetHandedness(GLOVE_HAND hand, bool right_hand)

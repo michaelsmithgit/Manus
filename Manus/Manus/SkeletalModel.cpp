@@ -153,33 +153,13 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 	temp_quaternion.w = data.Quaternion.w;
 	
 	GLOVE_QUATERNION rotation;
-
-
-	// klopt dit??? test!
-	// rotation should be based on original order (yzxw) rather then on actual order (xyzw)
-	// to make it work correctly in Unity
-
-	// rotate x 90 deg
-	rotation.x =  0.707;
-	rotation.y =  0;
+	
+	rotation.x = -0.707;
+	rotation.y = 0;
 	rotation.z = 0;
 	rotation.w = 0.707;
-	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion , rotation);
-	
-	//rotate y 180 deg
-	rotation.x = 0;
-	rotation.y = 1;//0.707;
-	rotation.z = 0;
-	rotation.w = 0;// 0.707;
 	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion, rotation);
-	
-	//rotate z -180 deg
-	rotation.x = 0;;
-	rotation.y = 0;
-	rotation.z = -1;
-	rotation.w = 0;
-	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion, rotation);
-	
+
 	model->palm.orientation = temp_quaternion;
 
 	// Evaluate the animation for the thumb

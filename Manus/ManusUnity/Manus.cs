@@ -27,24 +27,20 @@ using System.Threading;
 
 
 
-namespace ManusMachina
-{
+namespace ManusMachina {
 #pragma warning disable 0649 // Disable 'field never assigned' warning
     [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_QUATERNION
-    {
+    public struct GLOVE_QUATERNION {
         public float w, x, y, z;
 
-        public GLOVE_QUATERNION(float w, float x, float y, float z)
-        {
+        public GLOVE_QUATERNION(float w, float x, float y, float z) {
             this.w = w;
             this.x = x;
             this.y = y;
             this.z = z;
         }
 
-        public static GLOVE_QUATERNION operator *(GLOVE_QUATERNION a, GLOVE_QUATERNION b)
-        {
+        public static GLOVE_QUATERNION operator *(GLOVE_QUATERNION a, GLOVE_QUATERNION b) {
             return new GLOVE_QUATERNION(
                 a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
                 a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
@@ -52,12 +48,9 @@ namespace ManusMachina
                 a.w * b.z + a.x * b.z - a.y * b.x + a.z * b.w);
         }
 
-        public float this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
+        public float this[int index] {
+            get {
+                switch (index) {
                     case 0: return this.w;
                     case 1: return this.x;
                     case 2: return this.y;
@@ -69,33 +62,26 @@ namespace ManusMachina
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_VECTOR
-    {
+    public struct GLOVE_VECTOR {
         public float x, y, z;
 
-        public GLOVE_VECTOR(float x, float y, float z)
-        {
+        public GLOVE_VECTOR(float x, float y, float z) {
             this.x = x;
             this.y = y;
             this.z = z;
         }
 
-        public GLOVE_VECTOR ToDegrees()
-        {
+        public GLOVE_VECTOR ToDegrees() {
             return new GLOVE_VECTOR((float)(x * 180.0 / Math.PI), (float)(y * 180.0 / Math.PI), (float)(z * 180.0 / Math.PI));
         }
 
-        public float[] ToArray()
-        {
+        public float[] ToArray() {
             return new float[3] { this.x, this.y, this.z };
         }
 
-        public float this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
+        public float this[int index] {
+            get {
+                switch (index) {
                     case 0: return this.x;
                     case 1: return this.y;
                     case 2: return this.z;
@@ -103,10 +89,8 @@ namespace ManusMachina
                 }
             }
 
-            set
-            {
-                switch (index)
-                {
+            set {
+                switch (index) {
                     case 0: this.x = value; return;
                     case 1: this.y = value; return;
                     case 2: this.z = value; return;
@@ -116,26 +100,22 @@ namespace ManusMachina
         }
 
 
-        public static GLOVE_VECTOR operator +(GLOVE_VECTOR a, GLOVE_VECTOR b)
-        {
+        public static GLOVE_VECTOR operator +(GLOVE_VECTOR a, GLOVE_VECTOR b) {
             return new GLOVE_VECTOR(a.x + b.x, a.y + b.y, a.z + b.z);
         }
-        public static GLOVE_VECTOR operator -(GLOVE_VECTOR a, GLOVE_VECTOR b)
-        {
+        public static GLOVE_VECTOR operator -(GLOVE_VECTOR a, GLOVE_VECTOR b) {
             return new GLOVE_VECTOR(a.x - b.x, a.y - b.y, a.z - b.z);
         }
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_POSE
-    {
+    public struct GLOVE_POSE {
         public GLOVE_QUATERNION orientation;
         public GLOVE_VECTOR position;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_DATA
-    {
+    public struct GLOVE_DATA {
 
         public GLOVE_VECTOR Acceleration;
         public GLOVE_VECTOR Euler;
@@ -147,22 +127,19 @@ namespace ManusMachina
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_THUMB
-    {
+    public struct GLOVE_THUMB {
         public GLOVE_POSE metacarpal, proximal,
             distal;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_FINGER
-    {
+    public struct GLOVE_FINGER {
         public GLOVE_POSE metacarpal, proximal,
             intermediate, distal;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct GLOVE_SKELETAL
-    {
+    public struct GLOVE_SKELETAL {
         public GLOVE_POSE palm;
         public GLOVE_THUMB thumb;
         public GLOVE_FINGER index, middle,
@@ -171,8 +148,7 @@ namespace ManusMachina
 
 #pragma warning restore 0649
 
-    public enum GLOVE_HAND
-    {
+    public enum GLOVE_HAND {
         GLOVE_LEFT = 0,
         GLOVE_RIGHT,
     };
@@ -184,8 +160,7 @@ namespace ManusMachina
     *   Thumb class, to be used in Unity project
     */
     [System.Serializable]
-    public class Thumb
-    {
+    public class Thumb {
         public Transform Metacarpal;
         public Transform Proximal;
         public Transform Distal;
@@ -198,8 +173,7 @@ namespace ManusMachina
     *   Finger class, to be used in Unity project
     */
     [System.Serializable]
-    public class Finger
-    {
+    public class Finger {
         public Transform Metacarpal;
         public Transform Proximal;
         public Transform Intermediate;
@@ -233,24 +207,48 @@ namespace ManusMachina
 
         private GLOVE_HAND hand;                    /*!< Is this a right or left hand glove */
 
-        private GLOVE_DATA data = new GLOVE_DATA(); /*!< Glove Data Struct */
-        private Thread getDataThread;               /*!< Glove Data Thread */
-        private Mutex  getDataMutex;                /*!< Glove Data Mutex  */
 
-        private static bool initialised = false;    /*!< Is the C++ Library initialised?  */
+        //private Thread getDataThread;               /*!< Glove Data Thread */
+        //private Mutex  getDataMutex;                /*!< Glove Data Mutex  */
+        //
+        //private static bool initialised = false;    /*!< Is the C++ Library initialised?  */
+        //private bool runThread = false;             /*!< Should the thread run?  */
+        //private bool dataValid = false;
+        ////private GLOVE_DATA data = new GLOVE_DATA(); /*!< Glove Data Struct */
+        //private GLOVE_SKELETAL manusSkel = new GLOVE_SKELETAL();
+
+
 
         /*! \brief Glove Data Thread Function
         *
         *  This function gets the data from the (C++) library,
         *  ensuring most recent data is available in the class.
         */
-        private void getDataThreadFunc(){
-            while (true) { // note: implement other stopping mechanism then abort() 
-                getDataMutex.WaitOne();
-                ManusGetData(hand, ref data, 1000); //note: should the timeout be configurable?
-                getDataMutex.ReleaseMutex();
-            }
+
+        /*
+    private void getDataThreadFunc(){
+        if (!initialised) {
+            Debug.Log("Cannot start getDataThread. Library not initialised!");
+            return;
         }
+        runThread = true;
+        while (runThread) { 
+            getDataMutex.WaitOne();
+            // we only user the Skeletal so no need to query for the data struct.
+            //if (SUCCESS == ManusGetData(hand, ref data, 1000)) {
+
+            if (SUCCESS == ManusGetSkeletal(hand, ref manusSkel)) {
+                dataValid = true;
+            } else {
+                runThread = false;
+                Debug.Log("Stopping Data thread for "+((hand == GLOVE_HAND.GLOVE_LEFT) ? "left" : "right") +" hand due GetData Error.");
+            }
+            getDataMutex.ReleaseMutex();
+        }
+        dataValid = false;
+    }
+    */
+
 
         /*! \brief Initialize the Manus SDK.
         *
@@ -292,7 +290,7 @@ namespace ManusMachina
         *  \param model The glove skeletal model.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model, uint timeout=1000);
+        private static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model, uint timeout = 1000);
 
         /*! \brief Configure the handedness of the glove.
         *
@@ -343,7 +341,7 @@ namespace ManusMachina
         * \return Quaternion in Unity format
         */
         private static Quaternion ManusToUnity(GLOVE_QUATERNION q) {
-            return new Quaternion(-q.x/100.0f, q.y/100.0f, q.z/100.0f, -q.w/100.0f);
+            return new Quaternion(-q.x / 100.0f, q.y / 100.0f, q.z / 100.0f, -q.w / 100.0f);
         }
 
         /*! \brief Convert Vector from Manus to Unity
@@ -354,7 +352,7 @@ namespace ManusMachina
         * \return Vector in Unity format
         */
         private static Vector3 ManusToUnity(GLOVE_VECTOR v) {
-            return new Vector3( -v.x/100.0f, v.y/100.0f, v.z/100.0f);
+            return new Vector3(-v.x / 100.0f, v.y / 100.0f, v.z / 100.0f);
         }
 
 
@@ -395,32 +393,59 @@ namespace ManusMachina
 
         /*! \brief Acceleration in Unity format
         */
-        public Vector3 Acceleration { get {
+        public Vector3 Acceleration {
+            get {
+                /*
                 getDataMutex.WaitOne();
                 Vector3 result = ManusToUnity(data.Acceleration);
                 getDataMutex.ReleaseMutex();
                 return result;
+                */
+                GLOVE_DATA data = new GLOVE_DATA();
+                if (SUCCESS == ManusGetData(hand, ref data, 1000)) {
+                    return ManusToUnity(data.Acceleration);
+                } else {
+                    return new Vector3();
+                }
             }
         }
 
 
         /*! \brief Euler vector in Unity format
         */
-        public Vector3 Euler { get {
+        public Vector3 Euler {
+            get {
+                /*
                 getDataMutex.WaitOne();
                 Vector3 result = ManusToUnity(data.Euler);
                 getDataMutex.ReleaseMutex();
                 return result;
+                */
+                GLOVE_DATA data = new GLOVE_DATA();
+                if (SUCCESS == ManusGetData(hand, ref data, 1000)) {
+                    return ManusToUnity(data.Euler);
+                } else {
+                    return new Vector3();
+                }
             }
         }
 
         /*! \brief Fingers array
          */
-        public float[] Fingers { get {
+        public float[] Fingers {
+            get {
+                /*
                 getDataMutex.WaitOne();
                 float[] result = data.Fingers;
                 getDataMutex.ReleaseMutex();
                 return result;
+                */
+                GLOVE_DATA data = new GLOVE_DATA();
+                if (SUCCESS == ManusGetData(hand, ref data, 1000)) {
+                    return data.Fingers;
+                } else {
+                    return new float[5];
+                }
             }
         }
 
@@ -428,11 +453,20 @@ namespace ManusMachina
         *
         * Returns the current Quaternion in Unity format.
         */
-        public Quaternion Quaternion { get {
+        public Quaternion Quaternion {
+            get {
+                /*
                 getDataMutex.WaitOne();
                 Quaternion result = ManusToUnity(data.Quaternion);
                 getDataMutex.ReleaseMutex();
                 return result;
+                */
+                GLOVE_DATA data = new GLOVE_DATA();
+                if (SUCCESS == ManusGetData(hand, ref data, 1000)) {
+                    return ManusToUnity(data.Quaternion);
+                } else {
+                    return new Quaternion();
+                }
             }
         }
 
@@ -447,19 +481,17 @@ namespace ManusMachina
         *
         * \param unitySkel Skeletal as generated by Unity, which is to be updated.
         */
-        public void UpdateSkeletal(ref Skeletal unitySkel){
-            //Debug.Log("UpdateSkeletal");
+        public void UpdateSkeletal(ref Skeletal unitySkel) {
             GLOVE_SKELETAL manusSkel = new GLOVE_SKELETAL();
-            ManusGetSkeletal(hand, ref manusSkel);
-            
-            ManusToUnity(ref unitySkel.Palm, manusSkel.palm);
-            ManusToUnity(ref unitySkel.Index, manusSkel.index);
-            ManusToUnity(ref unitySkel.Middle, manusSkel.middle);
-            ManusToUnity(ref unitySkel.Pinky, manusSkel.pinky);
-            ManusToUnity(ref unitySkel.Ring, manusSkel.ring);
-            ManusToUnity(ref unitySkel.Thumb, manusSkel.thumb);
+            if (SUCCESS == ManusGetSkeletal(hand, ref manusSkel)) { 
+                ManusToUnity(ref unitySkel.Palm, manusSkel.palm);
+                ManusToUnity(ref unitySkel.Index, manusSkel.index);
+                ManusToUnity(ref unitySkel.Middle, manusSkel.middle);
+                ManusToUnity(ref unitySkel.Pinky, manusSkel.pinky);
+                ManusToUnity(ref unitySkel.Ring, manusSkel.ring);
+                ManusToUnity(ref unitySkel.Thumb, manusSkel.thumb);
+            } 
         }
-
 
         /*! \brief Constructor
         *
@@ -473,42 +505,15 @@ namespace ManusMachina
                 Debug.Log("New Left  Glove");
             else
                 Debug.Log("New Right Glove");
-            if (initialised) {
-                Debug.Log("C++ Library already initialised.");
-            } else { 
-                Debug.Log("C++ Library not initialised. Calling Init");
-                ManusInit();
-                initialised = true;
-            }
-            Debug.Log("Creating thread object");
-            getDataThread = new Thread(new ThreadStart(getDataThreadFunc));
-            Debug.Log("Creating mutex object");
-            getDataMutex = new Mutex(false);
+
+            ManusInit();
+
         }
 
-
-        /*! Start Data Retrieval Thread
-        */
-        public void StartDataThread()
-        {
-            Debug.Log("Starting thread");
-            getDataThread.Start();
-        }
-
-        /*! Stop Data Retrieval Thread
-        */
-        public void StopDataThread()
-        {
-            Debug.Log("Stopping thread");
-            getDataThread.Abort();
-        }
-
-        
-        public void Unload()
-        {
+        public void Unload() {
             Debug.Log("Calling ManusExit()");
             ManusExit();
-            
+
         }
     }
 }

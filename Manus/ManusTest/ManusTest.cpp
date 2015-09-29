@@ -35,6 +35,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("Press 'c' to start the finger calibration procedure\n");
 
 	char in = getch();
+	// reset the cursor position
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD());
 
 	if (in == 'c') {
 		GLOVE_HAND hand;

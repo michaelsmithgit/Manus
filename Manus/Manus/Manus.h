@@ -87,7 +87,9 @@ typedef enum {
 #define MANUS_INVALID_ARGUMENT 1
 #define MANUS_DISCONNECTED 2
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 	/*! \brief Initialize the Manus SDK.
 	*
 	*  Must be called before any other function in the SDK.
@@ -164,7 +166,9 @@ extern "C" {
 	*  \param power The power of the vibration motor ranging from 0 to 1 (ex. 0.5 = 50% power).
 	*/
 	MANUS_API int ManusSetVibration(GLOVE_HAND hand, float power);
+#ifdef __cplusplus
 }
+#endif
 
 /**@}*/
 

@@ -26,37 +26,44 @@
 #define MANUS_API __declspec(dllimport)
 #endif
 
+/*! Quaternion representing an orientation. */
 typedef struct {
 	float w, x, y, z;
 } GLOVE_QUATERNION;
 
+/*! Three element vector, can either represent a rotation, translation or acceleration. */
 typedef struct {
 	float x, y, z;
 } GLOVE_VECTOR;
 
+/*! Pose structure representing an orientation and position. */
 typedef struct {
 	GLOVE_QUATERNION orientation;
 	GLOVE_VECTOR position;
 } GLOVE_POSE;
 
+/*! Raw data packet from the glove. */
 typedef struct {
-	GLOVE_VECTOR Acceleration;
-	GLOVE_VECTOR Euler;
-	GLOVE_QUATERNION Quaternion;
-	float Fingers[5];
-	unsigned int PacketNumber;
+	GLOVE_VECTOR Acceleration;		//! Linear acceleration vector in Gs.
+	GLOVE_VECTOR Euler;				//! Orientation in euler angles.
+	GLOVE_QUATERNION Quaternion;	//! Orientation in quaternions.
+	float Fingers[5];				//! Normalized bend value for each finger ranging from 0 to 1.
+	unsigned int PacketNumber;		//! Sequence number of the data packet.
 } GLOVE_DATA;
 
+/*! Structure containing the pose of each bone in the thumb. */
 typedef struct {
 	GLOVE_POSE metacarpal, proximal,
 		distal;
 } GLOVE_THUMB;
 
+/*! Structure containing the pose of each bone in a finger. */
 typedef struct {
 	GLOVE_POSE metacarpal, proximal,
 		intermediate, distal;
 } GLOVE_FINGER;
 
+/*! Skeletal model of the hand which contains a pose for the palm and all the bones in the fingers. */
 typedef struct {
 	GLOVE_POSE palm;
 	GLOVE_THUMB thumb;
@@ -64,11 +71,11 @@ typedef struct {
 		ring, pinky;
 } GLOVE_SKELETAL;
 
-// Left or Right glove enum
-typedef enum GLOVE_HAND {
+/*! Indicates which hand is being queried for.  */
+typedef enum {
 	GLOVE_LEFT = 0,
 	GLOVE_RIGHT,
-};
+} GLOVE_HAND;
 
 /**
 * \defgroup Glove Manus Glove

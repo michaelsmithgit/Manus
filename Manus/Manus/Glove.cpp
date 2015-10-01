@@ -34,8 +34,6 @@
 // accelerometer converion values
 #define FGPERCOUNT 0.00006103515f; // 1 / ACCEL_DIVISOR
 
-#define ENABLE_SENSORFUSION
-
 
 Glove::Glove(const wchar_t* device_path)
 	: m_connected(false)
@@ -305,39 +303,20 @@ void Glove::OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* eve
 
 void Glove::UpdateState()
 {
-	// temp data
-	AccelSensor myAccel;
-	MagSensor myMag;
-	fquaternion myQuaternion;
+	// linear acceleration temp values
+	GLOVE_VECTOR gravity, nonLinearAcceleration;
 
 	m_data.PacketNumber++;
 
-	myAccel.fgPerCount = FGPERCOUNT;
-
-	// normalize acceleration data
-	for (int i = 0; i < GLOVE_AXES; i++){
-		myAccel.fGp[i] = m_report.accel[i] / ACCEL_DIVISOR;
-		myAccel.fGpFast[i] = m_report.accel[i] * FGPERCOUNT;
-		myAccel.iGp[i] = m_report.accel[i];
-		myAccel.iGpFast[i] = m_report.accel[i];
-	}
+	nonLinearAcceleration.x = m_report.accel[0] / ACCEL_DIVISOR;
+	nonLinearAcceleration.y = m_report.accel[1] / ACCEL_DIVISOR;
+	nonLinearAcceleration.z = m_report.accel[2] / ACCEL_DIVISOR;
 
 	// normalize quaternion data
-	myQuaternion.q0 = m_report.quat[0] / QUAT_DIVISOR;
-	myQuaternion.q1 = m_report.quat[1] / QUAT_DIVISOR;
-	myQuaternion.q2 = m_report.quat[2] / QUAT_DIVISOR;
-	myQuaternion.q3 = m_report.quat[3] / QUAT_DIVISOR;
-
-	myMag.fCountsPeruT = FCOUNTSPERUT;
-	myMag.fuTPerCount = FUTPERCOUNT;
-
-	// normalize magnetometer data
-	for (int i = 0; i < GLOVE_AXES; i++){
-		myMag.fBp[i] = m_compass.compass[i] / COMPASS_DIVISOR;
-		myMag.fBpFast[i] = m_compass.compass[i] * FUTPERCOUNT;
-		myMag.iBp[i] = m_compass.compass[i];
-		myMag.iBpFast[i] = m_compass.compass[i];
-	}
+	m_data.Quaternion.w = m_report.quat[0] / QUAT_DIVISOR;
+	m_data.Quaternion.x = m_report.quat[1] / QUAT_DIVISOR;
+	m_data.Quaternion.y = m_report.quat[2] / QUAT_DIVISOR;
+	m_data.Quaternion.z = m_report.quat[3] / QUAT_DIVISOR;
 
 	// normalize finger data
 	for (int i = 0; i < GLOVE_FINGERS; i++)
@@ -348,24 +327,11 @@ void Glove::UpdateState()
 		else
 			m_data.Fingers[i] = m_report.fingers[GLOVE_FINGERS - (i + 1)] / FINGER_DIVISOR;
 	}
-#ifdef ENABLE_SENSORFUSION
-		// execute the magnetometer and yaw sensor fusion
-		fquaternion fused = m_sensorFusion.Fusion_Task(&myAccel, &myMag, &myQuaternion);
-
-		// copy the output of the sensor fusion to m_data
-		memcpy(&m_data.Quaternion, &fused, sizeof(GLOVE_QUATERNION));
-#else
-		memcpy(&m_data.Quaternion, &myQuaternion, sizeof(GLOVE_QUATERNION));
-#endif
-
 	// calculate the euler angles
 	ManusMath::GetEuler(&m_data.Euler, &m_data.Quaternion);
 
 	// calculate the linear acceleration
-	GLOVE_VECTOR gravity, nonLinearAcceleration;
-
 	ManusMath::GetGravity(&gravity, &m_data.Quaternion);
-	memcpy(&nonLinearAcceleration, &(myAccel.fGpFast), sizeof(GLOVE_VECTOR));
 	ManusMath::GetLinearAcceleration(&m_data.Acceleration, &nonLinearAcceleration, &gravity);
 }
 

@@ -37,6 +37,7 @@ private:
 	// temporary states for the ToGlovePose function call
 	GLOVE_HAND temp_hand;
 	GLOVE_DATA temp_data;
+	GLOVE_QUATERNION temp_quaternion;
 
 public:
 	SkeletalModel();

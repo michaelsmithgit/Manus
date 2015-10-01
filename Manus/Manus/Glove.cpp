@@ -188,7 +188,7 @@ bool Glove::WriteCharacteristic(PBTH_LE_GATT_CHARACTERISTIC characteristic, void
 		malloc(length + sizeof(PBTH_LE_GATT_CHARACTERISTIC_VALUE));
 
 	// Initialize the value structure.
-	value->DataSize = length;
+	value->DataSize = (ULONG)length;
 	memcpy(value->Data, src, length);
 
 	// Write the characteristic value.

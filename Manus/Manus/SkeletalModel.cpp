@@ -128,8 +128,6 @@ bool SkeletalModel::InitializeScene()
 
 bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE_HAND hand)
 {
-
-
 	// Get the animation evaluator for this scene
 	FbxAnimEvaluator* eval = m_scene->GetAnimationEvaluator();
 	FbxTime normalizedAmount;
@@ -138,28 +136,21 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 	temp_data = data;
 	temp_hand = hand;
 
-	// Set the pose of the palm
-	//model->palm = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_node, FBXSDK_TIME_INFINITE));
-	
-	
-
-	GLOVE_QUATERNION temp_quaternion;
-	
 	// Swapping as in ToGlovePose;
-	// Should be done before rotation?
 	temp_quaternion.x = data.Quaternion.y;
 	temp_quaternion.y = data.Quaternion.z;
 	temp_quaternion.z = data.Quaternion.x;
 	temp_quaternion.w = data.Quaternion.w;
 	
+	// Rotation to match Unity
 	GLOVE_QUATERNION rotation;
-	
-	rotation.x = -0.707;
+	rotation.x = -0.707f;
 	rotation.y = 0;
 	rotation.z = 0;
-	rotation.w = 0.707;
+	rotation.w = 0.707f;
 	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion, rotation);
-
+	
+	// Set the pose of the palm
 	model->palm.orientation = temp_quaternion;
 
 	// Evaluate the animation for the thumb

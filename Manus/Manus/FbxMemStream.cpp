@@ -55,7 +55,7 @@ int FbxMemStream::Write(const void* pData, int pSize)
 
 	m_pos += size;
 
-	return size;
+	return (int)size;
 }
 
 int FbxMemStream::Read(void* pData, int pSize) const
@@ -71,7 +71,7 @@ int FbxMemStream::Read(void* pData, int pSize) const
 	// hack for which I offer my sincere apology.
 	*(FbxInt64*)&m_pos += size;
 
-	return size;
+	return (int)size;
 }
 
 int FbxMemStream::GetReaderID() const
@@ -100,7 +100,7 @@ void FbxMemStream::Seek(const FbxInt64& pOffset, const FbxFile::ESeekPos& pSeekP
 
 long FbxMemStream::GetPosition() const
 {
-	return m_pos;
+	return (long)m_pos;
 }
 
 void FbxMemStream::SetPosition(long pPosition)

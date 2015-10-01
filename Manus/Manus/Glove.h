@@ -20,7 +20,6 @@
 #pragma once
 
 #include "Manus.h"
-#include "SensorFusion.h"
 
 #include <condition_variable>
 #include <mutex>
@@ -84,7 +83,6 @@ private:
 	CALIB_REPORT m_calib;
 
 	wchar_t* m_device_path;
-	SensorFusion m_sensorFusion;
 
 	HANDLE m_service_handle;
 	USHORT m_num_characteristics;

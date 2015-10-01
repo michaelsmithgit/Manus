@@ -304,13 +304,13 @@ void Glove::OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* eve
 void Glove::UpdateState()
 {
 	// linear acceleration temp values
-	GLOVE_VECTOR gravity, nonLinearAcceleration;
+	GLOVE_VECTOR gravity, rawAcceleration;
 
 	m_data.PacketNumber++;
 
-	nonLinearAcceleration.x = m_report.accel[0] / ACCEL_DIVISOR;
-	nonLinearAcceleration.y = m_report.accel[1] / ACCEL_DIVISOR;
-	nonLinearAcceleration.z = m_report.accel[2] / ACCEL_DIVISOR;
+	rawAcceleration.x = m_report.accel[0] / ACCEL_DIVISOR;
+	rawAcceleration.y = m_report.accel[1] / ACCEL_DIVISOR;
+	rawAcceleration.z = m_report.accel[2] / ACCEL_DIVISOR;
 
 	// normalize quaternion data
 	m_data.Quaternion.w = m_report.quat[0] / QUAT_DIVISOR;
@@ -332,7 +332,7 @@ void Glove::UpdateState()
 
 	// calculate the linear acceleration
 	ManusMath::GetGravity(&gravity, &m_data.Quaternion);
-	ManusMath::GetLinearAcceleration(&m_data.Acceleration, &nonLinearAcceleration, &gravity);
+	ManusMath::GetLinearAcceleration(&m_data.Acceleration, &rawAcceleration, &gravity);
 }
 
 uint8_t Glove::GetFlags()

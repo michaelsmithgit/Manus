@@ -136,6 +136,9 @@ int ManusInit()
 
 int ManusExit()
 {
+	if (!g_initialized)
+		return MANUS_ERROR;
+
 	std::lock_guard<std::mutex> lock(g_gloves_mutex);
 
 	for (Glove* glove : g_gloves)

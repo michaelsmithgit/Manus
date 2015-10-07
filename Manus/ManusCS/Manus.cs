@@ -184,7 +184,7 @@ namespace ManusMachina {
         *  \param timeout Milliseconds to wait until the glove returns a value.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetData(GLOVE_HAND hand, ref GLOVE_DATA data, uint timeout = 0);
+        public static extern int ManusGetData(GLOVE_HAND hand, out GLOVE_DATA data, uint timeout = 0);
 
 
         /*! \brief Get a skeletal model for the given glove state.
@@ -200,7 +200,7 @@ namespace ManusMachina {
         *  \param model The glove skeletal model.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model, uint timeout = 1000);
+        public static extern int ManusGetSkeletal(GLOVE_HAND hand, out GLOVE_SKELETAL model, uint timeout = 1000);
 
         /*! \brief Configure the handedness of the glove.
         *
@@ -213,7 +213,7 @@ namespace ManusMachina {
         *  \param right_hand Set the glove as a right hand.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int ManusSetHandedness(GLOVE_HAND hand, bool right_hand);
+        public static extern int ManusSetHandedness(GLOVE_HAND hand, GLOVE_HAND newHand);
 
         /*! \brief Calibrate the IMU on the glove.
         *

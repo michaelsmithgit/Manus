@@ -160,15 +160,13 @@ namespace ManusMachina {
         public const int OUT_OF_RANGE = 2;
         public const int DISCONNECTED = 3;
 
-        private GLOVE_HAND hand;
-
         /*! \brief Initialize the Manus SDK.
         *
         *  Must be called before any other function
         *  in the SDK.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusInit();
+        public static extern int ManusInit();
 
         /*! \brief Shutdown the Manus SDK.
         *
@@ -176,7 +174,7 @@ namespace ManusMachina {
         *  needed.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusExit();
+        public static extern int ManusExit();
 
 
         /*! \brief Get the state of a glove.
@@ -186,7 +184,7 @@ namespace ManusMachina {
         *  \param timeout Milliseconds to wait until the glove returns a value.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusGetData(GLOVE_HAND hand, ref GLOVE_DATA data, uint timeout = 0);
+        public static extern int ManusGetData(GLOVE_HAND hand, ref GLOVE_DATA data, uint timeout = 0);
 
 
         /*! \brief Get a skeletal model for the given glove state.
@@ -202,7 +200,7 @@ namespace ManusMachina {
         *  \param model The glove skeletal model.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model, uint timeout = 1000);
+        public static extern int ManusGetSkeletal(GLOVE_HAND hand, ref GLOVE_SKELETAL model, uint timeout = 1000);
 
         /*! \brief Configure the handedness of the glove.
         *
@@ -215,7 +213,7 @@ namespace ManusMachina {
         *  \param right_hand Set the glove as a right hand.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusSetHandedness(GLOVE_HAND hand, bool right_hand);
+        public static extern int ManusSetHandedness(GLOVE_HAND hand, bool right_hand);
 
         /*! \brief Calibrate the IMU on the glove.
         *
@@ -232,7 +230,7 @@ namespace ManusMachina {
         *  \param fingers Calibrate the fingers.
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusCalibrate(GLOVE_HAND hand, bool gyro = true, bool accel = true, bool fingers = false);
+        public static extern int ManusCalibrate(GLOVE_HAND hand, bool gyro = true, bool accel = true, bool fingers = false);
 
         /*! \brief Set the ouput power of the vibration motor.
         *
@@ -242,6 +240,6 @@ namespace ManusMachina {
         *  \param power The power of the vibration motor ranging from 0 to 1 (ex. 0.5 = 50% power).
         */
         [DllImport("Manus.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern int ManusSetVibration(GLOVE_HAND hand, float power);
+        public static extern int ManusSetVibration(GLOVE_HAND hand, float power);
     }
 }

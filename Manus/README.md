@@ -4,30 +4,30 @@ This library is part of the Manus SDK and provides functionality to communicate 
 
 ## Usage
 
-To communicate with the Manus Glove the SDK has to be initialized with ManusInit() after which the current state of a glove can be retrieved with ManusGetState().
+To communicate with the Manus Glove the SDK has to be initialized with ManusInit() after which the current state of a glove can be retrieved with ManusGetData().
 
 When no longer using the SDK ManusExit() should be called so that the SDK can safely shut down.
 
 ## Code Example
 
-A minimal program to retrieve the current state and the yaw, pitch and roll of the first connected Manus Glove looks like this:
+A minimal program to retrieve the data from the left Manus Glove looks like this:
 
 	ManusInit();
 	
-	GLOVE_STATE state;
+	GLOVE_DATA data;
 	while (true)
 	{
-		if (ManusGetState(0, &state) == MANUS_SUCCESS)
+		if (ManusGetData(GLOVE_LEFT, &state) == MANUS_SUCCESS)
 		{
-			GLOVE_VECTOR euler, gravity;
-			ManusGetGravity(&gravity, &state.data.Quaternion);
-			ManusGetEuler(&euler, &state.data.Quaternion, &gravity);
+			// The data structure now contains the glove data
 		}
 		else
 		{
-			// The requested glove is likely not connected
+			// The requested glove is not connected
 		}
 	}
+	
+	ManusExit();
 
 Other gloves can also be queried and the number of currently connected gloves can be retrieved with ManusGetGloveCount().
 

@@ -29,8 +29,6 @@ A minimal program to retrieve the data from the left Manus Glove looks like this
 	
 	ManusExit();
 
-Other gloves can also be queried and the number of currently connected gloves can be retrieved with ManusGetGloveCount().
-
 ## Documentation
 
 The full documentation is available at [labs.manusmachina.com](http://labs.manusmachina.com/).

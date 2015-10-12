@@ -38,11 +38,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	// reset the cursor position
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD());
 
-	if (in == 'c') {
+	if (in == 'c')
+	{
 		GLOVE_HAND hand;
 		printf("Press 'r' for right hand or 'l' for left hand\n");
 		in = getch();
-		if (in = 'l')
+		if (in == 'l')
 			hand = GLOVE_LEFT;
 		else
 			hand = GLOVE_RIGHT;
@@ -69,10 +70,13 @@ int _tmain(int argc, _TCHAR* argv[])
 				GLOVE_DATA data = { 0 };
 				GLOVE_SKELETAL skeletal = { 0 };
 
-				if (ManusGetData(hand, &data, 1000) == MANUS_SUCCESS){
+				if (ManusGetData(hand, &data, 1000) == MANUS_SUCCESS)
+				{
 					printf("glove: %d - %d %s\n", i, data.PacketNumber, i > 0 ? "Right" : "Left");
 					ManusGetSkeletal(hand, &skeletal);
-				}else{
+				}
+				else
+				{
 					printf("glove: %d not found \n", i);
 					continue;
 				}

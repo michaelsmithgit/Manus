@@ -120,10 +120,6 @@ void Glove::Connect()
 			{
 				ConfigureCharacteristic(&m_characteristics[i], true, false);
 			}
-			else if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_COMPASS)
-			{
-				ConfigureCharacteristic(&m_characteristics[i], true, false);
-			}
 			else if (m_characteristics[i].CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_FLAGS)
 			{
 				ReadCharacteristic(&m_characteristics[i], &m_flags, sizeof(m_flags));
@@ -136,11 +132,11 @@ void Glove::Connect()
 
 		// Allocate the value changed structures.
 		m_value_changed_event = (PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION)
-			malloc(sizeof(PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION) + 2 * sizeof(BTH_LE_GATT_CHARACTERISTIC));
+			malloc(sizeof(PBLUETOOTH_GATT_VALUE_CHANGED_EVENT_REGISTRATION) + sizeof(BTH_LE_GATT_CHARACTERISTIC));
 
 		// Register for event callbacks on the characteristics.
-		m_value_changed_event->NumCharacteristics = 2;
-		memcpy(&m_value_changed_event->Characteristics, m_characteristics, 2 * sizeof(BTH_LE_GATT_CHARACTERISTIC));
+		m_value_changed_event->NumCharacteristics = 1;
+		memcpy(&m_value_changed_event->Characteristics, m_characteristics, sizeof(BTH_LE_GATT_CHARACTERISTIC));
 		HRESULT hr = BluetoothGATTRegisterEvent(m_service_handle, CharacteristicValueChangedEvent, m_value_changed_event,
 			Glove::OnCharacteristicChanged, this, &m_event_handle, BLUETOOTH_GATT_FLAG_NONE);
 
@@ -293,8 +289,6 @@ void Glove::OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* eve
 
 		if (characteristic->CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_REPORT)
 			glove->ReadCharacteristic(characteristic, &glove->m_report, sizeof(GLOVE_REPORT));
-		else if (characteristic->CharacteristicUuid.Value.ShortUuid == BLE_UUID_MANUS_GLOVE_COMPASS)
-			glove->ReadCharacteristic(characteristic, &glove->m_compass, sizeof(COMPASS_REPORT));
 	}
 
 	glove->UpdateState();

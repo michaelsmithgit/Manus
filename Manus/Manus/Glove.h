@@ -37,7 +37,6 @@
 
 #define BLE_UUID_MANUS_GLOVE_SERVICE    0x0001
 #define BLE_UUID_MANUS_GLOVE_REPORT     0x0002
-#define BLE_UUID_MANUS_GLOVE_COMPASS    0x0003
 #define BLE_UUID_MANUS_GLOVE_FLAGS      0x0004
 #define BLE_UUID_MANUS_GLOVE_CALIB      0x0005
 #define BLE_UUID_MANUS_GLOVE_RUMBLE     0x0006
@@ -52,11 +51,6 @@ typedef struct
 	int16_t accel[GLOVE_AXES];
 	uint8_t fingers[GLOVE_FINGERS];
 } GLOVE_REPORT;
-
-typedef struct
-{
-	int16_t compass[GLOVE_AXES];
-} COMPASS_REPORT;
 
 typedef struct
 {
@@ -79,7 +73,6 @@ private:
 	GLOVE_DATA m_data;
 	unsigned int m_packets;
 	GLOVE_REPORT m_report;
-	COMPASS_REPORT m_compass;
 	CALIB_REPORT m_calib;
 
 	wchar_t* m_device_path;

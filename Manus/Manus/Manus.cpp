@@ -237,5 +237,5 @@ int ManusSetVibration(GLOVE_HAND hand, float power){
 
 	elem->SetVibration(power);
 
-	return MANUS_ERROR;
+	return MANUS_SUCCESS;
 }

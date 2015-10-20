@@ -44,11 +44,16 @@ typedef struct {
 
 /*! Raw data packet from the glove. */
 typedef struct {
-	GLOVE_VECTOR Acceleration;		//! Linear acceleration vector in Gs.
-	GLOVE_VECTOR Euler;				//! Orientation in euler angles.
-	GLOVE_QUATERNION Quaternion;	//! Orientation in quaternions.
-	float Fingers[5];				//! Normalized bend value for each finger ranging from 0 to 1.
-	unsigned int PacketNumber;		//! Sequence number of the data packet.
+	//! Linear acceleration vector in Gs.
+	GLOVE_VECTOR Acceleration;
+	//! Orientation in euler angles.
+	GLOVE_VECTOR Euler;
+	//! Orientation in quaternions.
+	GLOVE_QUATERNION Quaternion;
+	//! Normalized bend value for each finger ranging from 0 to 1.
+	float Fingers[5];
+	//! Sequence number of the data packet.
+	unsigned int PacketNumber;
 } GLOVE_DATA;
 
 /*! Structure containing the pose of each bone in the thumb. */

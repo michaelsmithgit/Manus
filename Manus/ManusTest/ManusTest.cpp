@@ -24,6 +24,12 @@
 #include <math.h>
 #include <conio.h>
 
+void clearPrintf(char* text)
+{
+	printf("|%-60s|\n", text);
+
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	ManusInit();
@@ -31,8 +37,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	LARGE_INTEGER freq;
 	QueryPerformanceFrequency(&freq);
 
-	printf("Press 'p' to start reading the gloves\n");
-	printf("Press 'c' to start the finger calibration procedure\n");
+	clearPrintf("Press 'p' to start reading the gloves");
+	clearPrintf("Press 'c' to start the finger calibration procedure");
+	clearPrintf("Press 'l' to start logging");
 
 	char in = getch();
 	// reset the cursor position
@@ -41,20 +48,27 @@ int _tmain(int argc, _TCHAR* argv[])
 	if (in == 'c')
 	{
 		GLOVE_HAND hand;
-		printf("Press 'r' for right hand or 'l' for left hand\n");
+		clearPrintf("Press 'r' for right hand or 'l' for left hand");
 		in = getch();
 		if (in == 'l')
 			hand = GLOVE_LEFT;
 		else
 			hand = GLOVE_RIGHT;
 
-		ManusCalibrate(hand, false, false, true);
+		if (ManusCalibrate(hand, false, false, true) != MANUS_SUCCESS)
+		{
+			clearPrintf("No glove found");
+		}
+		else
+		{
+			clearPrintf("Move the flex sensors across their whole range and then press any key");
+			getch();
+			if (ManusCalibrate(hand, false, false, false) == MANUS_SUCCESS)
+				clearPrintf("Calibration finished, press any key to exit");
+			else
+				clearPrintf("Something went wrong during the calibration");
 
-		printf("Move the flex sensors across their whole range and then press any key\n");
-		getch();
-		ManusCalibrate(hand, false, false, false);
-
-		printf("Calibration finished, press any key to exit\n");
+		}
 		getch();
 	}
 	else if (in == 'p')
@@ -97,6 +111,41 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD());
 		}
+	}
+	else if (in == 'l')
+	{
+		FILE* file = fopen("yaw.csv", "a");
+
+		if (file == NULL)
+		{
+			printf("file error");
+		}
+		else
+		{
+			while (_kbhit() == 0)
+			{
+				GLOVE_DATA data;
+				ManusGetData(GLOVE_INDEXED, &data, 1000);
+				float yaw = data.Euler.z * (180.0 / M_PI);
+				char text[30];
+				
+				LARGE_INTEGER time;
+				QueryPerformanceCounter(&time);
+
+
+				sprintf(text, "%f,% 1.5f\n", (time.QuadPart * 1000) / (double)freq.QuadPart, yaw);
+
+				printf(text);
+
+				fputs(text, file);
+			}
+			getch();
+			clearPrintf("Logging stopped");
+		}
+
+		fclose(file);
+		clearPrintf("Press any key to close");
+		getch();
 	}
 
 	ManusExit();

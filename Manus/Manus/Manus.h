@@ -75,6 +75,7 @@ typedef struct {
 typedef enum {
 	GLOVE_LEFT = 0,
 	GLOVE_RIGHT,
+	GLOVE_INDEXED
 } GLOVE_HAND;
 
 /**

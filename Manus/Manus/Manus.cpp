@@ -44,7 +44,10 @@ int GetGlove(GLOVE_HAND hand, Glove** elem)
 
 	for (int i = 0; i < g_gloves.size(); i++)
 	{
-		if (g_gloves[i]->GetHand() == hand && g_gloves[i]->IsConnected())
+		// if the handedness is the hand requested or i is the indexed offset
+		// AND the glove is connected
+		if ( ( g_gloves[i]->GetHand() == hand || i == hand - GLOVE_INDEXED )
+			&& g_gloves[i]->IsConnected())
 		{
 			*elem = g_gloves[i];
 			return MANUS_SUCCESS;

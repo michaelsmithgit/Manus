@@ -57,10 +57,13 @@ typedef struct {
 } GLOVE_DATA;
 
 /*! Structure containing the pose of each bone in the thumb. */
+/*
 typedef struct {
 	GLOVE_POSE metacarpal, proximal,
 		distal;
 } GLOVE_THUMB;
+*/
+
 
 /*! Structure containing the pose of each bone in a finger. */
 typedef struct {
@@ -71,9 +74,7 @@ typedef struct {
 /*! Skeletal model of the hand which contains a pose for the palm and all the bones in the fingers. */
 typedef struct {
 	GLOVE_POSE palm;
-	GLOVE_THUMB thumb;
-	GLOVE_FINGER index, middle,
-		ring, pinky;
+	GLOVE_FINGER thumb, index, middle, ring, pinky;
 } GLOVE_SKELETAL;
 
 /*! Indicates which hand is being queried for.  */

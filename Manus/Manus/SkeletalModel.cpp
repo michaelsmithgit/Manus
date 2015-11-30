@@ -4,13 +4,14 @@
 #include "resource.h"
 #include "ManusMath.h"
 
-const char* s_bone_names[GLOVE_FINGERS][3] = {
-	{ "ThumbFingerBone004", "ThumbFingerBone005", "ThumbFingerBone003" },
-	{ "IndexFingerBone003", "IndexFingerBone005", "IndexFingerBone004" },
-	{ "MiddleFingerBone003", "MiddleFingerBone004", "MiddleFingerBone005" },
-	{ "RingFingerBone004", "RingFingerBone005", "RingFingerBone003" },
-	{ "PinkFingerBone004", "PinkFingerBone005", "PinkFingerBone003" }
+const char* s_bone_names[GLOVE_FINGERS][4] = {
+	{ "Finger_00", "Finger_01", "Finger_02", "Finger_03" },
+	{ "Finger_10", "Finger_11", "Finger_12", "Finger_13" },
+	{ "Finger_20", "Finger_21", "Finger_22", "Finger_23" },
+	{ "Finger_30", "Finger_31", "Finger_32", "Finger_33" },
+	{ "Finger_40", "Finger_41", "Finger_42", "Finger_43" },
 };
+
 
 GLOVE_POSE SkeletalModel::ToGlovePose(FbxAMatrix mat)
 {
@@ -18,14 +19,6 @@ GLOVE_POSE SkeletalModel::ToGlovePose(FbxAMatrix mat)
 
 	// Apply the orientation of the hand to the transformation matrix
 	FbxQuaternion orient;
-
-	/*
-	if (temp_hand == GLOVE_RIGHT)
-		//orient = FbxQuaternion(-temp_data.Quaternion.y, temp_data.Quaternion.z, -temp_data.Quaternion.x, temp_data.Quaternion.w);
-		orient = FbxQuaternion(-temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, -temp_data.Quaternion.w);
-	else
-		orient = FbxQuaternion(temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, temp_data.Quaternion.w);
-	*/
 
 	orient = FbxQuaternion(temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, temp_data.Quaternion.w);
 
@@ -46,10 +39,6 @@ GLOVE_POSE SkeletalModel::ToGlovePose(FbxAMatrix mat)
 	pose.position.y = (float)trans.mData[1];
 	pose.position.z = (float)trans.mData[2];
 
-	/*
-	if (temp_hand == GLOVE_RIGHT)
-		pose.position.x *= -1.0f;
-	*/
 	return pose;
 }
 
@@ -96,21 +85,16 @@ bool SkeletalModel::InitializeScene()
 	}
 
 	// Create a new scene so it can be populated by the imported file.
-	m_scene = FbxScene::Create(m_sdk_manager, "HandModel");
+	m_scene = FbxScene::Create(m_sdk_manager, "Manus_Handv2_Left");
 
 	// Import the contents of the file into the scene.
 	importer->Import(m_scene);
 
-	// Get the hand node
-	m_palm_node = m_scene->FindNodeByName("Palm");
-
-	// Get the palm bone
-	m_palm_bone = m_scene->FindNodeByName("Palm bone");
 
 	// Get the bones for each finger.
 	for (int i = 0; i < GLOVE_FINGERS; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < 4; j++)
 		{
 			// Get the node for the finger
 			m_bone_nodes[i][j] = m_scene->FindNodeByName(s_bone_names[i][j]);
@@ -131,7 +115,7 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 	// Get the animation evaluator for this scene
 	FbxAnimEvaluator* eval = m_scene->GetAnimationEvaluator();
 	FbxTime normalizedAmount;
-	double timeFactor = 1.66;
+	double timeFactor = 10.0;
 
 	temp_data = data;
 	temp_hand = hand;
@@ -141,51 +125,44 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 	temp_quaternion.y = data.Quaternion.z;
 	temp_quaternion.z = data.Quaternion.x;
 	temp_quaternion.w = data.Quaternion.w;
-	
-	// Rotation to match Unity
-	GLOVE_QUATERNION rotation;
-	rotation.x = -0.707f;
-	rotation.y = 0;
-	rotation.z = 0;
-	rotation.w = 0.707f;
-	temp_quaternion = ManusMath::QuaternionMultiply(temp_quaternion, rotation);
-	
+
 	// Set the pose of the palm
 	model->palm.orientation = temp_quaternion;
-
+	
 	// Evaluate the animation for the thumb
 	normalizedAmount.SetSecondDouble(data.Fingers[0] * timeFactor);
 	model->thumb.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][0], normalizedAmount));
 	model->thumb.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][1], normalizedAmount));
-	model->thumb.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][2], normalizedAmount));
+	model->thumb.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][2], normalizedAmount));
+	model->thumb.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][3], normalizedAmount));
 
 	// Evaluate the animation for the index finger
 	normalizedAmount.SetSecondDouble(data.Fingers[1] * timeFactor);
-	model->index.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount));
-	model->index.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][0], normalizedAmount));
-	model->index.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][1], normalizedAmount));
-	model->index.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][2], normalizedAmount));
+	model->index.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][0], normalizedAmount));
+	model->index.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][1], normalizedAmount));
+	model->index.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][2], normalizedAmount));
+	model->index.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][3], normalizedAmount));
 
 	// Evaluate the animation for the middle finger
 	normalizedAmount.SetSecondDouble(data.Fingers[2] * timeFactor);
-	model->middle.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount));
-	model->middle.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][0], normalizedAmount));
-	model->middle.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][1], normalizedAmount));
-	model->middle.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][2], normalizedAmount));
+	model->middle.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][0], normalizedAmount));
+	model->middle.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][1], normalizedAmount));
+	model->middle.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][2], normalizedAmount));
+	model->middle.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][3], normalizedAmount));
 
 	// Evaluate the animation for the ring finger
 	normalizedAmount.SetSecondDouble(data.Fingers[3] * timeFactor);
-	model->ring.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount));
-	model->ring.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][0], normalizedAmount));
-	model->ring.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][1], normalizedAmount));
-	model->ring.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][2], normalizedAmount));
+	model->ring.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][0], normalizedAmount));
+	model->ring.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][1], normalizedAmount));
+	model->ring.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][2], normalizedAmount));
+	model->ring.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][3], normalizedAmount));
 
 	// Evaluate the animation for the pink finger
 	normalizedAmount.SetSecondDouble(data.Fingers[4] * timeFactor);
-	model->pinky.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_palm_bone, normalizedAmount));
-	model->pinky.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][0], normalizedAmount));
-	model->pinky.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][1], normalizedAmount));
-	model->pinky.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][2], normalizedAmount));
+	model->pinky.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][0], normalizedAmount));
+	model->pinky.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][1], normalizedAmount));
+	model->pinky.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][2], normalizedAmount));
+	model->pinky.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][3], normalizedAmount));
 
 	return true;
 }

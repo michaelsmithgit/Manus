@@ -79,9 +79,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HandModel.fbx">
+    <None Include="..\..\..\..\Users\Andre\Desktop\MANUS_HAND\Manus_Handv2_Left.FBX">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Manus_Handv2_Left.FBX" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Manus.rc">

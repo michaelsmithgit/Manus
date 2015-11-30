@@ -190,7 +190,6 @@
     <ClCompile Include="WinDevices.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\Users\Andre\Desktop\MANUS_HAND\Manus_Handv2_Left.FBX" />
     <None Include="Manus_Handv2_Left.FBX" />
   </ItemGroup>
   <ItemGroup>

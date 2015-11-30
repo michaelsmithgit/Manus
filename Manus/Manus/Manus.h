@@ -56,15 +56,6 @@ typedef struct {
 	unsigned int PacketNumber;
 } GLOVE_DATA;
 
-/*! Structure containing the pose of each bone in the thumb. */
-/*
-typedef struct {
-	GLOVE_POSE metacarpal, proximal,
-		distal;
-} GLOVE_THUMB;
-*/
-
-
 /*! Structure containing the pose of each bone in a finger. */
 typedef struct {
 	GLOVE_POSE metacarpal, proximal,

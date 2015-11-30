@@ -30,7 +30,6 @@ private:
 	FbxScene* m_scene;
 	FbxNode* m_palm_node;
 	FbxNode* m_palm_bone;
-	//FbxNode* m_bone_nodes[GLOVE_FINGERS][3];
 	FbxNode* m_bone_nodes[GLOVE_FINGERS][4];
 
 	GLOVE_POSE ToGlovePose(FbxAMatrix mat);

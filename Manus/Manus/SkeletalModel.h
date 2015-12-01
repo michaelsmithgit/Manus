@@ -27,11 +27,11 @@ class SkeletalModel
 {
 private:
 	FbxManager* m_sdk_manager;
-	FbxScene* m_scene;
-	FbxNode* m_palm_node;
-	FbxNode* m_palm_bone;
-	FbxNode* m_bone_nodes[GLOVE_FINGERS][4];
-
+	FbxScene* m_scene[2];
+	//FbxNode* m_palm_node;
+	//FbxNode* m_palm_bone;
+	FbxNode* m_bone_nodes[2][GLOVE_FINGERS][4];
+	
 	GLOVE_POSE ToGlovePose(FbxAMatrix mat);
 
 	// temporary states for the ToGlovePose function call

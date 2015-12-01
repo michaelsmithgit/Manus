@@ -69,26 +69,49 @@ bool SkeletalModel::InitializeScene()
 	m_sdk_manager->SetIOSettings(ios);
 
 	// Get pointer and size to resource.
-	HRSRC hRes = FindResource(GetModuleHandle(L"Manus.dll"), MAKEINTRESOURCE(IDR_FBX1), RT_RCDATA);
-	HGLOBAL hMem = LoadResource(GetModuleHandle(L"Manus.dll"), hRes);
-	DWORD dSize = SizeofResource(GetModuleHandle(L"Manus.dll"), hRes);
-	void* pMem = LockResource(hMem);
+	HRSRC hRes_left = FindResource(GetModuleHandle(L"Manus.dll"), MAKEINTRESOURCE(IDR_FBX_LEFT), RT_RCDATA);
+	HGLOBAL hMem_left = LoadResource(GetModuleHandle(L"Manus.dll"), hRes_left);
+	DWORD dSize_left = SizeofResource(GetModuleHandle(L"Manus.dll"), hRes_left);
+	void* pMem_left = LockResource(hMem_left);
 
 	// Create an importer and initialize the importer.
-	FbxImporter* importer = FbxImporter::Create(m_sdk_manager, "");
-	FbxMemStream mem_stream(m_sdk_manager, pMem, dSize);
-	if (!importer->Initialize(&mem_stream, nullptr, -1, m_sdk_manager->GetIOSettings()))
+	FbxImporter* importer_left = FbxImporter::Create(m_sdk_manager, "");
+	FbxMemStream mem_stream_left(m_sdk_manager, pMem_left, dSize_left);
+	if (!importer_left->Initialize(&mem_stream_left, nullptr, -1, m_sdk_manager->GetIOSettings()))
 	{
 		FBXSDK_printf("Call to FbxExporter::Initialize() failed.\n");
-		FBXSDK_printf("Error returned: %s\n\n", importer->GetStatus().GetErrorString());
+		FBXSDK_printf("Error returned: %s\n\n", importer_left->GetStatus().GetErrorString());
 		return false;
 	}
 
 	// Create a new scene so it can be populated by the imported file.
-	m_scene = FbxScene::Create(m_sdk_manager, "Manus_Handv2_Left");
+	m_scene[GLOVE_LEFT] = FbxScene::Create(m_sdk_manager, "Manus_Handv2_Left");
 
 	// Import the contents of the file into the scene.
-	importer->Import(m_scene);
+	importer_left->Import(m_scene[GLOVE_LEFT]);
+
+	// Do the same for right
+	// Get pointer and size to resource.
+	HRSRC hRes_right = FindResource(GetModuleHandle(L"Manus.dll"), MAKEINTRESOURCE(IDR_FBX_RIGHT), RT_RCDATA);
+	HGLOBAL hMem_right = LoadResource(GetModuleHandle(L"Manus.dll"), hRes_right);
+	DWORD dSize_right = SizeofResource(GetModuleHandle(L"Manus.dll"), hRes_right);
+	void* pMem_right = LockResource(hMem_right);
+
+	// Create an importer and initialize the importer.
+	FbxImporter* importer_right = FbxImporter::Create(m_sdk_manager, "");
+	FbxMemStream mem_stream_right(m_sdk_manager, pMem_right, dSize_right);
+	if (!importer_right->Initialize(&mem_stream_right, nullptr, -1, m_sdk_manager->GetIOSettings()))
+	{
+		FBXSDK_printf("Call to FbxExporter::Initialize() failed.\n");
+		FBXSDK_printf("Error returned: %s\n\n", importer_right->GetStatus().GetErrorString());
+		return false;
+	}
+
+	// Create a new scene so it can be populated by the imported file.
+	m_scene[GLOVE_RIGHT] = FbxScene::Create(m_sdk_manager, "Manus_Handv2_Right");
+
+	// Import the contents of the file into the scene.
+	importer_right->Import(m_scene[GLOVE_RIGHT]);
 
 
 	// Get the bones for each finger.
@@ -97,12 +120,14 @@ bool SkeletalModel::InitializeScene()
 		for (int j = 0; j < 4; j++)
 		{
 			// Get the node for the finger
-			m_bone_nodes[i][j] = m_scene->FindNodeByName(s_bone_names[i][j]);
+			m_bone_nodes[GLOVE_LEFT][i][j] = m_scene[GLOVE_LEFT]->FindNodeByName(s_bone_names[i][j]);
+			m_bone_nodes[GLOVE_RIGHT][i][j] = m_scene[GLOVE_RIGHT]->FindNodeByName(s_bone_names[i][j]);
 		}
 	}
 
 	// The file has been imported; we can get rid of the importer.
-	importer->Destroy();
+	importer_left->Destroy();
+	importer_right->Destroy();
 
 	return true;
 }
@@ -113,7 +138,7 @@ bool SkeletalModel::InitializeScene()
 bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE_HAND hand)
 {
 	// Get the animation evaluator for this scene
-	FbxAnimEvaluator* eval = m_scene->GetAnimationEvaluator();
+	FbxAnimEvaluator* eval = m_scene[hand]->GetAnimationEvaluator();
 	FbxTime normalizedAmount;
 	double timeFactor = 10.0;
 
@@ -131,38 +156,38 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 	
 	// Evaluate the animation for the thumb
 	normalizedAmount.SetSecondDouble(data.Fingers[0] * timeFactor);
-	model->thumb.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][0], normalizedAmount));
-	model->thumb.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][1], normalizedAmount));
-	model->thumb.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][2], normalizedAmount));
-	model->thumb.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[0][3], normalizedAmount));
+	model->thumb.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][0][0], normalizedAmount));
+	model->thumb.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][0][1], normalizedAmount));
+	model->thumb.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][0][2], normalizedAmount));
+	model->thumb.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][0][3], normalizedAmount));
 
 	// Evaluate the animation for the index finger
 	normalizedAmount.SetSecondDouble(data.Fingers[1] * timeFactor);
-	model->index.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][0], normalizedAmount));
-	model->index.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][1], normalizedAmount));
-	model->index.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][2], normalizedAmount));
-	model->index.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[1][3], normalizedAmount));
+	model->index.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][1][0], normalizedAmount));
+	model->index.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][1][1], normalizedAmount));
+	model->index.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][1][2], normalizedAmount));
+	model->index.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][1][3], normalizedAmount));
 
 	// Evaluate the animation for the middle finger
 	normalizedAmount.SetSecondDouble(data.Fingers[2] * timeFactor);
-	model->middle.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][0], normalizedAmount));
-	model->middle.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][1], normalizedAmount));
-	model->middle.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][2], normalizedAmount));
-	model->middle.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[2][3], normalizedAmount));
+	model->middle.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][2][0], normalizedAmount));
+	model->middle.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][2][1], normalizedAmount));
+	model->middle.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][2][2], normalizedAmount));
+	model->middle.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][2][3], normalizedAmount));
 
 	// Evaluate the animation for the ring finger
 	normalizedAmount.SetSecondDouble(data.Fingers[3] * timeFactor);
-	model->ring.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][0], normalizedAmount));
-	model->ring.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][1], normalizedAmount));
-	model->ring.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][2], normalizedAmount));
-	model->ring.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[3][3], normalizedAmount));
+	model->ring.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][3][0], normalizedAmount));
+	model->ring.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][3][1], normalizedAmount));
+	model->ring.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][3][2], normalizedAmount));
+	model->ring.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][3][3], normalizedAmount));
 
 	// Evaluate the animation for the pink finger
 	normalizedAmount.SetSecondDouble(data.Fingers[4] * timeFactor);
-	model->pinky.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][0], normalizedAmount));
-	model->pinky.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][1], normalizedAmount));
-	model->pinky.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][2], normalizedAmount));
-	model->pinky.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[4][3], normalizedAmount));
+	model->pinky.metacarpal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][4][0], normalizedAmount));
+	model->pinky.proximal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][4][1], normalizedAmount));
+	model->pinky.intermediate = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][4][2], normalizedAmount));
+	model->pinky.distal = ToGlovePose(eval->GetNodeGlobalTransform(m_bone_nodes[hand][4][3], normalizedAmount));
 
 	return true;
 }

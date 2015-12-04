@@ -122,9 +122,14 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		else
 		{
+			float prevYaw = 0;
+			LARGE_INTEGER prevTime;
+			QueryPerformanceCounter(&prevTime);
+
 			while (_kbhit() == 0)
 			{
 				GLOVE_DATA data;
+				float differentiatedYaw;
 				ManusGetData(GLOVE_INDEXED, &data, 1000);
 				float yaw = data.Euler.z * (180.0 / M_PI);
 				char text[30];
@@ -132,12 +137,18 @@ int _tmain(int argc, _TCHAR* argv[])
 				LARGE_INTEGER time;
 				QueryPerformanceCounter(&time);
 
+				differentiatedYaw = (prevYaw - yaw) / ( ( (time.QuadPart - prevTime.QuadPart) * 1000) / (double)freq.QuadPart);
 
-				sprintf(text, "%f,% 1.5f\n", (time.QuadPart * 1000) / (double)freq.QuadPart, yaw);
+				// make sure the value isn't a 360 flip
+				if ( differentiatedYaw > -5 & differentiatedYaw < 5)
+				{
+					sprintf(text, "%f,% 1.5f\n", (time.QuadPart * 1000) / (double)freq.QuadPart, differentiatedYaw);
+					printf(text);
+					fputs(text, file);
+				}
 
-				printf(text);
-
-				fputs(text, file);
+				prevYaw = yaw;
+				prevTime = time;
 			}
 			getch();
 			clearPrintf("Logging stopped");

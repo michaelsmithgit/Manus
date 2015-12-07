@@ -20,7 +20,7 @@ GLOVE_POSE SkeletalModel::ToGlovePose(FbxAMatrix mat)
 	// Apply the orientation of the hand to the transformation matrix
 	FbxQuaternion orient;
 
-	orient = FbxQuaternion(temp_data.Quaternion.y, temp_data.Quaternion.z, temp_data.Quaternion.x, temp_data.Quaternion.w);
+	orient = FbxQuaternion(-temp_data.Quaternion.y, temp_data.Quaternion.z, -temp_data.Quaternion.x, temp_data.Quaternion.w);
 
 	FbxAMatrix orientMat;
 	orientMat.SetQ(orient);
@@ -146,9 +146,9 @@ bool SkeletalModel::Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE
 	temp_hand = hand;
 
 	// Swapping as in ToGlovePose;
-	temp_quaternion.x = data.Quaternion.y;
+	temp_quaternion.x = -data.Quaternion.y;
 	temp_quaternion.y = data.Quaternion.z;
-	temp_quaternion.z = data.Quaternion.x;
+	temp_quaternion.z = -data.Quaternion.x;
 	temp_quaternion.w = data.Quaternion.w;
 
 	// Set the pose of the palm

@@ -21,19 +21,8 @@
 #include "Glove.h"
 #include "ManusMath.h"
 
+#include <hidapi.h>
 #include <limits>
-
-// Sensorfusion constants
-#define ACCEL_DIVISOR 16384.0f
-#define QUAT_DIVISOR 16384.0f
-#define COMPASS_DIVISOR 32.0f
-#define FINGER_DIVISOR 255.0f
-// magnetometer conversion values
-#define FUTPERCOUNT 0.3f; 
-#define FCOUNTSPERUT 3.333f;
-// accelerometer converion values
-#define FGPERCOUNT 0.00006103515f; // 1 / ACCEL_DIVISOR
-
 
 Glove::Glove(const wchar_t* device_path)
 	: m_connected(false)
@@ -43,8 +32,6 @@ Glove::Glove(const wchar_t* device_path)
 	, m_event_handle(INVALID_HANDLE_VALUE)
 	, m_value_changed_event(nullptr)
 {
-	//memset(&m_report, 0, sizeof(m_report));
-
 	size_t len = wcslen(device_path) + 1;
 	m_device_path = new wchar_t[len];
 	memcpy(m_device_path, device_path, len * sizeof(wchar_t));

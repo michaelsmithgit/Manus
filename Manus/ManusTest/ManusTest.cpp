@@ -34,7 +34,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("Press 'p' to start reading the gloves\n");
 	printf("Press 'c' to start the finger calibration procedure\n");
 
-	char in = getch();
+	char in = _getch();
 	// reset the cursor position
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), COORD());
 
@@ -42,7 +42,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		GLOVE_HAND hand;
 		printf("Press 'r' for right hand or 'l' for left hand\n");
-		in = getch();
+		in = _getch();
 		if (in == 'l')
 			hand = GLOVE_LEFT;
 		else
@@ -51,11 +51,11 @@ int _tmain(int argc, _TCHAR* argv[])
 		ManusCalibrate(hand, false, false, true);
 
 		printf("Move the flex sensors across their whole range and then press any key\n");
-		getch();
+		_getch();
 		ManusCalibrate(hand, false, false, false);
 
 		printf("Calibration finished, press any key to exit\n");
-		getch();
+		_getch();
 	}
 	else if (in == 'p')
 	{

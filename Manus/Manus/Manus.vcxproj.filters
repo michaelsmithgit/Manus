@@ -1,92 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="FbxMemStream.cpp" />
+    <ClCompile Include="Glove.cpp" />
+    <ClCompile Include="Manus.cpp" />
+    <ClCompile Include="ManusMath.cpp" />
+    <ClCompile Include="matrix.cpp" />
+    <ClCompile Include="SkeletalModel.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="WinDevices.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Manus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Glove.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Devices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WinDevices.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SkeletalModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FbxMemStream.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ManusMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Devices.h" />
+    <ClInclude Include="FbxMemStream.h" />
+    <ClInclude Include="Glove.h" />
+    <ClInclude Include="Manus.h" />
+    <ClInclude Include="ManusMath.h" />
+    <ClInclude Include="matrix.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SkeletalModel.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="types.h" />
+    <ClInclude Include="WinDevices.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Manus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Glove.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WinDevices.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SkeletalModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FbxMemStream.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ManusMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ResourceCompile Include="Manus.rc" />
   </ItemGroup>
   <ItemGroup>
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Manus_Handv2_Left_Meshless.FBX" />
     <None Include="Manus_Handv2_Right_Meshless.FBX" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Manus.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -57,12 +57,7 @@ SkeletalModel::~SkeletalModel()
 bool SkeletalModel::InitializeScene()
 {
 	// Arrays of size 2 for the left/right hand loop
-	HRSRC hRes[2];
-	HGLOBAL hMem[2];
-	DWORD dSize[2];
-	void* pMem[2];
-	FbxImporter* importer[2];
-	FbxMemStream* mem_stream[2];
+	
 
 	// Create the FBX SDK memory manager object.
 	// The SDK Manager allocates and frees memory
@@ -77,22 +72,22 @@ bool SkeletalModel::InitializeScene()
 
 	for (int i = 0; i < 2; i++)
 	{
-
 		// Get pointer and size to resource.
-		hRes[i] = FindResource(GetModuleHandle(L"Manus.dll"),
+		HRSRC hRes = FindResource(GetModuleHandle(L"Manus.dll"),
 			i ? MAKEINTRESOURCE(IDR_FBX_RIGHT) : MAKEINTRESOURCE(IDR_FBX_LEFT),
 			RT_RCDATA);
-		hMem[i] = LoadResource(GetModuleHandle(L"Manus.dll"), hRes[i]);
-		dSize[i] = SizeofResource(GetModuleHandle(L"Manus.dll"), hRes[i]);
-		pMem[i] = LockResource(hMem[i]);
+		HGLOBAL hMem = LoadResource(GetModuleHandle(L"Manus.dll"), hRes);
+		DWORD dSize = SizeofResource(GetModuleHandle(L"Manus.dll"), hRes);
+		void* pMem = LockResource(hMem);
 
 		// Create an importer and initialize the importer.
-		importer[i] = FbxImporter::Create(m_sdk_manager, "");
-		mem_stream[i] = new FbxMemStream(m_sdk_manager, pMem[i], dSize[i]);
-		if (!importer[i]->Initialize(mem_stream[i], nullptr, -1, m_sdk_manager->GetIOSettings()))
+		FbxImporter* importer = FbxImporter::Create(m_sdk_manager, "");
+		FbxMemStream mem_stream(m_sdk_manager, pMem, dSize);
+
+		if (!importer->Initialize(&mem_stream, nullptr, -1, m_sdk_manager->GetIOSettings()))
 		{
 			FBXSDK_printf("Call to FbxExporter::Initialize() failed.\n");
-			FBXSDK_printf("Error returned: %s\n\n", importer[i]->GetStatus().GetErrorString());
+			FBXSDK_printf("Error returned: %s\n\n", importer->GetStatus().GetErrorString());
 			return false;
 		}
 
@@ -100,13 +95,10 @@ bool SkeletalModel::InitializeScene()
 		m_scene[i] = FbxScene::Create(m_sdk_manager, i ? "Manus_Handv2_Right" : "Manus_Handv2_Left");
 
 		// Import the contents of the file into the scene.
-		importer[i]->Import(m_scene[i]);
+		importer->Import(m_scene[i]);
 
 		// The file has been imported; we can get rid of the importer.
-		importer[i]->Destroy();
-
-		// To put it in the loop, we're using new FbxMemStream, so we must also delete it.
-		delete mem_stream[i];
+		importer->Destroy();
 	}
 
 

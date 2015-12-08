@@ -79,8 +79,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Manus_Handv2_Left.FBX" />
-    <None Include="rcdata1.bin">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Manus_Handv2_Left_Meshless.FBX" />

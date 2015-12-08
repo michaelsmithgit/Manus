@@ -28,21 +28,15 @@ class SkeletalModel
 private:
 	FbxManager* m_sdk_manager;
 	FbxScene* m_scene[2];
-	//FbxNode* m_palm_node;
-	//FbxNode* m_palm_bone;
 	FbxNode* m_bone_nodes[2][GLOVE_FINGERS][4];
 	
-	GLOVE_POSE ToGlovePose(FbxAMatrix mat);
-
-	// temporary states for the ToGlovePose function call
-	GLOVE_HAND temp_hand;
-	GLOVE_DATA temp_data;
-	GLOVE_QUATERNION temp_quaternion;
+	GLOVE_POSE ToGlovePose(FbxAMatrix mat, GLOVE_QUATERNION &Quat);
+	
 
 public:
 	SkeletalModel();
 	~SkeletalModel();
 
 	bool InitializeScene();
-	bool Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE_HAND hand);
+	bool Simulate(const GLOVE_DATA data, GLOVE_SKELETAL* model, GLOVE_HAND hand, bool OSVR_Compat = false);
 };

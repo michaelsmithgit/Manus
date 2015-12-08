@@ -182,6 +182,20 @@ int ManusGetSkeletal(GLOVE_HAND hand, GLOVE_SKELETAL* model, unsigned int timeou
 		return MANUS_ERROR;
 }
 
+int ManusGetSkeletalOSVR(GLOVE_HAND hand, GLOVE_SKELETAL* model, unsigned int timeout)
+{
+	GLOVE_DATA data;
+
+	int ret = ManusGetData(hand, &data, timeout);
+	if (ret != MANUS_SUCCESS)
+		return ret;
+
+	if (g_skeletal.Simulate(data, model, hand, true))
+		return MANUS_SUCCESS;
+	else
+		return MANUS_ERROR;
+}
+
 int ManusSetHandedness(GLOVE_HAND hand, bool right_hand)
 {
 	// Get the glove from the list

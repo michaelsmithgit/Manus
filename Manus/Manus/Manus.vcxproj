@@ -190,7 +190,6 @@
     <ClCompile Include="WinDevices.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Manus_Handv2_Left.FBX" />
     <None Include="Manus_Handv2_Left_Meshless.FBX" />
     <None Include="Manus_Handv2_Right_Meshless.FBX" />
     <None Include="rcdata1.bin" />

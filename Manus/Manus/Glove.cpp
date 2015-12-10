@@ -297,14 +297,11 @@ void Glove::OnCharacteristicChanged(BTH_LE_GATT_EVENT_TYPE event_type, void* eve
 
 void Glove::UpdateState()
 {
-	// linear acceleration temp values
-	GLOVE_VECTOR gravity, rawAcceleration;
-
 	m_data.PacketNumber++;
 
-	rawAcceleration.x = m_report.accel[0] / ACCEL_DIVISOR;
-	rawAcceleration.y = m_report.accel[1] / ACCEL_DIVISOR;
-	rawAcceleration.z = m_report.accel[2] / ACCEL_DIVISOR;
+	m_data.Acceleration.x = m_report.accel[0] / ACCEL_DIVISOR;
+	m_data.Acceleration.y = m_report.accel[1] / ACCEL_DIVISOR;
+	m_data.Acceleration.z = m_report.accel[2] / ACCEL_DIVISOR;
 
 	// normalize quaternion data
 	m_data.Quaternion.w = m_report.quat[0] / QUAT_DIVISOR;
@@ -321,12 +318,9 @@ void Glove::UpdateState()
 		else
 			m_data.Fingers[i] = m_report.fingers[GLOVE_FINGERS - (i + 1)] / FINGER_DIVISOR;
 	}
+
 	// calculate the euler angles
 	ManusMath::GetEuler(&m_data.Euler, &m_data.Quaternion);
-
-	// calculate the linear acceleration
-	ManusMath::GetGravity(&gravity, &m_data.Quaternion);
-	ManusMath::GetLinearAcceleration(&m_data.Acceleration, &rawAcceleration, &gravity);
 }
 
 uint8_t Glove::GetFlags()
